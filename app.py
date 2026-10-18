@@ -21,8 +21,8 @@ def chat():
         if not API_KEY:
             return jsonify({'reply': 'عذراً، مفتاح الـ API غير مُعد بشكل صحيح على سيرفر الاستضافة (Vercel).'})
 
-        # استخدام الموديل المستقر المحدث
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={API_KEY}"
+        # استخدام نموذج gemini-2.0-flash الحديث والمدعوم على v1beta
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={API_KEY}"
         
         system_instruction = f"أنت مساعد ذكي ومختص في منصة 'ناظرني' للحوار والدراسات الدينية. القسم الحالي هو: {category}. أجب بدقة وعلم وموضوعية."
         
@@ -51,8 +51,19 @@ def chat():
             except (KeyError, IndexError):
                 reply_text = "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
         else:
-            error_msg = res_data.get('error', {}).get('message', 'خطأ غير معروف')
-            reply_text = f"عذراً، حدث خطأ في الاتصال بخدمة الذكاء الاصطناعي: {error_msg}"
+            # تجربة النموذج الاحتياطي تلقائيًا إذا تعذر الأول
+            fallback_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key={API_KEY}"
+            fb_response = requests.post(fallback_url, json=payload, headers=headers)
+            fb_res_data = fb_response.json()
+            
+            if fb_response.status_code == 200:
+                try:
+                    reply_text = fb_res_data['candidates'][0]['content']['parts'][0]['text']
+                except (KeyError, IndexError):
+                    reply_text = "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
+            else:
+                error_msg = res_data.get('error', {}).get('message', 'خطأ غير معروف')
+                reply_text = f"عذراً، حدث خطأ في الاتصال بخدمة الذكاء الاصطناعي: {error_msg}"
 
         return jsonify({'reply': reply_text})
     except Exception as e:
