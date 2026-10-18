@@ -108,7 +108,8 @@ def handle_auth():
 @app.route("/api/admin/data", methods=["GET"])
 def admin_data():
     email = request.args.get("email", "").strip().lower()
-    if email != "hamza.dokmah391@gmail.com":
+    # التحقق من الإيميل الجديد للـ Admin
+    if email != "hamzadakma391@gmail.com":
         return jsonify({"success": False, "message": "غير مسموح بالدخول!"}), 403
 
     try:
