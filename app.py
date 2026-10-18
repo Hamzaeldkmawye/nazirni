@@ -1,3 +1,9 @@
+# ====================================================
+# Project: Nazirni Backend API
+# Developer: Hamza Mohamed Eldkmawye
+# Year: 2026
+# Copyright (c) 2026 Hamza Eldkmawye. All rights reserved.
+# ====================================================
 from flask import Flask, render_template, request, jsonify
 import os
 import requests
