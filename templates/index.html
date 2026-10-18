@@ -2,14 +2,14 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة ناظرني الحوارية والدينية</title>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Google Fonts -->
+    <!-- خط أميري وجزيرة من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -30,11 +30,11 @@
         }
 
         body {
-            height: 100vh;
-            height: 100dvh;
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
             color: #1e293b;
             background: #ffffff;
         }
@@ -61,19 +61,19 @@
             position: fixed;
             border-radius: 50%;
             filter: blur(80px);
-            opacity: 0.5;
+            opacity: 0.6;
             z-index: 0;
             pointer-events: none;
             animation: floatOrb 18s ease-in-out infinite alternate;
         }
 
-        .orb-1 { top: 10%; right: 15%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(254, 240, 138, 0.7) 0%, rgba(255, 255, 255, 0) 70%); }
-        .orb-2 { bottom: 10%; left: 10%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(255, 255, 255, 0) 70%); animation-delay: -5s; }
+        .orb-1 { top: 10%; right: 15%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(254, 240, 138, 0.7) 0%, rgba(255, 255, 255, 0) 70%); }
+        .orb-2 { bottom: 10%; left: 10%; width: 450px; height: 450px; background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(255, 255, 255, 0) 70%); animation-delay: -5s; }
 
         @keyframes floatOrb {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -20px) scale(1.1); }
-            100% { transform: translate(-20px, 30px) scale(0.95); }
+            50% { transform: translate(40px, -30px) scale(1.1); }
+            100% { transform: translate(-30px, 40px) scale(0.95); }
         }
 
         .quran-bg {
@@ -86,25 +86,33 @@
             pointer-events: none;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 30px;
+            gap: 25px;
+            padding: 40px;
             align-content: space-around;
             justify-items: center;
             overflow: hidden;
-            opacity: 0.6;
         }
 
         .quran-item {
             font-family: var(--font-quran);
-            font-size: 1.4rem;
+            font-size: 1.55rem;
             font-weight: 700;
             text-align: center;
             background: linear-gradient(135deg, #996515 0%, #d4af37 50%, #b8860b 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            opacity: 0.5;
+            opacity: 0.55;
+            filter: drop-shadow(0 2px 6px rgba(212, 175, 55, 0.35));
+            animation: waterGleam 8s ease-in-out infinite alternate;
             line-height: 1.8;
             user-select: none;
+        }
+
+        .quran-item:nth-child(even) { animation-delay: -4s; }
+
+        @keyframes waterGleam {
+            0% { transform: translateY(0) scale(1); opacity: 0.45; }
+            100% { transform: translateY(-6px) scale(1.02); opacity: 0.65; }
         }
 
         .overlay {
@@ -113,7 +121,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(18, 62, 49, 0.3);
+            background: rgba(18, 62, 49, 0.2);
             backdrop-filter: blur(4px);
             z-index: 98;
             opacity: 0;
@@ -122,88 +130,89 @@
         }
         .overlay.show { opacity: 1; pointer-events: auto; }
 
-        .top-navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            z-index: 90;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(27, 77, 62, 0.1);
-        }
-
         .menu-toggle-btn {
-            background: rgba(27, 77, 62, 0.08);
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 97;
+            background: rgba(255, 255, 255, 0.85);
             color: var(--primary-medium);
-            border: 1px solid rgba(27, 77, 62, 0.15);
-            font-size: 18px;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            border: 1px solid rgba(27, 77, 62, 0.2);
+            font-size: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
             cursor: pointer;
+            box-shadow: 0 8px 24px rgba(27, 77, 62, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .menu-toggle-btn:hover { transform: scale(1.06) rotate(3deg); background: var(--primary-medium); color: #ffffff; }
 
         .donate-top-btn {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 97;
             background: linear-gradient(135deg, #e11d48, #be123c);
             color: #ffffff;
             border: none;
-            padding: 0 14px;
-            height: 38px;
-            border-radius: 12px;
+            padding: 0 18px;
+            height: 48px;
+            border-radius: 16px;
             font-weight: 700;
-            font-size: 0.88rem;
+            font-size: 0.95rem;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.2);
+            box-shadow: 0 8px 24px rgba(225, 29, 72, 0.25);
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
         }
+        .donate-top-btn:hover { transform: scale(1.05); box-shadow: 0 10px 28px rgba(225, 29, 72, 0.35); }
+        .donate-top-btn i { color: #fecdd3; font-size: 1.1rem; }
 
         .sidebar {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 300px;
+            right: -360px;
+            width: 340px;
             max-width: 85vw;
             height: 100%;
-            background: rgba(255, 255, 255, 0.96);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
             z-index: 99;
-            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
         }
         .sidebar.open { right: 0; }
 
         .sidebar-header {
-            padding: 20px 16px;
+            padding: 24px 20px;
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .sidebar-header h3 { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 700; }
+        .sidebar-header h3 { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 700; }
 
         .close-btn {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border: none;
             color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            font-size: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 18px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -213,67 +222,70 @@
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            padding: 12px;
-            gap: 4px;
+            padding: 16px 12px;
+            gap: 6px;
             overflow-y: auto;
         }
 
-        .menu-divider { height: 1px; background: rgba(0, 0, 0, 0.08); margin: 6px 8px; }
-        .menu-section-title { font-size: 0.75rem; color: #94a3b8; font-weight: 700; padding: 4px 8px; }
+        .menu-divider { height: 1px; background: rgba(0, 0, 0, 0.08); margin: 8px 10px; }
+        .menu-section-title { font-size: 0.78rem; color: #94a3b8; font-weight: 700; padding: 4px 12px; letter-spacing: 0.5px; }
 
         .menu-item {
             background: transparent;
             border: none;
-            padding: 11px 14px;
-            border-radius: 12px;
+            padding: 13px 16px;
+            border-radius: 14px;
             text-align: right;
-            font-size: 0.88rem;
+            font-size: 0.92rem;
             color: #334155;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         .menu-item i {
-            width: 24px; height: 24px; border-radius: 6px; background: rgba(27, 77, 62, 0.08);
-            color: var(--primary-medium); display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+            width: 26px; height: 26px; border-radius: 8px; background: rgba(27, 77, 62, 0.08);
+            color: var(--primary-medium); display: flex; align-items: center; justify-content: center; font-size: 0.88rem;
         }
-        .menu-item.active { background: rgba(27, 77, 62, 0.1); color: var(--primary-dark); font-weight: 700; border-right: 3px solid var(--primary-medium); }
+        .menu-item:hover { background: rgba(46, 125, 99, 0.08); color: var(--primary-medium); padding-right: 20px; }
+        .menu-item.active { background: linear-gradient(90deg, rgba(27, 77, 62, 0.12), rgba(46, 125, 99, 0.05)); color: var(--primary-dark); font-weight: 700; border-right: 4px solid var(--primary-medium); }
+        .menu-item.active i { background: var(--primary-medium); color: white; }
 
         .chat-container {
             position: relative;
             z-index: 10;
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            padding: 70px 12px 12px 12px;
+            height: 100vh;
+            height: 100dvh;
+            padding: 16px 20px;
         }
 
         .chat-header {
             text-align: center;
-            margin-bottom: 8px;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            padding: 10px 16px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            margin-top: 10px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            padding: 16px 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         }
-        .chat-header h1 { color: var(--primary-dark); font-size: 1.4rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+        .chat-header h1 { color: var(--primary-dark); font-size: 2rem; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
         .chat-header h1 i { color: var(--gold-accent); }
-        .chat-header p { color: #64748b; font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
+        .chat-header p { color: #64748b; font-size: 0.9rem; font-weight: 600; margin-top: 4px; }
 
         .main-view-area {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            position: relative;
         }
 
         .chat-messages {
@@ -281,144 +293,187 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding: 8px 4px;
+            gap: 16px;
+            padding: 12px 8px;
             scroll-behavior: smooth;
         }
 
         .static-page-view {
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            flex: 1;
             overflow-y: auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(226, 232, 240, 0.8);
             backdrop-filter: blur(16px);
-            border-radius: 18px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
             display: none;
-            line-height: 1.7;
+            line-height: 1.8;
         }
         .static-page-view.active { display: block; }
-        .static-page-view h2 { color: var(--primary-dark); font-size: 1.25rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 8px; }
-        .static-page-view p { color: #334155; margin-bottom: 12px; font-size: 0.92rem; }
+        .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; }
+        .static-page-view p { color: #334155; margin-bottom: 14px; font-size: 1.02rem; }
 
         .trust-detailed-box {
             background: rgba(27, 77, 62, 0.03);
             border: 1px solid rgba(27, 77, 62, 0.12);
-            border-radius: 14px;
-            padding: 14px;
-            margin-top: 10px;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 15px;
         }
-        .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         
         .books-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 8px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
         }
         .book-badge {
             background: #ffffff;
             color: var(--primary-medium);
             border: 1px solid rgba(27, 77, 62, 0.2);
-            padding: 8px 6px;
-            border-radius: 8px;
-            font-size: 0.78rem;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
             font-weight: 700;
             text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        .dev-info-box, .donate-box {
+        .dev-info-box {
             background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: 18px;
+            padding: 24px;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
         .dev-whatsapp-btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 10px;
             background: #25d366;
             color: white;
             text-decoration: none;
-            padding: 10px 16px;
-            border-radius: 12px;
+            padding: 12px 24px;
+            border-radius: 14px;
             font-weight: 700;
-            font-size: 0.9rem;
-            margin-top: 12px;
-            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+            font-size: 1rem;
+            margin-top: 15px;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
+            transition: transform 0.2s;
         }
+        .dev-whatsapp-btn:hover { transform: scale(1.03); }
 
+        .donate-box {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: 18px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
         .donate-btn-placeholder {
             width: 100%;
+            max-width: 350px;
             background: linear-gradient(135deg, var(--gold-accent), #b8860b);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 14px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             cursor: pointer;
-            margin-top: 12px;
+            margin-top: 15px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
         }
 
         .message {
-            max-width: 88%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            line-height: 1.6;
-            font-size: 0.9rem;
-            animation: messagePop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-            word-break: break-word;
+            max-width: 85%;
+            padding: 16px 20px;
+            border-radius: 22px;
+            line-height: 1.7;
+            font-size: 0.98rem;
+            animation: messagePop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            word-wrap: break-word;
         }
         @keyframes messagePop {
-            from { opacity: 0; transform: translateY(10px) scale(0.98); }
+            from { opacity: 0; transform: translateY(15px) scale(0.97); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
-        .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
+        .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
+        .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; box-shadow: 0 6px 20px rgba(27, 77, 62, 0.25); }
 
         .chat-input-area {
             display: flex;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 6px 6px 6px 12px;
-            border-radius: 28px;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 10px 8px 16px;
+            border-radius: 35px;
             border: 1.5px solid rgba(27, 77, 62, 0.25);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-            margin-top: 6px;
-            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            margin-top: 8px;
+            margin-bottom: 10px;
+            backdrop-filter: blur(16px);
             align-items: center;
         }
-        .chat-input-area input { flex: 1; border: none; outline: none; padding: 8px; font-size: 0.92rem; background: transparent; color: #1e293b; }
+        .chat-input-area input { flex: 1; border: none; outline: none; padding: 12px 10px; font-size: 1rem; background: transparent; color: #1e293b; }
         .chat-input-area button {
             background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark));
-            color: white; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 700;
-            display: flex; align-items: center; gap: 6px; font-size: 0.88rem; flex-shrink: 0;
+            color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
         }
 
-        .typing-indicator { display: flex; gap: 4px; padding: 8px 12px; align-items: center; }
-        .typing-dot { width: 6px; height: 6px; background: var(--primary-medium); border-radius: 50%; animation: bounceDot 1.4s infinite ease-in-out both; }
+        .typing-indicator { display: flex; gap: 5px; padding: 8px 12px; align-items: center; }
+        .typing-dot { width: 7px; height: 7px; background: var(--primary-medium); border-radius: 50%; animation: bounceDot 1.4s infinite ease-in-out both; }
         .typing-dot:nth-child(1) { animation-delay: -0.32s; }
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        @media (max-width: 480px) {
-            .quran-bg { grid-template-columns: 1fr; gap: 10px; }
-            .quran-item { font-size: 1rem; }
-            .chat-container { padding-left: 8px; padding-right: 8px; }
-            .message { max-width: 92%; font-size: 0.88rem; padding: 10px 14px; }
+        @media (max-width: 1024px) {
+            .chat-container { max-width: 100%; padding: 14px 16px; }
+            .quran-bg { gap: 15px; padding: 25px; }
+            .quran-item { font-size: 1.3rem; }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle-btn { top: 16px; right: 16px; width: 42px; height: 42px; font-size: 18px; border-radius: 12px; }
+            .donate-top-btn { top: 16px; left: 16px; height: 42px; padding: 0 14px; border-radius: 12px; }
             .donate-top-btn span { display: none; }
-            .donate-top-btn { padding: 0 10px; }
+            
+            .chat-container { padding: 8px 10px; }
+            .chat-header { padding: 12px 16px; margin-top: 55px; margin-bottom: 8px; border-radius: 16px; }
+            .chat-header h1 { font-size: 1.5rem; }
+            .chat-header p { font-size: 0.8rem; }
+
+            .quran-bg { grid-template-columns: repeat(2, 1fr); padding: 15px; gap: 12px; }
+            .quran-item { font-size: 1.1rem; }
+
+            .message { max-width: 92%; padding: 12px 16px; font-size: 0.92rem; }
+            .chat-input-area { padding: 6px 8px 6px 12px; border-radius: 25px; }
+            .chat-input-area input { font-size: 0.9rem; padding: 8px 6px; }
+            .chat-input-area button { padding: 10px 18px; font-size: 0.88rem; border-radius: 20px; }
+
+            .static-page-view { padding: 18px; border-radius: 18px; }
+            .static-page-view h2 { font-size: 1.25rem; }
+            .books-grid { grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 8px; }
+            .book-badge { padding: 8px 10px; font-size: 0.8rem; }
+            
+            .dev-info-box, .donate-box { padding: 16px; }
+            .dev-whatsapp-btn { padding: 10px 16px; font-size: 0.9rem; width: 100%; justify-content: center; }
+        }
+
+        @media (max-width: 480px) {
+            .quran-bg { grid-template-columns: 1fr; }
+            .quran-item { font-size: 1rem; }
         }
     </style>
 </head>
@@ -431,23 +486,31 @@
     <div class="quran-bg">
         <div class="quran-item">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
         <div class="quran-item">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
+        <div class="quran-item">خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ</div>
+        <div class="quran-item">اقْرَأْ وَرَبُّكَ الْأَكْرَمُ</div>
         <div class="quran-item">الَّذِي عَلَّمَ بِالْقَلَمِ</div>
+        <div class="quran-item">عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ</div>
         <div class="quran-item">ادْعُ إِلَى سَبِيلِ رَبِّكَ بِالْحِكْمَةِ</div>
         <div class="quran-item">وَالْمَوْعِظَةِ الْحَسَنَةِ</div>
         <div class="quran-item">وَجَادِلْهُمْ بِالَّتِي هِيَ أَحْسَنُ</div>
-    </div>
-
-    <div class="top-navbar">
-        <button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
-            <i class="fa-solid fa-heart"></i>
-            <span>تبرع</span>
-        </button>
+        <div class="quran-item">وَقُلْ رَبِّ زِدْنِي عِلْمًا</div>
+        <div class="quran-item">ن وَالْقَلَمِ وَمَا يَسْطُرُونَ</div>
+        <div class="quran-item">يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنْكُمْ</div>
+        <div class="quran-item">وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ</div>
+        <div class="quran-item">وَمَا أُوتِيتُمْ مِنَ الْعِلْمِ إِلَّا قَلِيلًا</div>
+        <div class="quran-item">قُلْ هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ</div>
     </div>
 
     <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+    <button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
+        <i class="fa-solid fa-heart"></i>
+        <span>تبرع</span>
+    </button>
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -504,23 +567,36 @@
         <div class="main-view-area">
             <div class="chat-messages" id="chatMessages">
                 <div class="message bot-message">
-                    أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">سؤال ديني</b>. اطرح سؤالك وسنجيبك استناداً حصرياً إلى ملفات الكتب والمراجع المعتمدة للمنصة.
+                    أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">سؤال ديني</b>. اطرح سؤالك أو استفسارك وسنرد عليك بالاستناد إلى الأدلة والمصادر المعتمدة.
                 </div>
             </div>
 
             <div class="static-page-view" id="page-trust">
                 <h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
-                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>.</p>
+                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى.</p>
+
+                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم.</p>
 
                 <div class="trust-detailed-box">
-                    <h3><i class="fa-solid fa-books"></i> المراجع المعتمدة بالنظام:</h3>
+                    <h3><i class="fa-solid fa-books"></i> قائمة الكتب والمصادر المرجعية المعتمدة في النظام:</h3>
+                    <p style="font-size: 0.92rem; color: #64748b; margin-top: 4px;">هذه عينة من المراجع والمصادر الرقمية المعتمدة لتقديم إجابات موثقة بالكامل:</p>
                     <div class="books-grid">
                         <span class="book-badge">القرآن الكريم</span>
                         <span class="book-badge">صحيح البخاري</span>
-                        <span class="book-badge">تفسير ابن كثير</span>
+                        <span class="book-badge">مجموع فتاوى ابن تيمية</span>
                         <span class="book-badge">تفسير الطبري</span>
-                        <span class="book-badge">مجموع الفتاوى</span>
+                        <span class="book-badge">تفسير ابن كثير</span>
+                        <span class="book-badge">المغني لابن قدامة</span>
                         <span class="book-badge">إظهار الحق</span>
+                        <span class="book-badge">النشر في القراءات العشر</span>
+                        <span class="book-badge">درء تعارض العقل والنقل</span>
+                        <span class="book-badge">المستصفى للغزالي</span>
+                        <span class="book-badge">الموافقات للشاطبي</span>
+                        <span class="book-badge">حياة الصحابة</span>
+                        <span class="book-badge">فقه السنة</span>
+                        <span class="book-badge">الروض الأنف</span>
+                        <span class="book-badge">مقدمة ابن الصلاح</span>
+                        <span class="book-badge">الباعث الحثيث</span>
                     </div>
                 </div>
             </div>
@@ -528,30 +604,32 @@
             <div class="static-page-view" id="page-developer">
                 <h2><i class="fa-solid fa-user-gear" style="color: var(--primary-medium);"></i> المطور ومبتكر الفكرة</h2>
                 <div class="dev-info-box">
-                    <p style="font-size: 0.9rem; color: #64748b;">تم تصميم وتطوير المنصة بواسطة</p>
-                    <h3 style="color: var(--primary-dark); font-size: 1.5rem; margin: 6px 0;">« ناظرني »</h3>
-                    <p style="font-size: 1.1rem; font-weight: 700; color: var(--primary-medium);">👤 حمزة الدكماوي</p>
+                    <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 5px;">تم تصميم وتطوير وبرمجة منصة</p>
+                    <h3 style="color: var(--primary-dark); font-size: 1.8rem; margin-bottom: 10px;">« ناظرني »</h3>
+                    <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium); margin-top: 10px;">👤 حمزة الدكماوي</p>
+                    <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px; max-width: 500px; margin-left: auto; margin-right: auto;">مبتكر ومطور الفكرة، ومهندس البرمجيات المسؤول عن بناء وتصميم هذه المنصة الحوارية والدينية الذكية لخدمة الباحثين عن الحقيقة والعلم الشرعي الموثق.</p>
                     
                     <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn">
-                        <i class="fa-brands fa-whatsapp"></i> واتساب (01014151760)
+                        <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور عبر واتساب (01014151760)
                     </a>
                 </div>
             </div>
 
             <div class="static-page-view" id="page-donate">
-                <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير المنصة</h2>
+                <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير منصة ناظرني</h2>
                 <div class="donate-box">
-                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 8px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي وتوسيع قاعدة بيانات المراجع الإسلامية المعتمدة لتظل المنصة مجانية كلياً.</p>
+                    <p style="font-size: 1.05rem; color: #334155; margin-bottom: 10px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي، وتحسين سرعة الاستجابة، وتوسيع قاعدة بيانات المراجع الإسلامية لتظل المنصة مجانية بالكامل ومتاحة للجميع دون إعلانات مزعجة.</p>
+                    <p style="font-size: 0.92rem; color: #64748b; margin-bottom: 20px;">مساهمتك في دعم المشروع تعتبر صدقة جارية تساهم في نشر العلم النافع والرد على الشبهات بالحكمة والموعظة الحسنة.</p>
                     
-                    <button class="donate-btn-placeholder" onclick="alert('سيتم ربط وسائل الدفع الإلكتروني قريباً، شكراً لدعمك الكرم!')">
-                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور
+                    <button class="donate-btn-placeholder" onclick="alert('سيتم ربط بوابة الدفع الإلكتروني والفيزا قريباً جداً، شكراً لدعمك الكريم للمشروع!')">
+                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور (فيزا / وسائل الدفع)
                     </button>
                 </div>
             </div>
         </div>
 
         <div class="chat-input-area" id="chatInputArea">
-            <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." onkeypress="handleKeyPress(event)">
+            <input type="text" id="userInput" placeholder="اكتب سؤالك أو استفسارك هنا..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">
                 <i class="fa-solid fa-paper-plane"></i> إرسال
             </button>
@@ -564,11 +642,13 @@
         function openSidebar() {
             document.getElementById('sidebar').classList.add('open');
             document.getElementById('overlay').classList.add('show');
+            document.getElementById('menuBtn').style.display = 'none';
         }
 
         function closeSidebar() {
             document.getElementById('sidebar').classList.remove('open');
             document.getElementById('overlay').classList.remove('show');
+            setTimeout(() => { document.getElementById('menuBtn').style.display = 'flex'; }, 200);
         }
 
         function openPage(categoryName) {
@@ -606,7 +686,7 @@
 
                 const botDiv = document.createElement('div');
                 botDiv.className = 'message bot-message';
-                botDiv.innerHTML = `تم الانتقال إلى قسم <b>${categoryName}</b>.<br>تفضل بطرح سؤالك وسنجيبك استناداً كلياً إلى ملفات الكتب المرفوعة.`;
+                botDiv.innerHTML = `تم الانتقال إلى قسم <b>${categoryName}</b>.<br>تفضل بطرح سؤالك أو استفسارك وسنرد عليك وفق منهجية هذا القسم.`;
                 
                 chatMessages.appendChild(botDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -622,7 +702,7 @@
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const messages = document.getElementById('chatMessages');
-            const text = input.value.strip ? input.value.strip() : input.value.trim();
+            const text = input.value.trim();
 
             if (!text) return;
 
