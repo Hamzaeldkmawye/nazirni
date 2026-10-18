@@ -1,13 +1,11 @@
 from flask import Flask, render_template, request, jsonify
 import os
-import google.generativeai as genai
+import requests
 
 app = Flask(__name__)
 
 # قراءة مفتاح الـ API من متغيرات البيئة في Vercel
-api_key = os.environ.get("GEMINI_API_KEY")
-if api_key:
-    genai.configure(api_key=api_key)
+API_KEY = os.environ.get("GEMINI_API_KEY")
 
 @app.route('/')
 def index():
@@ -20,24 +18,41 @@ def chat():
         user_message = data.get('message', '')
         category = data.get('category', 'سؤال ديني')
 
-        if not api_key and not os.environ.get("GEMINI_API_KEY"):
+        if not API_KEY:
             return jsonify({'reply': 'عذراً، مفتاح الـ API غير مُعد بشكل صحيح على سيرفر الاستضافة (Vercel).'})
 
+        # استخدام Google Gemini REST API مباشرة لتفادي أي مشاكل في المكتبات
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+        
         system_instruction = f"أنت مساعد ذكي ومختص في منصة 'ناظرني' للحوار والدراسات الدينية. القسم الحالي هو: {category}. أجب بدقة وعلم وموضوعية."
         
-        generation_config = {
-            "temperature": 0.7,
-            "max_output_tokens": 1000,
+        payload = {
+            "contents": [
+                {
+                    "parts": [
+                        {"text": f"{system_instruction}\n\nسؤال المستخدم: {user_message}"}
+                    ]
+                }
+            ],
+            "generationConfig": {
+                "temperature": 0.7,
+                "maxOutputTokens": 1000
+            }
         }
 
-        model = genai.GenerativeModel(
-            model_name="gemini-1.5-flash",
-            system_instruction=system_instruction,
-            generation_config=generation_config
-        )
+        headers = {'Content-Type': 'application/json'}
+        
+        response = requests.post(url, json=payload, headers=headers)
+        res_data = response.json()
 
-        response = model.generate_content(user_message)
-        reply_text = response.text if response and response.text else "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
+        if response.status_code == 200:
+            try:
+                reply_text = res_data['candidates'][0]['content']['parts'][0]['text']
+            except (KeyError, IndexError):
+                reply_text = "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
+        else:
+            error_msg = res_data.get('error', {}).get('message', 'خطأ غير معروف')
+            reply_text = f"عذراً، حدث خطأ في الاتصال بخدمة الذكاء الاصطناعي: {error_msg}"
 
         return jsonify({'reply': reply_text})
     except Exception as e:
