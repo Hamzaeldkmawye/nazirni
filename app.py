@@ -42,8 +42,8 @@ def chat():
             "إذا لم تكن متأكدًا من الإجابة، وضّح ذلك للمستخدم."
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
+      response = client.models.generate_content(
+            model="gemini-1.5-flash",  # أو النموذج المناسب المتاح لديك
             contents=user_message,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction
