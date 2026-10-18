@@ -40,8 +40,8 @@ def chat():
             "إذا لم تكن متأكدًا من الإجابة، وضّح ذلك للمستخدم."
         )
 
-  # رابط الاتصال المباشر المحدث
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={API_KEY}"
+        # رابط الاتصال المباشر بالنموذج المطلوب حصرياً من جوجل
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
         
         payload = {
             "system_instruction": {
