@@ -7,7 +7,6 @@ from google.genai import types
 app = Flask(__name__)
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
-
 client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 
@@ -39,8 +38,8 @@ def chat():
             "أنت مساعد ذكي في منصة ناظرني للحوار والدراسات الدينية. "
             f"القسم الحالي هو: {category}. "
             "أجب باللغة العربية بوضوح واحترام وموضوعية. "
-            "اعتمد على معلومات موثوقة، وميّز بين الحقائق والآراء، "
-            "ولا تخترع مراجع أو تنسب أقوالًا لمصادر دون التأكد منها. "
+            "اعتمد على معلومات موثوقة، وميّز بين الحقائق والآراء. "
+            "لا تخترع مراجع أو تنسب أقوالًا لمصادر دون التأكد منها. "
             "إذا لم تكن متأكدًا من الإجابة، وضّح ذلك للمستخدم."
         )
 
@@ -55,14 +54,20 @@ def chat():
         reply_text = response.text
 
         if not reply_text:
-            reply_text = "لم أتمكن من إنشاء إجابة واضحة. جرّب صياغة سؤالك مرة أخرى."
+            reply_text = (
+                "لم أتمكن من إنشاء إجابة واضحة. "
+                "جرّب صياغة سؤالك مرة أخرى."
+            )
 
-        return jsonify({"reply": reply_text})
+        return jsonify({"reply": reply_text}), 200
 
-       except Exception as e:
+    except Exception as e:
         app.logger.exception("Gemini API error")
         return jsonify({
-            "reply": f"نوع الخطأ: {type(e).__name__} - {str(e)}"
+            "reply": (
+                f"حدث خطأ من نوع {type(e).__name__}. "
+                "راجع سجلات Vercel لمعرفة التفاصيل."
+            )
         }), 500
 
 
