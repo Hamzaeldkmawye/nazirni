@@ -1,44 +1,70 @@
+
 from flask import Flask, render_template, request, jsonify
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 app = Flask(__name__)
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
-if API_KEY:
-    genai.configure(api_key=API_KEY)
 
-@app.route('/')
+client = genai.Client(api_key=API_KEY) if API_KEY else None
+
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/api/chat', methods=['POST'])
+
+@app.route("/api/chat", methods=["POST"])
 def chat():
     try:
-        data = request.get_json()
-        user_message = data.get('message', '')
-        category = data.get('category', 'سؤال ديني')
+        data = request.get_json(silent=True) or {}
 
-        if not API_KEY:
-            return jsonify({'reply': 'عذراً، مفتاح الـ API غير مُعد بشكل صحيح على سيرفر الاستضافة (Vercel).'})
+        user_message = data.get("message", "").strip()
+        category = data.get("category", "سؤال ديني")
 
-        system_instruction = f"أنت مساعد ذكي ومختص في منصة 'ناظرني' للحوار والدراسات الدينية. القسم الحالي هو: {category}. أجب بدقة وعلم وموضوعية."
-        
-        # استخدام الموديل القياسي المدعوم
-      model = genai.GenerativeModel(
-    model_name="gemini-pro"
-)
+        if not user_message:
+            return jsonify({
+                "reply": "من فضلك اكتب سؤالك الأول."
+            }), 400
 
-response = model.generate_content(
-    f"{system_instruction}\n\nسؤال المستخدم: {user_message}"
-)
+        if not client:
+            app.logger.error("GEMINI_API_KEY is not configured")
+            return jsonify({
+                "reply": "مفتاح الذكاء الاصطناعي غير مُعد على السيرفر. راجع إعدادات Vercel."
+            }), 500
+
+        system_instruction = (
+            "أنت مساعد ذكي في منصة ناظرني للحوار والدراسات الدينية. "
+            f"القسم الحالي هو: {category}. "
+            "أجب باللغة العربية بوضوح واحترام وموضوعية. "
+            "اعتمد على معلومات موثوقة، وميّز بين الحقائق والآراء، "
+            "ولا تخترع مراجع أو تنسب أقوالًا لمصادر دون التأكد منها. "
+            "إذا لم تكن متأكدًا من الإجابة، وضّح ذلك للمستخدم."
+        )
+
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=user_message,
+            config=types.GenerateContentConfig(
+                system_instruction=system_instruction
+            )
+        )
+
+        reply_text = response.text
+
+        if not reply_text:
+            reply_text = "لم أتمكن من إنشاء إجابة واضحة. جرّب صياغة سؤالك مرة أخرى."
+
+        return jsonify({"reply": reply_text})
+
+    except Exception:
+        app.logger.exception("Error while processing chat request")
+        return jsonify({
+            "reply": "حصل خطأ أثناء الاتصال بالذكاء الاصطناعي. راجع سجلات Vercel لمعرفة السبب."
+        }), 500
 
 
-        reply_text = response.text if response and response.text else "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
-
-        return jsonify({'reply': reply_text})
-    except Exception as e:
-        return jsonify({'reply': f'حدث خطأ في النظام: {str(e)}'})
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=False)
