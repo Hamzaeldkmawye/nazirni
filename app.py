@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
 
-# الحل هنا: استخدام مجلد tmp المؤقت المسموح بالكتابة عليه في Vercel
+# استخدام مجلد tmp المؤقت المسموح بالكتابة عليه في Vercel
 DB_FILE = os.path.join('/tmp', 'database.db')
 
 def init_db():
@@ -160,7 +160,7 @@ def chat():
             "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة."
         )
 
-url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
 
         payload = {
             "system_instruction": {"parts": [{"text": system_instruction}]},
