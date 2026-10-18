@@ -49,6 +49,7 @@ def chat():
                 system_instruction=system_instruction
             )
         )
+
         reply_text = response.text
 
         if not reply_text:
