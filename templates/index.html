@@ -63,15 +63,24 @@
         .donate-top-btn { background: linear-gradient(135deg, #e11d48, #be123c); color: #ffffff; box-shadow: 0 8px 24px rgba(225, 29, 72, 0.25); }
         .auth-top-btn, .history-top-btn { background: rgba(255, 255, 255, 0.9); color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.25); }
 
+        /* القائمة الجانبية اليمنى */
         .sidebar {
             position: fixed; top: 0; right: -360px; width: 340px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px); box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
         }
         .sidebar.open { right: 0; }
+
+        /* القائمة الجانبية اليسرى (السجل مثل جيمناي) */
+        .history-sidebar {
+            position: fixed; top: 0; left: -360px; width: 340px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(20px); box-shadow: 10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
+        }
+        .history-sidebar.open { left: 0; }
+
         .sidebar-header { padding: 24px 20px; background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium)); color: white; display: flex; justify-content: space-between; align-items: center; }
         .close-btn { background: rgba(255, 255, 255, 0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        .sidebar-menu { display: flex; flex-direction: column; padding: 16px 12px; gap: 6px; overflow-y: auto; }
+        .sidebar-menu { display: flex; flex-direction: column; padding: 16px 12px; gap: 6px; overflow-y: auto; flex: 1; }
         .menu-divider { height: 1px; background: rgba(0, 0, 0, 0.08); margin: 8px 10px; }
         .menu-section-title { font-size: 0.78rem; color: #94a3b8; font-weight: 700; padding: 4px 12px; }
 
@@ -99,9 +108,7 @@
         .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
         .static-page-view p { color: #334155; margin-bottom: 14px; font-size: 1.02rem; }
 
-        .trust-detailed-box {
-            background: rgba(27, 77, 62, 0.03); border: 1px solid rgba(27, 77, 62, 0.12); border-radius: 16px; padding: 20px; margin-top: 15px;
-        }
+        .trust-detailed-box { background: rgba(27, 77, 62, 0.03); border: 1px solid rgba(27, 77, 62, 0.12); border-radius: 16px; padding: 20px; margin-top: 15px; }
         .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
         .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
@@ -114,6 +121,16 @@
         .message { max-width: 85%; padding: 16px 20px; border-radius: 22px; line-height: 1.7; font-size: 0.98rem; word-wrap: break-word; }
         .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
         .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
+
+        /* مؤشر الانتظار (ثلاث نقاط متحركة) */
+        .typing-dots { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; }
+        .typing-dots span {
+            width: 8px; height: 8px; background-color: var(--primary-medium); border-radius: 50%;
+            display: inline-block; animation: bounceDot 1.4s infinite ease-in-out both;
+        }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
         .chat-input-area {
             display: flex; gap: 12px; background: rgba(255, 255, 255, 0.9); padding: 8px 10px 8px 16px; border-radius: 35px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 10px; align-items: center;
@@ -141,16 +158,22 @@
         .modal-footer { text-align: center; font-size: 0.88rem; color: #64748b; margin-top: 10px; }
         .modal-footer a { color: var(--primary-medium); font-weight: 700; text-decoration: none; margin-right: 5px; }
 
-        .history-card, .admin-card { max-width: 650px; }
-        .history-list, .admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .history-item, .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .admin-card { max-width: 650px; }
+        .admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* سجل المحادثات في القائمة اليسرى */
+        .history-items-container { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding: 4px; }
+        .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
+        .history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
+        .history-nav-text { font-size: 0.88rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-nav-date { font-size: 0.72rem; color: #94a3b8; margin-top: 4px; }
 
         .payment-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .pay-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 14px; cursor: pointer; }
         .pay-icon { font-size: 1.5rem; }
         .pay-icon.vcash { color: #e11d48; }
         .pay-icon.instapay { color: #2563eb; }
-        .pay-icon.visa { color: #d4af37; }
         .pay-details-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-top: 10px; text-align: center; }
         .copy-box { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px dashed #cbd5e1; padding: 8px 12px; border-radius: 10px; margin-top: 8px; }
         .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
@@ -174,8 +197,9 @@
         <div class="quran-item">وَجَادِلْهُمْ بِالَّتِي هِيَ أَحْسَنُ</div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeSidebar(); closeModal();"></div>
+    <div class="overlay" id="overlay" onclick="closeAllSidebars(); closeModal();"></div>
 
+    <!-- زر فتح القائمة اليمني -->
     <button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
         <i class="fa-solid fa-bars"></i>
     </button>
@@ -191,12 +215,29 @@
             <span>سجل الآن</span>
         </button>
 
-        <button class="history-top-btn" id="historyNavBtn" onclick="toggleHistoryModal()" style="display: none;" aria-label="سجل المحادثات">
+        <!-- زر السجل العلوي (يفتح قائمة السجل من اليسار مثل جيمناي) -->
+        <button class="history-top-btn" id="historyNavBtn" onclick="toggleHistorySidebar()" style="display: none;" aria-label="سجل المحادثات">
             <i class="fa-solid fa-book-open"></i>
             <span>السجل</span>
         </button>
     </div>
 
+    <!-- القائمة الجانبية اليسرى (السجل مثل جيمناي) -->
+    <aside class="history-sidebar" id="historySidebar">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-book-bookmark"></i> سجل المحادثات</h3>
+            <button class="close-btn" onclick="closeHistorySidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-section-title">آخر المحادثات المحفوظة</div>
+            <div class="history-items-container" id="historyItemsContainer"></div>
+            <button class="clear-history-btn" onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 10px; border-radius: 10px; border:none; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer;">
+                <i class="fa-solid fa-trash"></i> مسح السجل بالكامل
+            </button>
+        </div>
+    </aside>
+
+    <!-- القائمة الجانبية اليمنى -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h3><i class="fa-solid fa-book-quran"></i> منصة ناظرني</h3>
@@ -224,8 +265,9 @@
             </button>
             
             <div class="menu-divider"></div>
-            <button class="menu-item auth-sidebar-btn" id="sidebarAuthBtn" onclick="openAuthModal('signup')">
-                <i class="fa-solid fa-user-plus"></i> سجل الآن / تسجيل الدخول
+            <!-- زر تسجيل الدخول أو تسجيل الخروج في أسفل القائمة اليمنى -->
+            <button class="menu-item auth-sidebar-btn" id="sidebarAuthBtn" onclick="handleAuthSidebarAction()">
+                <i class="fa-solid fa-user-plus"></i> <span id="sidebarAuthText">سجل الآن / تسجيل الدخول</span>
             </button>
         </nav>
     </aside>
@@ -243,16 +285,14 @@
                 </div>
             </div>
 
-            <!-- صفحة الثقة والمراجع العلمية كاملة بالمحتوى الأصلي -->
             <div class="static-page-view" id="page-trust">
                 <h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
-                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى.</p>
+                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى[cite: 5].</p>
 
-                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم.</p>
+                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم[cite: 5].</p>
 
                 <div class="trust-detailed-box">
                     <h3><i class="fa-solid fa-books"></i> قائمة الكتب والمصادر المرجعية المعتمدة في النظام:</h3>
-                    <p style="font-size: 0.92rem; color: #64748b; margin-top: 4px;">هذه عينة من المراجع والمصادر الرقمية المعتمدة لتقديم إجابات موثقة بالكامل:</p>
                     <div class="books-grid">
                         <span class="book-badge">القرآن الكريم</span>
                         <span class="book-badge">صحيح البخاري</span>
@@ -280,23 +320,16 @@
                     <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 5px;">تم تصميم وتطوير وبرمجة منصة</p>
                     <h3 style="color: var(--primary-dark); font-size: 1.8rem; margin-bottom: 10px;">« ناظرني »</h3>
                     <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium); margin-top: 10px;">👤 حمزة الدكماوي</p>
-                    <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px; max-width: 500px; margin-left: auto; margin-right: auto;">مبتكر ومطور الفكرة، ومهندس البرمجيات المسؤول عن بناء وتصميم هذه المنصة الحوارية والدينية الذكية لخدمة الباحثين عن الحقيقة والعلم الشرعي الموثق.</p>
-                    
-                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn">
-                        <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور عبر واتساب (01014151760)
-                    </a>
+                    <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px; max-width: 500px; margin-left: auto; margin-right: auto;">مبتكر ومطور الفكرة، ومهندس البرمجيات المسؤول عن بناء وتصميم هذه المنصة الحوارية والدينية الذكية.</p>
+                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تواصل عبر واتساب (01014151760)</a>
                 </div>
             </div>
 
             <div class="static-page-view" id="page-donate">
                 <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير منصة ناظرني</h2>
                 <div class="donate-box">
-                    <p style="font-size: 1.05rem; color: #334155; margin-bottom: 10px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي، وتحسين سرعة الاستجابة، وتوسيع قاعدة بيانات المراجع الإسلامية لتظل المنصة مجانية بالكامل ومتاحة للجميع دون إعلانات مزعجة.</p>
-                    <p style="font-size: 0.92rem; color: #64748b; margin-bottom: 20px;">مساهمتك في دعم المشروع تعتبر صدقة جارية تساهم في نشر العلم النافع والرد على الشبهات بالحكمة والموعظة الحسنة.</p>
-                    
-                    <button class="donate-btn-placeholder" onclick="openDonateModal()">
-                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور (فودافون كاش / إنستا باي / فيزا)
-                    </button>
+                    <p style="font-size: 1.05rem; color: #334155; margin-bottom: 10px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي لتظل المنصة مجانية بالكامل ومتاحة للجميع دون إعلانات مزعجة.</p>
+                    <button class="donate-btn-placeholder" onclick="openDonateModal()"><i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور</button>
                 </div>
             </div>
         </div>
@@ -349,7 +382,7 @@
         </div>
     </div>
 
-    <!-- Modals -->
+    <!-- نافذة قاعدة المدير -->
     <div class="modal-container" id="adminModal">
         <div class="modal-card admin-card">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -364,14 +397,7 @@
         </div>
     </div>
 
-    <div class="modal-container" id="historyModal">
-        <div class="modal-card history-card">
-            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-header"><h3><i class="fa-solid fa-book-open"></i> سجل المحادثات</h3></div>
-            <div class="history-list" id="historyList"></div>
-        </div>
-    </div>
-
+    <!-- نافذة التبرع -->
     <div class="modal-container" id="donateModal">
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -391,11 +417,32 @@
         let currentCategory = 'سؤال ديني';
         let isLoginMode = false;
         let currentUser = JSON.parse(localStorage.getItem('nazirni_user')) || null;
+        let chatHistory = JSON.parse(localStorage.getItem('nazirni_chat_history')) || [];
 
-        document.addEventListener('DOMContentLoaded', () => { checkUserAuthStatus(); });
+        document.addEventListener('DOMContentLoaded', () => { checkUserAuthStatus(); renderHistoryList(); });
 
         function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); document.getElementById('menuBtn').style.display = 'none'; }
-        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); setTimeout(() => { document.getElementById('menuBtn').style.display = 'flex'; }, 200); }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); checkOverlayClose(); setTimeout(() => { document.getElementById('menuBtn').style.display = 'flex'; }, 200); }
+        
+        function toggleHistorySidebar() {
+            const hSidebar = document.getElementById('historySidebar');
+            hSidebar.classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show', hSidebar.classList.contains('open'));
+            renderHistoryList();
+        }
+        function closeHistorySidebar() {
+            document.getElementById('historySidebar').classList.remove('open');
+            checkOverlayClose();
+        }
+        function closeAllSidebars() {
+            closeSidebar();
+            closeHistorySidebar();
+        }
+        function checkOverlayClose() {
+            const sOpen = document.getElementById('sidebar').classList.contains('open');
+            const hOpen = document.getElementById('historySidebar').classList.contains('open');
+            if (!sOpen && !hOpen) document.getElementById('overlay').classList.remove('show');
+        }
 
         function openPage(cat) {
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
@@ -414,7 +461,7 @@
             pageTrust.classList.toggle('active', cat === 'الثقة والمراجع');
             pageDev.classList.toggle('active', cat === 'المطور والابتكار');
             pageDonate.classList.toggle('active', cat === 'دعم المنصة');
-            closeSidebar();
+            closeAllSidebars();
         }
 
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
@@ -432,6 +479,14 @@
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
+            // إظهار مؤشر الانتظار (ثلاث نقاط متحركة)
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            messages.appendChild(typingDiv);
+            messages.scrollTop = messages.scrollHeight;
+
             try {
                 const res = await fetch('/api/chat', {
                     method: 'POST',
@@ -439,22 +494,73 @@
                     body: JSON.stringify({ message: text, category: currentCategory, email: currentUser ? currentUser.email : 'guest' })
                 });
                 const data = await res.json();
+                
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
+
                 const botDiv = document.createElement('div');
                 botDiv.className = 'message bot-message';
-                botDiv.innerHTML = data.reply.replace(/\n/g, '<br>');
+                let replyText = data.reply || 'حدث خطأ في الرد.';
+                botDiv.innerHTML = replyText.replace(/\n/g, '<br>');
                 messages.appendChild(botDiv);
                 messages.scrollTop = messages.scrollHeight;
+
+                // حفظ في السجل المحلي
+                saveChatHistory(text, replyText);
             } catch (err) {
-                console.error(err);
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
+                
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.textContent = 'تعذر الاتصال بالخادم.';
+                messages.appendChild(botDiv);
             }
         }
 
-        function openAuthModal(mode = 'signup') { isLoginMode = (mode === 'login'); updateAuthModalUI(); document.getElementById('authModal').classList.add('open'); closeSidebar(); }
+        function saveChatHistory(q, r) {
+            chatHistory.unshift({ question: q, reply: r, date: new Date().toLocaleDateString('ar-EG') });
+            if (chatHistory.length > 15) chatHistory.pop();
+            localStorage.setItem('nazirni_chat_history', JSON.stringify(chatHistory));
+            renderHistoryList();
+        }
+
+        function renderHistoryList() {
+            const container = document.getElementById('historyItemsContainer');
+            if (!container) return;
+            container.innerHTML = chatHistory.length === 0 ? '<p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد محادثات محفوظة.</p>' : '';
+            chatHistory.forEach(item => {
+                container.innerHTML += `
+                    <div class="history-nav-item" onclick="loadChatToScreen('${item.question}', '${item.reply}')">
+                        <div class="history-nav-text">${item.question}</div>
+                        <div class="history-nav-date">${item.date}</div>
+                    </div>`;
+            });
+        }
+
+        function loadChatToScreen(q, r) {
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML = `
+                <div class="message user-message">${q}</div>
+                <div class="message bot-message">${r.replace(/\n/g, '<br>')}</div>
+            `;
+            closeHistorySidebar();
+        }
+
+        function clearHistory() {
+            if (confirm('هل تريد مسح السجل بالكامل؟')) {
+                chatHistory = [];
+                localStorage.removeItem('nazirni_chat_history');
+                renderHistoryList();
+            }
+        }
+
+        function openAuthModal(mode = 'signup') { isLoginMode = (mode === 'login'); updateAuthModalUI(); document.getElementById('authModal').classList.add('open'); closeAllSidebars(); }
         function openDonateModal() { document.getElementById('donateModal').classList.add('open'); }
-        function toggleHistoryModal() { document.getElementById('historyModal').classList.toggle('open'); }
+        
         async function openAdminModal() {
             document.getElementById('adminModal').classList.add('open');
-            closeSidebar();
+            closeAllSidebars();
             try {
                 const res = await fetch(`/api/admin/data?email=${currentUser.email}`);
                 const data = await res.json();
@@ -505,12 +611,33 @@
             closeModal();
         }
 
+        // التعامل مع زر تسجيل الدخول/الخروج في أسفل القائمة الجانبية اليمنى
+        function handleAuthSidebarAction() {
+            if (currentUser) {
+                if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                    currentUser = null;
+                    localStorage.removeItem('nazirni_user');
+                    checkUserAuthStatus();
+                    closeAllSidebars();
+                    alert('تم تسجيل الخروج بنجاح.');
+                }
+            } else {
+                openAuthModal('signup');
+            }
+        }
+
         function checkUserAuthStatus() {
-            const isHamza = currentUser && currentUser.email === 'hamza.dokmah391@gmail.com';
+            const isHamza = currentUser && currentUser.email === 'hamzadakma391@gmail.com';
             document.getElementById('authNavBtn').style.display = currentUser ? 'none' : 'flex';
             document.getElementById('historyNavBtn').style.display = currentUser ? 'flex' : 'none';
-            document.getElementById('sidebarAuthBtn').style.display = currentUser ? 'none' : 'flex';
             document.getElementById('adminMenuBtn').style.display = isHamza ? 'flex' : 'none';
+
+            const sidebarAuthText = document.getElementById('sidebarAuthText');
+            if (currentUser) {
+                sidebarAuthText.textContent = 'تسجيل الخروج (' + currentUser.name + ')';
+            } else {
+                sidebarAuthText.textContent = 'سجل الآن / تسجيل الدخول';
+            }
         }
 
         function showPayDetails(type) {
