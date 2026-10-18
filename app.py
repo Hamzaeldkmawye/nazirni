@@ -33,7 +33,7 @@ response = model.generate_content(
     f"{system_instruction}\n\nسؤال المستخدم: {user_message}"
 )
 
-        response = model.generate_content(user_message)
+
         reply_text = response.text if response and response.text else "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
 
         return jsonify({'reply': reply_text})
