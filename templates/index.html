@@ -6,7 +6,7 @@
     <title>منصة ناظرني الحوارية والدينية</title>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- خط أميري وجزيرة من Google Fonts لمظهر إسلامي وراقي -->
+    <!-- خط أميري وجزيرة من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
 
         body {
             min-height: 100vh;
-            min-height: 100dvh; /* لدعم الهواتف الحديثة */
+            min-height: 100dvh;
             display: flex;
             position: relative;
             overflow-x: hidden;
@@ -76,7 +76,6 @@
             100% { transform: translate(-30px, 40px) scale(0.95); }
         }
 
-        /* خلفية الآيات القرآنية الذهبية المتجاوبة */
         .quran-bg {
             position: fixed;
             top: 0;
@@ -131,7 +130,6 @@
         }
         .overlay.show { opacity: 1; pointer-events: auto; }
 
-        /* زر القائمة الجانبية (3 شرط) */
         .menu-toggle-btn {
             position: fixed;
             top: 24px;
@@ -154,7 +152,6 @@
         }
         .menu-toggle-btn:hover { transform: scale(1.06) rotate(3deg); background: var(--primary-medium); color: #ffffff; }
 
-        /* زر التبرع العلوي الثابت على الشمال */
         .donate-top-btn {
             position: fixed;
             top: 24px;
@@ -180,7 +177,6 @@
         .donate-top-btn:hover { transform: scale(1.05); box-shadow: 0 10px 28px rgba(225, 29, 72, 0.35); }
         .donate-top-btn i { color: #fecdd3; font-size: 1.1rem; }
 
-        /* القائمة الجانبية المتجاوبة */
         .sidebar {
             position: fixed;
             top: 0;
@@ -257,7 +253,6 @@
         .menu-item.active { background: linear-gradient(90deg, rgba(27, 77, 62, 0.12), rgba(46, 125, 99, 0.05)); color: var(--primary-dark); font-weight: 700; border-right: 4px solid var(--primary-medium); }
         .menu-item.active i { background: var(--primary-medium); color: white; }
 
-        /* حاوية الشات والصفحات المفصلة لجميع الأجهزة */
         .chat-container {
             position: relative;
             z-index: 10;
@@ -303,7 +298,6 @@
             scroll-behavior: smooth;
         }
 
-        /* صفحات منفصلة للقراءة فقط */
         .static-page-view {
             flex: 1;
             overflow-y: auto;
@@ -409,6 +403,7 @@
             font-size: 0.98rem;
             animation: messagePop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            word-wrap: break-word;
         }
         @keyframes messagePop {
             from { opacity: 0; transform: translateY(15px) scale(0.97); }
@@ -443,25 +438,20 @@
         .typing-dot:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* ========================================================= */
-        /* قواعد التجاوب والشاشات المختلفة (Media Queries) */
-        /* ========================================================= */
-
-        /* 1. التابلت والشاشات المتوسطة (769px - 1024px) */
+        /* Media Queries للموبايل والشاشات الصغيرة */
         @media (max-width: 1024px) {
             .chat-container { max-width: 100%; padding: 14px 16px; }
             .quran-bg { gap: 15px; padding: 25px; }
             .quran-item { font-size: 1.3rem; }
         }
 
-        /* 2. الهواتف الذكية (أقل من 768px) */
         @media (max-width: 768px) {
             .menu-toggle-btn { top: 16px; right: 16px; width: 42px; height: 42px; font-size: 18px; border-radius: 12px; }
             .donate-top-btn { top: 16px; left: 16px; height: 42px; padding: 0 14px; border-radius: 12px; }
-            .donate-top-btn span { display: none; } /* إخفاء النص وإظهار القلب فقط لتوفير المساحة */
+            .donate-top-btn span { display: none; }
             
             .chat-container { padding: 8px 10px; }
-            .chat-header { padding: 12px 16px; margin-top: 50px; margin-bottom: 8px; border-radius: 16px; }
+            .chat-header { padding: 12px 16px; margin-top: 55px; margin-bottom: 8px; border-radius: 16px; }
             .chat-header h1 { font-size: 1.5rem; }
             .chat-header p { font-size: 0.8rem; }
 
@@ -482,9 +472,8 @@
             .dev-whatsapp-btn { padding: 10px 16px; font-size: 0.9rem; width: 100%; justify-content: center; }
         }
 
-        /* 3. الهواتف الصغرى جداً (أقل من 480px) */
         @media (max-width: 480px) {
-            .quran-bg { grid-template-columns: 1fr; } /* عمود واحد للآيات خلف الشاشة */
+            .quran-bg { grid-template-columns: 1fr; }
             .quran-item { font-size: 1rem; }
         }
     </style>
@@ -495,7 +484,6 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <!-- خلفية الآيات القرآنية الذهبية -->
     <div class="quran-bg">
         <div class="quran-item">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
         <div class="quran-item">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
@@ -516,18 +504,15 @@
 
     <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-    <!-- زر القائمة الجانبية (3 شرط) -->
     <button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <!-- زر التبرع العلوي الثابت على الشمال -->
     <button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
         <i class="fa-solid fa-heart"></i>
         <span>تبرع</span>
     </button>
 
-    <!-- القائمة الجانبية -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h3><i class="fa-solid fa-book-quran"></i> منصة ناظرني</h3>
@@ -581,14 +566,12 @@
         </header>
 
         <div class="main-view-area">
-            <!-- 1. واجهة الشات التفاعلية -->
             <div class="chat-messages" id="chatMessages">
                 <div class="message bot-message">
                     أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">سؤال ديني</b>. اطرح سؤالك أو استفسارك وسنرد عليك بالاستناد إلى الأدلة والمصادر المعتمدة.
                 </div>
             </div>
 
-            <!-- 2. صفحة الثقة والمراجع -->
             <div class="static-page-view" id="page-trust">
                 <h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
                 <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى.</p>
@@ -619,7 +602,6 @@
                 </div>
             </div>
 
-            <!-- 3. صفحة المطور والابتكار -->
             <div class="static-page-view" id="page-developer">
                 <h2><i class="fa-solid fa-user-gear" style="color: var(--primary-medium);"></i> المطور ومبتكر الفكرة</h2>
                 <div class="dev-info-box">
@@ -634,7 +616,6 @@
                 </div>
             </div>
 
-            <!-- 4. صفحة دعم المنصة والتبرع -->
             <div class="static-page-view" id="page-donate">
                 <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير منصة ناظرني</h2>
                 <div class="donate-box">
@@ -648,7 +629,6 @@
             </div>
         </div>
 
-        <!-- حقل إدخال النصوص -->
         <div class="chat-input-area" id="chatInputArea">
             <input type="text" id="userInput" placeholder="اكتب سؤالك أو استفسارك هنا..." onkeypress="handleKeyPress(event)">
             <button onclick="sendMessage()">
@@ -674,8 +654,8 @@
 
         function openPage(categoryName) {
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            if(event && event.currentTarget && event.currentTarget.classList) {
-                event.currentTarget.classList.add('active');
+            if(window.event && window.event.currentTarget && window.event.currentTarget.classList) {
+                window.event.currentTarget.classList.add('active');
             }
             
             currentCategory = categoryName;
@@ -703,10 +683,8 @@
                 chatMessages.style.display = 'flex';
                 chatInputArea.style.display = 'flex';
 
-                // مسح كافة الرسائل السابقة تماماً
                 chatMessages.innerHTML = '';
 
-                // إنشاء رسالة ترحيب مخصصة ونظيفة للقسم الجديد
                 const botDiv = document.createElement('div');
                 botDiv.className = 'message bot-message';
                 botDiv.innerHTML = `تم الانتقال إلى قسم <b>${categoryName}</b>.<br>تفضل بطرح سؤالك أو استفسارك وسنرد عليك وفق منهجية هذا القسم.`;
@@ -722,80 +700,65 @@
             if (e.key === 'Enter') sendMessage();
         }
 
-       async function sendMessage() {
-    const input = document.getElementById('userInput');
-    const messages = document.getElementById('chatMessages');
-    const text = input.value.trim();
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const messages = document.getElementById('chatMessages');
+            const text = input.value.trim();
 
-    if (!text) return;
+            if (!text) return;
 
-    // إضافة رسالة المستخدم
-    const userDiv = document.createElement('div');
-    userDiv.className = 'message user-message';
-    userDiv.textContent = text;
-    messages.appendChild(userDiv);
+            // إظهار رسالة المستخدم
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user-message';
+            userDiv.textContent = text;
+            messages.appendChild(userDiv);
 
-    input.value = '';
-    messages.scrollTop = messages.scrollHeight;
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
 
-    // إظهار مؤشر الكتابة أثناء بحث الذكاء الاصطناعي في الـ 50 كتاباً
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'message bot-message';
-    typingDiv.id = 'typingIndicator';
-    typingDiv.innerHTML = `
-        <div class="typing-indicator">
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-            <div class="typing-dot"></div>
-        </div>
-    `;
-    messages.appendChild(typingDiv);
-    messages.scrollTop = messages.scrollHeight;
+            // إظهار مؤشر الكتابة
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot-message typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            messages.appendChild(typingDiv);
+            messages.scrollTop = messages.scrollHeight;
 
-    try {
-        // إرسال السؤال والقسم الحالي إلى سيرفر البايثون المحلي
-        const response = await fetch('http://127.0.0.1:5000/ask', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                question: text,
-                category: currentCategory
-            })
-        });
+            try {
+                // إرسال الطلب لـ Backend
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text, category: currentCategory })
+                });
 
-        const data = await response.json();
-        
-        // إزالة مؤشر الكتابة
-        const indicator = document.getElementById('typingIndicator');
-        if (indicator) indicator.remove();
+                const data = await response.json();
+                
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
 
-        // عرض إجابة الذكاء الاصطناعي المستخرجة من الكتب
-        const botDiv = document.createElement('div');
-        botDiv.className = 'message bot-message';
-        // استبدال الأسطر الجديدة بـ <br> لتنسيق الإجابة بشكل نظيف
-        botDiv.innerHTML = data.answer.replace(/\n/g, '<br>');
-        
-        messages.appendChild(botDiv);
-        messages.scrollTop = messages.scrollHeight;
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                
+                if (data && data.reply) {
+                    botDiv.innerHTML = data.reply.replace(/\n/g, '<br>');
+                } else {
+                    botDiv.textContent = 'حدث خطأ في استلام الرد، يرجى المحاولة مرة أخرى.';
+                }
 
-    } catch (error) {
-        const indicator = document.getElementById('typingIndicator');
-        if (indicator) indicator.remove();
+                messages.appendChild(botDiv);
+                messages.scrollTop = messages.scrollHeight;
 
-        const botDiv = document.createElement('div');
-        botDiv.className = 'message bot-message';
-        botDiv.innerHTML = 'عذراً، حدث خطأ في الاتصال بالسيرفر المحلي. تأكد أن ملف <b>app.py</b> يعمل بنجاح.';
-        messages.appendChild(botDiv);
-        messages.scrollTop = messages.scrollHeight;
-    }
-}
+            } catch (error) {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) indicator.remove();
 
-        function escapeHtml(string) {
-            return String(string).replace(/[&<>"']/g, function (s) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s];
-            });
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.textContent = 'تعذر الاتصال بالخادم، يرجى التأكد من اتصال الإنترنت وإعادة المحاولة.';
+                messages.appendChild(botDiv);
+                messages.scrollTop = messages.scrollHeight;
+            }
         }
     </script>
 </body>
