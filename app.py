@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 import os
-from google import genai
-from google.genai import types
+import requests
 
 app = Flask(__name__)
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(api_key=API_KEY) if API_KEY else None
 
 
 @app.route("/")
@@ -27,7 +25,7 @@ def chat():
                 "reply": "من فضلك اكتب سؤالك الأول."
             }), 400
 
-        if not client:
+        if not API_KEY:
             app.logger.error("GEMINI_API_KEY is not configured")
             return jsonify({
                 "reply": "مفتاح الذكاء الاصطناعي غير مُعد على السيرفر. راجع إعدادات Vercel."
@@ -42,21 +40,39 @@ def chat():
             "إذا لم تكن متأكدًا من الإجابة، وضّح ذلك للمستخدم."
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=user_message,
-            config=types.GenerateContentConfig(
-                system_instruction=system_instruction
-            )
-        )
+        # رابط الاتصال المباشر بـ Gemini REST API
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
 
-        reply_text = response.text
+        payload = {
+            "system_instruction": {
+                "parts": [{"text": system_instruction}]
+            },
+            "contents": [
+                {
+                    "parts": [{"text": user_message}]
+                }
+            ]
+        }
+
+        response = requests.post(url, json=payload, timeout=30)
+        res_data = response.json()
+
+        if response.status_code != 200:
+            error_msg = res_data.get("error", {}).get("message", "حدث خطأ غير معروف")
+            app.logger.error(f"Gemini API Error: {res_data}")
+            return jsonify({
+                "reply": f"خطأ من جوجل: {error_msg}"
+            }), response.status_code
+
+        # استخراج النص من الاستجابة
+        candidates = res_data.get("candidates", [])
+        if candidates:
+            parts = candidates[0].get("content", {}).get("parts", [])
+            if parts:
+                reply_text = parts[0].get("text", "")
 
         if not reply_text:
-            reply_text = (
-                "لم أتمكن من إنشاء إجابة واضحة. "
-                "جرّب صياغة سؤالك مرة أخرى."
-            )
+            reply_text = "لم أتمكن من إنشاء إجابة واضحة. جرّب صياغة سؤالك مرة أخرى."
 
         return jsonify({"reply": reply_text}), 200
 
