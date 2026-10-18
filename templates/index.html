@@ -70,7 +70,7 @@
         }
         .sidebar.open { right: 0; }
 
-        /* القائمة الجانبية اليسرى (السجل مثل جيمناي) */
+        /* القائمة الجانبية اليسرى (السجل) */
         .history-sidebar {
             position: fixed; top: 0; left: -360px; width: 340px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(20px); box-shadow: 10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
@@ -122,7 +122,6 @@
         .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
         .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
 
-        /* مؤشر الانتظار (ثلاث نقاط متحركة) */
         .typing-dots { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; }
         .typing-dots span {
             width: 8px; height: 8px; background-color: var(--primary-medium); border-radius: 50%;
@@ -162,21 +161,14 @@
         .admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* سجل المحادثات في القائمة اليسرى */
         .history-items-container { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding: 4px; }
         .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
         .history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
         .history-nav-text { font-size: 0.88rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .history-nav-date { font-size: 0.72rem; color: #94a3b8; margin-top: 4px; }
 
-        .payment-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .pay-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 14px; cursor: pointer; }
-        .pay-icon { font-size: 1.5rem; }
-        .pay-icon.vcash { color: #e11d48; }
-        .pay-icon.instapay { color: #2563eb; }
-        .pay-details-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-top: 10px; text-align: center; }
-        .copy-box { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px dashed #cbd5e1; padding: 8px 12px; border-radius: 10px; margin-top: 8px; }
-        .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+        .copy-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px 16px; border-radius: 12px; margin-top: 12px; }
+        .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight:700; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -215,24 +207,24 @@
             <span>سجل الآن</span>
         </button>
 
-        <!-- زر السجل العلوي (يفتح قائمة السجل من اليسار مثل جيمناي) -->
+        <!-- زر السجل العلوي -->
         <button class="history-top-btn" id="historyNavBtn" onclick="toggleHistorySidebar()" style="display: none;" aria-label="سجل المحادثات">
             <i class="fa-solid fa-book-open"></i>
             <span>السجل</span>
         </button>
     </div>
 
-    <!-- القائمة الجانبية اليسرى (السجل مثل جيمناي) -->
+    <!-- القائمة الجانبية اليسرى (السجل الكامل) -->
     <aside class="history-sidebar" id="historySidebar">
         <div class="sidebar-header">
             <h3><i class="fa-solid fa-book-bookmark"></i> سجل المحادثات</h3>
             <button class="close-btn" onclick="closeHistorySidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="sidebar-menu">
-            <div class="menu-section-title">آخر المحادثات المحفوظة</div>
+            <div class="menu-section-title">الأقسام المحفوظة في الشات</div>
             <div class="history-items-container" id="historyItemsContainer"></div>
             <button class="clear-history-btn" onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 10px; border-radius: 10px; border:none; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer;">
-                <i class="fa-solid fa-trash"></i> مسح السجل بالكامل
+                <i class="fa-solid fa-trash"></i> مسح جميع الشاتات
             </button>
         </div>
     </aside>
@@ -245,13 +237,13 @@
         </div>
         <nav class="sidebar-menu">
             <div class="menu-section-title">أقسام الحوار والأسئلة</div>
-            <button class="menu-item active" onclick="openPage('سؤال ديني')"><i class="fa-solid fa-circle-question"></i> سؤال ديني</button>
+            <button class="menu-item active" onclick="openPage('أنا مسلم')"><i class="fa-solid fa-moon"></i> أنا مسلم</button>
             <button class="menu-item" onclick="openPage('مناظرة')"><i class="fa-solid fa-comments"></i> مناظرة</button>
-            <button class="menu-item" onclick="openPage('لو كنت مسيحياً')"><i class="fa-solid fa-cross"></i> لو كنت مسيحياً</button>
-            <button class="menu-item" onclick="openPage('لو كنت يهودياً')"><i class="fa-solid fa-star-of-david"></i> لو كنت يهودياً</button>
-            <button class="menu-item" onclick="openPage('لو كنت ملحداً')"><i class="fa-solid fa-atom"></i> لو كنت ملحداً</button>
-            <button class="menu-item" onclick="openPage('لو كنت شيعياً')"><i class="fa-solid fa-kaaba"></i> لو كنت شيعياً</button>
-            <button class="menu-item" onclick="openPage('ديانة أخرى')"><i class="fa-solid fa-globe"></i> ديانة أخرى</button>
+            <button class="menu-item" onclick="openPage('أنا مسيحي')"><i class="fa-solid fa-cross"></i> أنا مسيحي</button>
+            <button class="menu-item" onclick="openPage('أنا يهودي')"><i class="fa-solid fa-star-of-david"></i> أنا يهودي</button>
+            <button class="menu-item" onclick="openPage('أنا ملحد')"><i class="fa-solid fa-atom"></i> أنا ملحد</button>
+            <button class="menu-item" onclick="openPage('أنا شيعي')"><i class="fa-solid fa-kaaba"></i> أنا شيعي</button>
+            <button class="menu-item" onclick="openPage('أنا من ديانة أخرى')"><i class="fa-solid fa-globe"></i> أنا من ديانة أخرى</button>
 
             <div class="menu-divider"></div>
             <div class="menu-section-title">عن المنصة والثقة</div>
@@ -265,7 +257,6 @@
             </button>
             
             <div class="menu-divider"></div>
-            <!-- زر تسجيل الدخول أو تسجيل الخروج في أسفل القائمة اليمنى -->
             <button class="menu-item auth-sidebar-btn" id="sidebarAuthBtn" onclick="handleAuthSidebarAction()">
                 <i class="fa-solid fa-user-plus"></i> <span id="sidebarAuthText">سجل الآن / تسجيل الدخول</span>
             </button>
@@ -275,21 +266,19 @@
     <main class="chat-container">
         <header class="chat-header">
             <h1><i class="fa-solid fa-kaaba"></i> ناظرني</h1>
-            <p id="currentCategoryText">القسم الحالي: سؤال ديني</p>
+            <p id="currentCategoryText">القسم الحالي: أنا مسلم</p>
         </header>
 
         <div class="main-view-area">
             <div class="chat-messages" id="chatMessages">
-                <div class="message bot-message">
-                    أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">سؤال ديني</b>.
-                </div>
+                <!-- سيتم تحميل رسائل القسم المحدد تلقائياً هنا -->
             </div>
 
             <div class="static-page-view" id="page-trust">
                 <h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
-                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى[cite: 5].</p>
+                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى.</p>
 
-                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم[cite: 5].</p>
+                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم.</p>
 
                 <div class="trust-detailed-box">
                     <h3><i class="fa-solid fa-books"></i> قائمة الكتب والمصادر المرجعية المعتمدة في النظام:</h3>
@@ -321,7 +310,7 @@
                     <h3 style="color: var(--primary-dark); font-size: 1.8rem; margin-bottom: 10px;">« ناظرني »</h3>
                     <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium); margin-top: 10px;">👤 حمزة الدكماوي</p>
                     <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px; max-width: 500px; margin-left: auto; margin-right: auto;">مبتكر ومطور الفكرة، ومهندس البرمجيات المسؤول عن بناء وتصميم هذه المنصة الحوارية والدينية الذكية.</p>
-                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تواصل عبر واتساب (01014151760)</a>
+                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تواصل عبر واتساب</a>
                 </div>
             </div>
 
@@ -329,7 +318,7 @@
                 <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير منصة ناظرني</h2>
                 <div class="donate-box">
                     <p style="font-size: 1.05rem; color: #334155; margin-bottom: 10px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي لتظل المنصة مجانية بالكامل ومتاحة للجميع دون إعلانات مزعجة.</p>
-                    <button class="donate-btn-placeholder" onclick="openDonateModal()"><i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور</button>
+                    <button class="donate-btn-placeholder" onclick="openDonateModal()"><i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور عبر InstaPay</button>
                 </div>
             </div>
         </div>
@@ -371,7 +360,8 @@
 
             <div class="auth-divider"><span>أو</span></div>
             <div class="google-btn-wrapper">
-                <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
+                <!-- Client ID المحدث الخاص بجوجل -->
+                <div id="g_id_onload" data-client_id="92014977268-38c4p071gdnjfi674mddboqttq8antrc.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
                 <div class="g_id_signin" data-type="standard"></div>
             </div>
 
@@ -397,29 +387,48 @@
         </div>
     </div>
 
-    <!-- نافذة التبرع -->
+    <!-- نافذة التبرع حصرياً عبر InstaPay -->
     <div class="modal-container" id="donateModal">
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-header"><h3><i class="fa-solid fa-heart" style="color: #e11d48;"></i> دعم المنصة</h3></div>
-            <div class="payment-options">
-                <div class="pay-option" onclick="showPayDetails('vodafone')"><i class="fa-solid fa-mobile-screen-button pay-icon vcash"></i><div><strong>فودافون كاش</strong><p>01014151760</p></div></div>
-                <div class="pay-option" onclick="showPayDetails('instapay')"><i class="fa-solid fa-bolt pay-icon instapay"></i><div><strong>إنستا باي</strong><p>hamza@instapay</p></div></div>
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bolt" style="color: #2563eb;"></i> الدعم والتبرع عبر InstaPay</h3>
+                <p style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">اختر المبلغ وانسخ عنوان الدفع اللحظي</p>
             </div>
-            <div class="pay-details-box" id="payDetailsBox" style="display: none;">
-                <div id="vodafoneDetails" style="display: none;"><div class="copy-box"><span>01014151760</span><button onclick="copyText('01014151760')">نسخ</button></div></div>
-                <div id="instapayDetails" style="display: none;"><div class="copy-box"><span>hamza@instapay</span><button onclick="copyText('hamza@instapay')">نسخ</button></div></div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="display:block; font-size: 0.85rem; font-weight:700; color:#334155; margin-bottom: 8px;">اختر أو اكتب مبلغ التبرع (جنيه مصري):</label>
+                <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                    <button type="button" onclick="setDonateAmount(50)" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-weight:700; cursor:pointer;">50 ج.م</button>
+                    <button type="button" onclick="setDonateAmount(100)" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-weight:700; cursor:pointer;">100 ج.م</button>
+                    <button type="button" onclick="setDonateAmount(250)" style="flex:1; padding:8px; border:1px solid #cbd5e1; border-radius:8px; background:#f8fafc; font-weight:700; cursor:pointer;">250 ج.م</button>
+                </div>
+                <input type="number" id="customDonateAmount" value="100" placeholder="أو اكتب مبلغ آخر..." style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:10px; font-size:0.95rem; outline:none;" oninput="updatePayLinks()">
+            </div>
+
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; text-align: center;">
+                <p style="font-weight:700; color:var(--primary-dark);">عنوان الدفع اللحظي (IPA) الخاص بنا:</p>
+                <div class="copy-box">
+                    <span id="instaPayAddressText" style="font-weight:700; color:#2563eb;">hamzaeldkmawye@instapay</span>
+                    <button onclick="copyText('hamzaeldkmawye@instapay')">نسخ المعرف</button>
+                </div>
+                <p style="font-size: 0.8rem; color: #64748b; margin-top: 10px;">قم بفتح تطبيق <b>InstaPay</b> واشترِ/حول بمبلغ <b id="instaAmountDisplay" style="color:var(--primary-medium);">100</b> ج.م إلى هذا المعرف.</p>
             </div>
         </div>
     </div>
 
     <script>
-        let currentCategory = 'سؤال ديني';
+        let currentCategory = 'أنا مسلم';
         let isLoginMode = false;
         let currentUser = JSON.parse(localStorage.getItem('nazirni_user')) || null;
-        let chatHistory = JSON.parse(localStorage.getItem('nazirni_chat_history')) || [];
+        
+        // سجل المحادثات الكامل مقسم بالأقسام
+        let categoryChats = JSON.parse(localStorage.getItem('nazirni_category_chats')) || {};
 
-        document.addEventListener('DOMContentLoaded', () => { checkUserAuthStatus(); renderHistoryList(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            checkUserAuthStatus(); 
+            loadCategoryChat(currentCategory);
+        });
 
         function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); document.getElementById('menuBtn').style.display = 'none'; }
         function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); checkOverlayClose(); setTimeout(() => { document.getElementById('menuBtn').style.display = 'flex'; }, 200); }
@@ -456,15 +465,43 @@
             const pageDev = document.getElementById('page-developer');
             const pageDonate = document.getElementById('page-donate');
 
-            chatMessages.style.display = (['الثقة والمراجع', 'المطور والابتكار', 'دعم المنصة'].includes(cat)) ? 'none' : 'flex';
-            chatInputArea.style.display = chatMessages.style.display;
+            const isChatSection = !['الثقة والمراجع', 'المطور والابتكار', 'دعم المنصة'].includes(cat);
+
+            chatMessages.style.display = isChatSection ? 'flex' : 'none';
+            chatInputArea.style.display = isChatSection ? 'flex' : 'none';
             pageTrust.classList.toggle('active', cat === 'الثقة والمراجع');
             pageDev.classList.toggle('active', cat === 'المطور والابتكار');
             pageDonate.classList.toggle('active', cat === 'دعم المنصة');
+
+            if (isChatSection) {
+                loadCategoryChat(cat);
+            }
+
             closeAllSidebars();
         }
 
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+        function loadCategoryChat(cat) {
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML = '';
+
+            const defaultGreeting = `<div class="message bot-message">أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">${cat}</b>.</div>`;
+
+            if (categoryChats[cat] && categoryChats[cat].length > 0) {
+                categoryChats[cat].forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = `message ${msg.sender}-message`;
+                    msgDiv.innerHTML = msg.text.replace(/\n/g, '<br>');
+                    messages.appendChild(msgDiv);
+                });
+            } else {
+                messages.innerHTML = defaultGreeting;
+                categoryChats[cat] = [{ sender: 'bot', text: `أهلاً بك في منصة "ناظرني" للحوار والدراسات الدينية. أنت الآن في قسم ${cat}.` }];
+                saveChatsToStorage();
+            }
+            messages.scrollTop = messages.scrollHeight;
+        }
 
         async function sendMessage() {
             const input = document.getElementById('userInput');
@@ -472,14 +509,20 @@
             const text = input.value.trim();
             if (!text) return;
 
+            // إضافة رسالة المستخدم
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-message';
             userDiv.textContent = text;
             messages.appendChild(userDiv);
+            
+            // إضافة الرسالة في السجل
+            if (!categoryChats[currentCategory]) categoryChats[currentCategory] = [];
+            categoryChats[currentCategory].push({ sender: 'user', text: text });
+
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
-            // إظهار مؤشر الانتظار (ثلاث نقاط متحركة)
+            // مؤشر الانتظار
             const typingDiv = document.createElement('div');
             typingDiv.className = 'message bot-message';
             typingDiv.id = 'typingIndicator';
@@ -505,8 +548,10 @@
                 messages.appendChild(botDiv);
                 messages.scrollTop = messages.scrollHeight;
 
-                // حفظ في السجل المحلي
-                saveChatHistory(text, replyText);
+                // إضافة رد البوت للسجل وحفظه
+                categoryChats[currentCategory].push({ sender: 'bot', text: replyText });
+                saveChatsToStorage();
+
             } catch (err) {
                 const indicator = document.getElementById('typingIndicator');
                 if (indicator) indicator.remove();
@@ -518,41 +563,54 @@
             }
         }
 
-        function saveChatHistory(q, r) {
-            chatHistory.unshift({ question: q, reply: r, date: new Date().toLocaleDateString('ar-EG') });
-            if (chatHistory.length > 15) chatHistory.pop();
-            localStorage.setItem('nazirni_chat_history', JSON.stringify(chatHistory));
+        function saveChatsToStorage() {
+            localStorage.setItem('nazirni_category_chats', JSON.stringify(categoryChats));
             renderHistoryList();
         }
 
         function renderHistoryList() {
             const container = document.getElementById('historyItemsContainer');
             if (!container) return;
-            container.innerHTML = chatHistory.length === 0 ? '<p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد محادثات محفوظة.</p>' : '';
-            chatHistory.forEach(item => {
-                container.innerHTML += `
-                    <div class="history-nav-item" onclick="loadChatToScreen('${item.question}', '${item.reply}')">
-                        <div class="history-nav-text">${item.question}</div>
-                        <div class="history-nav-date">${item.date}</div>
-                    </div>`;
+            container.innerHTML = '';
+
+            const keys = Object.keys(categoryChats);
+            if (keys.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد شاتات محفوظة بعد.</p>';
+                return;
+            }
+
+            keys.forEach(cat => {
+                const chatArr = categoryChats[cat];
+                if (chatArr && chatArr.length > 1) {
+                    const lastUserMsg = chatArr.filter(m => m.sender === 'user').pop();
+                    const subText = lastUserMsg ? lastUserMsg.text : 'محادثة سابقة';
+
+                    container.innerHTML += `
+                        <div class="history-nav-item" onclick="openPage('${cat}')">
+                            <div style="font-weight:700; color:var(--primary-dark); font-size:0.9rem;"><i class="fa-solid fa-comments"></i> قسم: ${cat}</div>
+                            <div class="history-nav-text" style="color:#64748b; margin-top:4px;">آخر رسالة: ${subText}</div>
+                        </div>`;
+                }
             });
         }
 
-        function loadChatToScreen(q, r) {
-            const messages = document.getElementById('chatMessages');
-            messages.innerHTML = `
-                <div class="message user-message">${q}</div>
-                <div class="message bot-message">${r.replace(/\n/g, '<br>')}</div>
-            `;
-            closeHistorySidebar();
-        }
-
         function clearHistory() {
-            if (confirm('هل تريد مسح السجل بالكامل؟')) {
-                chatHistory = [];
-                localStorage.removeItem('nazirni_chat_history');
+            if (confirm('هل تريد مسح كافة الشاتات المحفوظة بالكامل؟')) {
+                categoryChats = {};
+                localStorage.removeItem('nazirni_category_chats');
+                loadCategoryChat(currentCategory);
                 renderHistoryList();
             }
+        }
+
+        function setDonateAmount(amt) {
+            document.getElementById('customDonateAmount').value = amt;
+            updatePayLinks();
+        }
+
+        function updatePayLinks() {
+            const amt = document.getElementById('customDonateAmount').value || 100;
+            document.getElementById('instaAmountDisplay').textContent = amt;
         }
 
         function openAuthModal(mode = 'signup') { isLoginMode = (mode === 'login'); updateAuthModalUI(); document.getElementById('authModal').classList.add('open'); closeAllSidebars(); }
@@ -604,6 +662,12 @@
             } catch(err) { alert('حدث خطأ في الاتصال بالسيرفر'); }
         }
 
+        function handleGoogleLogin(response) {
+            if (response.credential) {
+                saveUserAndLogin({ name: 'مستخدم جوجل', email: 'google@user.com' });
+            }
+        }
+
         function saveUserAndLogin(user) {
             currentUser = user;
             localStorage.setItem('nazirni_user', JSON.stringify(user));
@@ -611,7 +675,6 @@
             closeModal();
         }
 
-        // التعامل مع زر تسجيل الدخول/الخروج في أسفل القائمة الجانبية اليمنى
         function handleAuthSidebarAction() {
             if (currentUser) {
                 if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
@@ -640,11 +703,6 @@
             }
         }
 
-        function showPayDetails(type) {
-            document.getElementById('payDetailsBox').style.display = 'block';
-            document.getElementById('vodafoneDetails').style.display = (type === 'vodafone') ? 'block' : 'none';
-            document.getElementById('instapayDetails').style.display = (type === 'instapay') ? 'block' : 'none';
-        }
         function copyText(text) { navigator.clipboard.writeText(text); alert('تم النسخ: ' + text); }
     </script>
 </body>
