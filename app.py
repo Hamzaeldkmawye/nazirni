@@ -6,56 +6,52 @@ import sqlite3
 app = Flask(__name__)
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
-DB_FILE = 'database.db'
 
-# تهيئة قاعدة البيانات والجداول المطلوبة
+# الحل هنا: استخدام مجلد tmp المؤقت المسموح بالكتابة عليه في Vercel
+DB_FILE = os.path.join('/tmp', 'database.db')
+
 def init_db():
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-    
-    # جدول المستخدمين والحسابات
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT UNIQUE,
-            password TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # جدول سجل المحادثات والأسئلة
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS chats (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT,
-            category TEXT,
-            question TEXT,
-            reply TEXT,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    # جدول لتسجيل الزيارات والإحصائيات
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS visits (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ip TEXT,
-            visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                email TEXT UNIQUE,
+                password TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS chats (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT,
+                category TEXT,
+                question TEXT,
+                reply TEXT,
+                date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS visits (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip TEXT,
+                visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        app.logger.error(f"DB Init Error: {e}")
 
 init_db()
 
 
 @app.route("/")
 def index():
-    # تسجيل زيارة جديدة تلقائياً عند فتح الموقع
-    client_ip = request.remote_addr or "unknown"
     try:
+        client_ip = request.remote_addr or "unknown"
         conn = sqlite3.connect(DB_FILE)
         cursor = conn.cursor()
         cursor.execute('INSERT INTO visits (ip) VALUES (?)', (client_ip,))
@@ -67,12 +63,11 @@ def index():
     return render_template("index.html")
 
 
-# مسار التسجيل وتسجيل الدخول
 @app.route("/api/auth", methods=["POST"])
 def handle_auth():
     try:
         data = request.get_json(silent=True) or {}
-        action = data.get("action")  # 'signup' or 'login'
+        action = data.get("action")
         email = data.get("email", "").strip().lower()
         password = data.get("password", "").strip()
         name = data.get("name", "").strip()
@@ -110,12 +105,11 @@ def handle_auth():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-# مسار لوحة المدير (يعرض الإحصائيات والمستخدمين والبيانات لحمزة فقط)
 @app.route("/api/admin/data", methods=["GET"])
 def admin_data():
     email = request.args.get("email", "").strip().lower()
     if email != "hamza.dokmah391@gmail.com":
-        return jsonify({"success": False, "message": "غير مسموح بالدخول، هذه لوحة خاصة بالمدير!"}), 403
+        return jsonify({"success": False, "message": "غير مسموح بالدخول!"}), 403
 
     try:
         conn = sqlite3.connect(DB_FILE)
@@ -150,21 +144,15 @@ def admin_data():
 def chat():
     try:
         data = request.get_json(silent=True) or {}
-
         user_message = data.get("message", "").strip()
         category = data.get("category", "سؤال ديني")
         user_email = data.get("email", "guest@nazirni.com")
 
         if not user_message:
-            return jsonify({
-                "reply": "من فضلك اكتب سؤالك الأول."
-            }), 400
+            return jsonify({"reply": "من فضلك اكتب سؤالك الأول."}), 400
 
         if not API_KEY:
-            app.logger.error("GEMINI_API_KEY is not configured")
-            return jsonify({
-                "reply": "مفتاح الذكاء الاصطناعي غير مُعد على السيرفر. راجع إعدادات Vercel."
-            }), 500
+            return jsonify({"reply": "مفتاح الذكاء الاصطناعي غير مُعد على السيرفر."}), 500
 
         system_instruction = (
             "أنت مساعد ذكي في منصة ناظرني للحوار والدراسات الدينية. "
@@ -175,14 +163,8 @@ def chat():
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 
         payload = {
-            "system_instruction": {
-                "parts": [{"text": system_instruction}]
-            },
-            "contents": [
-                {
-                    "parts": [{"text": user_message}]
-                }
-            ]
+            "system_instruction": {"parts": [{"text": system_instruction}]},
+            "contents": [{"parts": [{"text": user_message}]}]
         }
 
         response = requests.post(url, json=payload, timeout=30)
@@ -190,10 +172,7 @@ def chat():
 
         if response.status_code != 200:
             error_msg = res_data.get("error", {}).get("message", "حدث خطأ غير معروف")
-            app.logger.error(f"Gemini API Error: {res_data}")
-            return jsonify({
-                "reply": f"خطأ من جوجل: {error_msg}"
-            }), response.status_code
+            return jsonify({"reply": f"خطأ من جوجل: {error_msg}"}), response.status_code
 
         candidates = res_data.get("candidates", [])
         reply_text = ""
@@ -205,7 +184,6 @@ def chat():
         if not reply_text:
             reply_text = "لم أتمكن من إنشاء إجابة واضحة. جرّب صياغة سؤالك مرة أخرى."
 
-        # حفظ المحادثة في قاعدة البيانات (SQLite) تلقائياً
         try:
             conn = sqlite3.connect(DB_FILE)
             cursor = conn.cursor()
@@ -216,15 +194,13 @@ def chat():
             conn.commit()
             conn.close()
         except Exception as db_err:
-            app.logger.error(f"Failed to save chat to DB: {db_err}")
+            app.logger.error(f"Failed to save chat: {db_err}")
 
         return jsonify({"reply": reply_text}), 200
 
     except Exception as e:
         app.logger.exception("Gemini API error")
-        return jsonify({
-            "reply": f"نوع الخطأ: {type(e).__name__} - {str(e)}"
-        }), 500
+        return jsonify({"reply": f"خطأ: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
