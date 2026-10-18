@@ -706,6 +706,7 @@
 
             if (!text) return;
 
+            // إظهار رسالة المستخدم
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-message';
             userDiv.textContent = text;
@@ -714,6 +715,7 @@
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
+            // إظهار مؤشر الكتابة
             const typingDiv = document.createElement('div');
             typingDiv.className = 'message bot-message typing-indicator';
             typingDiv.id = 'typingIndicator';
@@ -722,6 +724,7 @@
             messages.scrollTop = messages.scrollHeight;
 
             try {
+                // إرسال الطلب لـ API الخادم
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
