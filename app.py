@@ -59,10 +59,10 @@ def chat():
 
         return jsonify({"reply": reply_text})
 
-    except Exception:
-        app.logger.exception("Error while processing chat request")
+       except Exception as e:
+        app.logger.exception("Gemini API error")
         return jsonify({
-            "reply": "حصل خطأ أثناء الاتصال بالذكاء الاصطناعي. راجع سجلات Vercel لمعرفة السبب."
+            "reply": f"نوع الخطأ: {type(e).__name__} - {str(e)}"
         }), 500
 
 
