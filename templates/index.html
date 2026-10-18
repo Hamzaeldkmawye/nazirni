@@ -1,136 +1,253 @@
-<!-- 
-  ====================================================
-  Project Name: Nazirni Platform (منصة ناظرني)
-  Developer & Owner: Hamza Mohamed Eldkmawye
-  Date: 2026
-  All Rights Reserved (جميع الحقوق محفوظة)
-  ====================================================
+<!--
+Project Name: Nazirni Platform (منصة ناظرني)
+Developer & Owner: Hamza Mohamed Eldkmawye
+Date: 2026
+All Rights Reserved (جميع الحقوق محفوظة)
 -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta name="google-site-verification" content="6m-h0dkfegHosTSwi_ayfFfU3yq7iJREC-rbnjzOIQA" />
-    <!-- الأكواد الخاصة بمحركات البحث (SEO) -->
+<meta name="google-site-verification" content="6m-h0dkfegHosTSwi_ayfFfU3yq7iJREC-rbnjzOIQA" />
+<!-- الأكواد الخاصة بمحركات البحث (SEO) -->
 <meta name="description" content="منصة ناظرني الحوارية والدينية - منصة متخصصة للحوار والإجابة عن الأسئلة العقائدية والدينية باحترافية وبأدلة علمية.">
 <meta name="keywords" content="ناظرني, حوار أديان, مناظرة, أسئلة اسلامية, رد الشبهات, حمزة الدكماوي">
 <meta name="author" content="حمزة الدكماوي">
-
 <!-- أرباب التواصل الاجتماعي (Open Graph / Facebook / WhatsApp) -->
 <meta property="og:title" content="منصة ناظرني الحوارية والدينية">
 <meta property="og:description" content="منصة حوارية متخصصة للإجابة على الاستفسارات والأسئلة العقائدية المعتمدة على المصادر العلمية.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://nazirni.vercel.app">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ناظرني الحوارية والدينية</title>
-    <!-- FontAwesome للأيقونات -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-    <style>
-        :root {
-            --primary-dark: #123e31;
-            --primary-medium: #1b4d3e;
-            --primary-light: #2e7d63;
-            --gold-accent: #d4af37;
-            --font-quran: 'Amiri', serif;
-            --font-ui: 'Noto Kufi Arabic', sans-serif;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); -webkit-tap-highlight-color: transparent; }
-
-        body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; position: relative; overflow-x: hidden; color: #1e293b; background: #ffffff; }
-
-        .gradient-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;
-            background: linear-gradient(-45deg, #ffffff 0%, #fffde7 25%, #e8f5e9 50%, #f0fdf4 75%, #ffffff 100%);
-            background-size: 400% 400%; animation: geminiMesh 12s ease infinite;
-        }
-        @keyframes geminiMesh { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.6; z-index: 0; pointer-events: none; }
-        .orb-1 { top: 10%; right: 15%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(254, 240, 138, 0.7) 0%, rgba(255, 255, 255, 0) 70%); }
-        .orb-2 { bottom: 10%; left: 10%; width: 450px; height: 450px; background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(255, 255, 255, 0) 70%); }
-
-        .quran-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 40px; align-content: space-around; justify-items: center; overflow: hidden; opacity: 0.4;
-        }
-        .quran-item {
-            font-family: var(--font-quran); font-size: 1.55rem; font-weight: 700; text-align: center;
-            background: linear-gradient(135deg, #996515 0%, #d4af37 50%, #b8860b 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select: none;
-        }
-
-        .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.2); backdrop-filter: blur(4px); z-index: 98; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-        .overlay.show { opacity: 1; pointer-events: auto; }
-
-        .menu-toggle-btn {
-            position: fixed; top: 20px; right: 20px; z-index: 97; background: rgba(255, 255, 255, 0.85); color: var(--primary-medium);
-            border: 1px solid rgba(27, 77, 62, 0.2); font-size: 18px; width: 42px; height: 42px; border-radius: 12px; cursor: pointer;
-            box-shadow: 0 4px 16px rgba(27, 77, 62, 0.12); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);
-        }
-
-        .top-left-actions { position: fixed; top: 20px; left: 20px; z-index: 97; display: flex; gap: 8px; align-items: center; }
-        .donate-top-btn, .auth-top-btn, .history-top-btn {
-            height: 42px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; backdrop-filter: blur(10px); border: none; padding: 0 12px;
-        }
-        .donate-top-btn { background: linear-gradient(135deg, #e11d48, #be123c); color: #ffffff; box-shadow: 0 4px 16px rgba(225, 29, 72, 0.25); }
-        .auth-top-btn, .history-top-btn { background: rgba(255, 255, 255, 0.9); color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.25); }
-
-        /* القائمة الجانبية اليمنى */
-        .sidebar {
-            position: fixed; top: 0; right: -100%; width: 300px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px); box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
-        }
-        .sidebar.open { right: 0; }
-
-        /* القائمة الجانبية اليسرى (السجل) - مخفية تماماً بالافتراضي حتى يتم فتحها */
-        .history-sidebar {
-            position: fixed; top: 0; left: -100%; width: 300px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px); box-shadow: 10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
-        }
-        .history-sidebar.open { left: 0; }
-
-        .sidebar-header { padding: 20px; background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium)); color: white; display: flex; justify-content: space-between; align-items: center; }
-        .close-btn { background: rgba(255, 255, 255, 0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-        .sidebar-menu { display: flex; flex-direction: column; padding: 16px 12px; gap: 6px; overflow-y: auto; flex: 1; }
-        .menu-divider { height: 1px; background: rgba(0, 0, 0, 0.08); margin: 8px 10px; }
-        .menu-section-title { font-size: 0.78rem; color: #94a3b8; font-weight: 700; padding: 4px 12px; }
-
-        .menu-item {
-            background: transparent; border: none; padding: 12px 14px; border-radius: 12px; text-align: right; font-size: 0.9rem; color: #334155; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;
-        }
-        .menu-item i { width: 26px; height: 26px; border-radius: 8px; background: rgba(27, 77, 62, 0.08); color: var(--primary-medium); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .menu-item:hover { background: rgba(46, 125, 99, 0.08); color: var(--primary-medium); }
-        .menu-item.active { background: linear-gradient(90deg, rgba(27, 77, 62, 0.12), rgba(46, 125, 99, 0.05)); color: var(--primary-dark); font-weight: 700; border-right: 4px solid var(--primary-medium); }
-        .menu-item.active i { background: var(--primary-medium); color: white; }
-
-        .chat-container { position: relative; z-index: 10; width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh; height: 100dvh; padding: 12px 10px; }
-        .chat-header { text-align: center; margin-top: 60px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.8); flex-shrink: 0; }
-        .chat-header h1 { color: var(--primary-dark); font-size: 1.6rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
-        .chat-header h1 i { color: var(--gold-accent); }
-        .chat-header p { color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px; }
-
-        .main-view-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
-        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px 4px; }
-
-        .static-page-view {
-            flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 20px; padding: 20px; display: none; line-height: 1.7;
-        }
-        .static-page-view.active { display: block; }
-        .static-page-view h2 { color: var(--primary-dark); font-size: 1.3rem; margin-bottom: 14px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .static-page-view p { color: #334155; margin-bottom: 12px; font-size: 0.95rem; }
-
-        .trust-detailed-box { background: rgba(27, 77, 62, 0.03); border: 1px solid rgba(27, 77, 62, 0.12); border-radius: 14px; padding: 16px; margin-top: 12px; }
-        .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-
-        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-top: 12px; }
+<meta property="og:url" content="[https://nazirni.vercel.app](https://nazirni.vercel.app)">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة ناظرني الحوارية والدينية</title>
+<!-- FontAwesome للأيقونات -->
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css)">
+<link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+<link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+<link href="[https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap)" rel="stylesheet">
+<script src="[https://accounts.google.com/gsi/client](https://accounts.google.com/gsi/client)" async defer></script>
+<style>
+:root {
+--primary-dark: #123e31;
+--primary-medium: #1b4d3e;
+--primary-light: #2e7d63;
+--gold-accent: #d4af37;
+--font-quran: 'Amiri', serif;
+--font-ui: 'Noto Kufi Arabic', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); -webkit-tap-highlight-color: transparent; }
+body { min-height: 100vh; min-height: 100dvh; display: flex; position: relative; overflow-x: hidden; color: #1e293b; background: #ffffff; }
+.gradient-bg {
+position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;
+background: linear-gradient(-45deg, #ffffff 0%, #fffde7 25%, #e8f5e9 50%, #f0fdf4 75%, #ffffff 100%);
+background-size: 400% 400%; animation: geminiMesh 12s ease infinite;
+}
+@keyframes geminiMesh { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+.orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.6; z-index: 0; pointer-events: none; }
+.orb-1 { top: 10%; right: 15%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(254, 240, 138, 0.7) 0%, rgba(255, 255, 255, 0) 70%); }
+.orb-2 { bottom: 10%; left: 10%; width: 450px; height: 450px; background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(255, 255, 255, 0) 70%); }
+.quran-bg {
+position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
+display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 40px; align-content: space-around; justify-items: center; overflow: hidden;
+}
+.quran-item {
+font-family: var(--font-quran); font-size: 1.55rem; font-weight: 700; text-align: center;
+background: linear-gradient(135deg, #996515 0%, #d4af37 50%, #b8860b 100%);
+-webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.55; user-select: none;
+}
+.overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.2); backdrop-filter: blur(4px); z-index: 98; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+.overlay.show { opacity: 1; pointer-events: auto; }
+.menu-toggle-btn {
+position: fixed; top: 24px; right: 24px; z-index: 97; background: rgba(255, 255, 255, 0.85); color: var(--primary-medium);
+border: 1px solid rgba(27, 77, 62, 0.2); font-size: 20px; width: 48px; height: 48px; border-radius: 16px; cursor: pointer;
+box-shadow: 0 8px 24px rgba(27, 77, 62, 0.12); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+}
+.top-left-actions { position: fixed; top: 24px; left: 24px; z-index: 97; display: flex; gap: 10px; align-items: center; }
+.donate-top-btn, .auth-top-btn, .history-top-btn {
+height: 48px; border-radius: 16px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); border: none; padding: 0 18px;
+}
+.donate-top-btn { background: linear-gradient(135deg, #e11d48, #be123c); color: #ffffff; box-shadow: 0 8px 24px rgba(225, 29, 72, 0.25); }
+.auth-top-btn, .history-top-btn { background: rgba(255, 255, 255, 0.9); color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.25); }
+/* القائمة الجانبية اليمنى */
+.sidebar {
+position: fixed; top: 0; right: -360px; width: 340px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(20px); box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
+}
+.sidebar.open { right: 0; }
+/* القائمة الجانبية اليسرى (السجل) */
+.history-sidebar {
+position: fixed; top: 0; left: -360px; width: 340px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.96);
+backdrop-filter: blur(20px); box-shadow: 10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
+}
+.history-sidebar.open { left: 0; }
+.sidebar-header { padding: 24px 20px; background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium)); color: white; display: flex; justify-content: space-between; align-items: center; }
+.close-btn { background: rgba(255, 255, 255, 0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.sidebar-menu { display: flex; flex-direction: column; padding: 16px 12px; gap: 6px; overflow-y: auto; flex: 1; }
+.menu-divider { height: 1px; background: rgba(0, 0, 0, 0.08); margin: 8px 10px; }
+.menu-section-title { font-size: 0.78rem; color: #94a3b8; font-weight: 700; padding: 4px 12px; }
+.menu-item {
+background: transparent; border: none; padding: 13px 16px; border-radius: 14px; text-align: right; font-size: 0.92rem; color: #334155; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;
+}
+.menu-item i { width: 26px; height: 26px; border-radius: 8px; background: rgba(27, 77, 62, 0.08); color: var(--primary-medium); display: flex; align-items: center; justify-content: center; }
+.menu-item:hover { background: rgba(46, 125, 99, 0.08); color: var(--primary-medium); }
+.menu-item.active { background: linear-gradient(90deg, rgba(27, 77, 62, 0.12), rgba(46, 125, 99, 0.05)); color: var(--primary-dark); font-weight: 700; border-right: 4px solid var(--primary-medium); }
+.menu-item.active i { background: var(--primary-medium); color: white; }
+.chat-container { position: relative; z-index: 10; width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh; height: 100dvh; padding: 16px 20px; }
+.chat-header { text-align: center; margin-top: 10px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px); padding: 16px 24px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.8); }
+.chat-header h1 { color: var(--primary-dark); font-size: 2rem; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
+.chat-header h1 i { color: var(--gold-accent); }
+.chat-header p { color: #64748b; font-size: 0.9rem; font-weight: 600; margin-top: 4px; }
+.main-view-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 12px 8px; }
+.static-page-view {
+flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 24px; padding: 28px; display: none; line-height: 1.8;
+}
+.static-page-view.active { display: block; }
+.static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+.static-page-view p { color: #334155; margin-bottom: 14px; font-size: 1.02rem; }
+.trust-detailed-box { background: rgba(27, 77, 62, 0.03); border: 1px solid rgba(27, 77, 62, 0.12); border-radius: 16px; padding: 20px; margin-top: 15px; }
+.trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
+.book-badge { background: #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 700; text-align: center; }
+.dev-info-box, .donate-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px; text-align: center; margin-top: 15px; }
+.dev-whatsapp-btn { display: inline-flex; align-items: center; gap: 10px; background: #25d366; color: white; text-decoration: none; padding: 12px 24px; border-radius: 14px; font-weight: 700; margin-top: 15px; }
+.donate-btn-placeholder { width: 100%; max-width: 380px; background: linear-gradient(135deg, var(--gold-accent), #b8860b); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.message { max-width: 85%; padding: 16px 20px; border-radius: 22px; line-height: 1.7; font-size: 0.98rem; word-wrap: break-word; }
+.bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
+.user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
+.typing-dots { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; }
+.typing-dots span {
+width: 8px; height: 8px; background-color: var(--primary-medium); border-radius: 50%;
+display: inline-block; animation: bounceDot 1.4s infinite ease-in-out both;
+}
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+.chat-input-area {
+display: flex; gap: 12px; background: rgba(255, 255, 255, 0.9); padding: 8px 10px 8px 16px; border-radius: 35px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 10px; align-items: center;
+}
+.chat-input-area input { flex: 1; border: none; outline: none; padding: 12px 10px; font-size: 1rem; background: transparent; }
+.chat-input-area button { background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 700; }
+/* Modals */
+.modal-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.4); backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-container.open { display: flex; }
+.modal-card { background: #ffffff; width: 100%; max-width: 440px; border-radius: 24px; padding: 28px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+.modal-close { position: absolute; top: 20px; left: 20px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: #64748b; }
+.modal-header { text-align: center; margin-bottom: 20px; }
+.modal-header h3 { color: var(--primary-dark); font-size: 1.35rem; }
+.modal-header p { color: #64748b; font-size: 0.85rem; margin-top: 4px; }
+.form-group { margin-bottom: 14px; text-align: right; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
+.form-group input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none; font-size: 0.95rem; }
+.auth-error { color: #e11d48; font-size: 0.85rem; margin-bottom: 10px; display: none; }
+.auth-submit-btn { width: 100%; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 8px; }
+.auth-divider { text-align: center; margin: 16px 0; position: relative; }
+.auth-divider span { background: #ffffff; padding: 0 10px; position: relative; z-index: 2; color: #94a3b8; font-size: 0.85rem; }
+.google-btn-wrapper { display: flex; justify-content: center; margin-bottom: 14px; }
+.modal-footer { text-align: center; font-size: 0.88rem; color: #64748b; margin-top: 10px; }
+.modal-footer a { color: var(--primary-medium); font-weight: 700; text-decoration: none; margin-right: 5px; }
+.admin-card { max-width: 650px; }
+.admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+.history-items-container { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding: 4px; }
+.history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
+.history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
+.history-nav-text { font-size: 0.88rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.history-nav-date { font-size: 0.72rem; color: #94a3b8; margin-top: 4px; }
+.copy-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px 16px; border-radius: 12px; margin-top: 12px; }
+.copy-box button { background: var(--primary-medium); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight:700; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="gradient-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="quran-bg">
+<div class="quran-item">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+<div class="quran-item">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
+<div class="quran-item">خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ</div>
+<div class="quran-item">اقْرَأْ وَرَبُّكَ الْأَكْرَمُ</div>
+<div class="quran-item">الَّذِي عَلَّمَ بِالْقَلَمِ</div>
+<div class="quran-item">عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ</div>
+<div class="quran-item">ادْعُ إِلَى سَبِيلِ رَبِّكَ بِالْحِكْمَةِ</div>
+<div class="quran-item">وَالْمَوْعِظَةِ الْحَسَنَةِ</div>
+<div class="quran-item">وَجَادِلْهُمْ بِالَّتِي هِيَ أَحْسَنُ</div>
+</div>
+<div class="overlay" id="overlay" onclick="closeAllSidebars(); closeModal();"></div>
+<!-- زر فتح القائمة اليمني -->
+<button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
+<i class="fa-solid fa-bars"></i>
+</button>
+<div class="top-left-actions">
+<button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
+<i class="fa-solid fa-heart"></i>
+<span>تبرع</span>
+</button>
+<button class="auth-top-btn" id="authNavBtn" onclick="openAuthModal('signup')">
+<i class="fa-solid fa-user-plus"></i>
+<span>سجل الآن</span>
+</button>
+<!-- زر السجل العلوي -->
+<button class="history-top-btn" id="historyNavBtn" onclick="toggleHistorySidebar()" style="display: none;" aria-label="سجل المحادثات">
+<i class="fa-solid fa-book-open"></i>
+<span>السجل</span>
+</button>
+</div>
+<!-- القائمة الجانبية اليسرى (السجل الكامل) -->
+<aside class="history-sidebar" id="historySidebar">
+<div class="sidebar-header">
+<h3><i class="fa-solid fa-book-bookmark"></i> سجل المحادثات</h3>
+<button class="close-btn" onclick="closeHistorySidebar()"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="sidebar-menu">
+<div class="menu-section-title">الأقسام المحفوظة في الشات</div>
+<div class="history-items-container" id="historyItemsContainer"></div>
+<button class="clear-history-btn" onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 10px; border-radius: 10px; border:none; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer;">
+<i class="fa-solid fa-trash"></i> مسح جميع الشاتات
+</button>
+</div>
+</aside>
+<!-- القائمة الجانبية اليمنى -->
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<h3><i class="fa-solid fa-book-quran"></i> منصة ناظرني</h3>
+<button class="close-btn" onclick="closeSidebar()" aria-label="إغلاق القائمة"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<nav class="sidebar-menu">
+<div class="menu-section-title">أقسام الحوار والأسئلة</div>
+<button class="menu-item active" onclick="openPage('أنا مسلم')"><i class="fa-solid fa-moon"></i> أنا مسلم</button>
+<button class="menu-item" onclick="openPage('مناظرة')"><i class="fa-solid fa-comments"></i> مناظرة</button>
+<button class="menu-item" onclick="openPage('أنا مسيحي')"><i class="fa-solid fa-cross"></i> أنا مسيحي</button>
+<button class="menu-item" onclick="openPage('أنا يهودي')"><i class="fa-solid fa-star-of-david"></i> أنا يهودي</button>
+<button class="menu-item" onclick="openPage('أنا ملحد')"><i class="fa-solid fa-atom"></i> أنا ملحد</button>
+<button class="menu-item" onclick="openPage('أنا شيعي')"><i class="fa-solid fa-kaaba"></i> أنا شيعي</button>
+<button class="menu-item" onclick="openPage('أنا من ديانة أخرى')"><i class="fa-solid fa-globe"></i> أنا من ديانة أخرى</button>
+<div class="menu-divider"></div>
+<div class="menu-section-title">عن المنصة والثقة</div>
+<button class="menu-item" onclick="openPage('الثقة والمراجع')"><i class="fa-solid fa-shield-halved"></i> الثقة والمراجع العلمية</button>
+<button class="menu-item" onclick="openPage('المطور والابتكار')"><i class="fa-solid fa-code"></i> المطور ومبتكر الفكرة</button>
+<button class="menu-item" onclick="openPage('دعم المنصة')"><i class="fa-solid fa-hand-holding-dollar"></i> دعم المنصة والتبرع</button>
+<button class="menu-item" id="adminMenuBtn" onclick="openAdminModal()" style="display: none; color: #e11d48; font-weight: 700;">
+<i class="fa-solid fa-user-shield" style="background: rgba(225,29,72,0.1); color: #e11d48;"></i> قاعدة المدير
+</button>
+<div class="menu-divider"></div>
+<button class="menu-item auth-sidebar-btn" id="sidebarAuthBtn" onclick="handleAuthSidebarAction()">
+<i class="fa-solid fa-user-plus"></i> <span id="sidebarAuthText">سجل الآن / تسجيل الدخول</span>
+</button>
+</nav>
+</aside>
+<main class="chat-container">
+<header class="chat-header">
+<h1><i class="fa-solid fa-kaaba"></i> ناظرني</h1>
+<p id="currentCategoryText">القسم الحالي: أنا مسلم</p>
+</header>
+<div class="main-view-area">
+<div class="chat-messages" id="chatMessages">
+<!-- سيتم تحميل رسائل القسم المحدد تلقائياً هنا -->
+</div>
+<div class="static-page-view" id="page-trust">
+<h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
+<p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو px; }
         .book-badge { background: #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 8px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; text-align: center; }
 
         .dev-info-box, .donate-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; text-align: center; margin-top: 12px; }
