@@ -1,10 +1,34 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import requests
+from pypdf import PdfReader
 
 app = Flask(__name__)
 
 API_KEY = os.environ.get("GEMINI_API_KEY")
+
+# دالة لقراءة واستخراج كافة النصوص من ملفات الـ PDF المرفوعة في المشروع
+def load_pdf_context():
+    pdf_text = ""
+    # البحث عن جميع ملفات PDF في المستودع
+    for root, dirs, files in os.walk("."):
+        for file in files:
+            if file.lower().endswith(".pdf"):
+                pdf_path = os.path.join(root, file)
+                try:
+                    reader = PdfReader(pdf_path)
+                    pdf_text += f"\n--- بداية المحتوى من الملف: {file} ---\n"
+                    for page in reader.pages:
+                        text = page.extract_text()
+                        if text:
+                            pdf_text += text + "\n"
+                    pdf_text += f"--- نهاية المحتوى من الملف: {file} ---\n"
+                except Exception as e:
+                    app.logger.error(f"خطأ في قراءة الملف {file}: {e}")
+    return pdf_text
+
+# تحميل نصوص الـ PDF في الذاكرة عند بدء السيرفر
+PDF_CONTEXT = load_pdf_context()
 
 
 @app.route("/")
@@ -31,30 +55,38 @@ def chat():
                 "reply": "مفتاح الذكاء الاصطناعي غير مُعد على السيرفر. راجع إعدادات Vercel."
             }), 500
 
+        # تعليمات صارمة لحصر الإجابة داخل الـ PDFs فقط
         system_instruction = (
-            "أنت مساعد ذكي في منصة ناظرني للحوار والدراسات الدينية. "
+            "أنت مساعد ذكي وموثوق في منصة ناظرني للحوار والدراسات الدينية. "
             f"القسم الحالي هو: {category}. "
-            "أجب باللغة العربية بوضوح واحترام وموضوعية. "
-            "اعتمد على معلومات موثوقة، وميّز بين الحقائق والآراء. "
-            "لا تخترع مراجع أو تنسب أقوالًا لمصادر دون التأكد منها. "
-            "إذا لم تكن متأكدًا من الإجابة، وضّح ذلك للمستخدم."
+            "قاعدتك الأساسية والصارمة التي لا تجوز مخالفتها: "
+            "أجب فقط وفقط بالاعتماد على محتوى ملفات الـ PDF المرفقة والمزودة لك أسفله. "
+            "يُمنع منعاً باتاً البحث في الإنترنت، أو الاستعانة بمعلومات خارجية من خارج النصوص المرفقة، أو اختراع مراجع أو إجابات. "
+            "إذا كانت الإجابة موجودة في النصوص المرفقة، اذكر الإجابة بوضوح مع ذكر اسم الكتاب/الملف المأخوذ منه إن أمكن. "
+            "إذا لم تجد الإجابة بالنص أو المعنى الصريح داخل ملفات الـ PDF المرفقة، يجب عليك أن تجيب بهذه العبارة فقط: "
+            "'عذراً، هذه المعلومة غير متوفرة في الملفات والكتب المعتمدة حالياً في المنصة.'"
         )
 
-        # رابط الاتصال المباشر بالنموذج المطلوب حصرياً من جوجل
+        # دمج محتوى الـ PDFs مع السؤال
+        full_user_content = (
+            f"محتوى الملفات والكتب المعتمدة:\n{PDF_CONTEXT}\n\n"
+            f"سؤال المستخدم: {user_message}"
+        )
+
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
-        
+
         payload = {
             "system_instruction": {
                 "parts": [{"text": system_instruction}]
             },
             "contents": [
                 {
-                    "parts": [{"text": user_message}]
+                    "parts": [{"text": full_user_content}]
                 }
             ]
         }
 
-        response = requests.post(url, json=payload, timeout=30)
+        response = requests.post(url, json=payload, timeout=45)
         res_data = response.json()
 
         if response.status_code != 200:
@@ -64,8 +96,8 @@ def chat():
                 "reply": f"خطأ من جوجل: {error_msg}"
             }), response.status_code
 
-        # استخراج النص من الاستجابة
         candidates = res_data.get("candidates", [])
+        reply_text = ""
         if candidates:
             parts = candidates[0].get("content", {}).get("parts", [])
             if parts:
