@@ -21,8 +21,8 @@ def chat():
         if not API_KEY:
             return jsonify({'reply': 'عذراً، مفتاح الـ API غير مُعد بشكل صحيح على سيرفر الاستضافة (Vercel).'})
 
-        # استخدام Google Gemini REST API مباشرة لتفادي أي مشاكل في المكتبات
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={API_KEY}"
+        # استخدام الموديل المستقر المحدث
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={API_KEY}"
         
         system_instruction = f"أنت مساعد ذكي ومختص في منصة 'ناظرني' للحوار والدراسات الدينية. القسم الحالي هو: {category}. أجب بدقة وعلم وموضوعية."
         
