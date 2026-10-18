@@ -58,12 +58,12 @@
 
         .quran-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 40px; align-content: space-around; justify-items: center; overflow: hidden;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 40px; align-content: space-around; justify-items: center; overflow: hidden; opacity: 0.4;
         }
         .quran-item {
             font-family: var(--font-quran); font-size: 1.55rem; font-weight: 700; text-align: center;
             background: linear-gradient(135deg, #996515 0%, #d4af37 50%, #b8860b 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.55; user-select: none;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; user-select: none;
         }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.2); backdrop-filter: blur(4px); z-index: 98; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -89,7 +89,7 @@
         }
         .sidebar.open { right: 0; }
 
-        /* القائمة الجانبية اليسرى (السجل) */
+        /* القائمة الجانبية اليسرى (السجل) - مخفية تماماً بالافتراضي حتى يتم فتحها */
         .history-sidebar {
             position: fixed; top: 0; left: -100%; width: 300px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px); box-shadow: 10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: left 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
@@ -112,7 +112,7 @@
         .menu-item.active i { background: var(--primary-medium); color: white; }
 
         .chat-container { position: relative; z-index: 10; width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh; height: 100dvh; padding: 12px 10px; }
-        .chat-header { text-align: center; margin-top: 60px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px); padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.8); flex-shrink: 0; }
+        .chat-header { text-align: center; margin-top: 60px; margin-bottom: 10px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.8); flex-shrink: 0; }
         .chat-header h1 { color: var(--primary-dark); font-size: 1.6rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
         .chat-header h1 i { color: var(--gold-accent); }
         .chat-header p { color: #64748b; font-size: 0.82rem; font-weight: 600; margin-top: 2px; }
@@ -121,7 +121,7 @@
         .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 10px 4px; }
 
         .static-page-view {
-            flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 20px; padding: 20px; display: none; line-height: 1.7;
+            flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 20px; padding: 20px; display: none; line-height: 1.7;
         }
         .static-page-view.active { display: block; }
         .static-page-view h2 { color: var(--primary-dark); font-size: 1.3rem; margin-bottom: 14px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 8px; display: flex; align-items: center; gap: 8px; }
@@ -132,6 +132,140 @@
 
         .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; margin-top: 12px; }
         .book-badge { background: #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 8px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; text-align: center; }
+
+        .dev-info-box, .donate-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; text-align: center; margin-top: 12px; }
+        .dev-whatsapp-btn { display: inline-flex; align-items: center; gap: 8px; background: #25d366; color: white; text-decoration: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; margin-top: 12px; font-size: 0.9rem; }
+        .donate-btn-placeholder { width: 100%; max-width: 380px; background: linear-gradient(135deg, var(--gold-accent), #b8860b); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 12px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+
+        .message { max-width: 90%; padding: 12px 16px; border-radius: 18px; line-height: 1.6; font-size: 0.92rem; word-wrap: break-word; }
+        .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
+        .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
+
+        .typing-dots { display: inline-flex; align-items: center; gap: 4px; padding: 4px 6px; }
+        .typing-dots span {
+            width: 7px; height: 7px; background-color: var(--primary-medium); border-radius: 50%;
+            display: inline-block; animation: bounceDot 1.4s infinite ease-in-out both;
+        }
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+
+        .chat-input-area {
+            display: flex; gap: 8px; background: rgba(255, 255, 255, 0.95); padding: 6px 8px 6px 14px; border-radius: 30px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 6px; align-items: center; flex-shrink: 0;
+        }
+        .chat-input-area input { flex: 1; border: none; outline: none; padding: 8px 6px; font-size: 0.95rem; background: transparent; min-width: 0; }
+        .chat-input-area button { background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 10px 18px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+
+        /* Modals */
+        .modal-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.4); backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; }
+        .modal-container.open { display: flex; }
+        .modal-card { background: #ffffff; width: 100%; max-width: 420px; border-radius: 20px; padding: 22px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15); max-height: 90vh; overflow-y: auto; }
+        .modal-close { position: absolute; top: 16px; left: 16px; background: #f1f5f9; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; }
+        .modal-header { text-align: center; margin-bottom: 16px; }
+        .modal-header h3 { color: var(--primary-dark); font-size: 1.25rem; }
+        .modal-header p { color: #64748b; font-size: 0.8rem; margin-top: 4px; }
+
+        .form-group { margin-bottom: 12px; text-align: right; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 700; color: #334155; margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; outline: none; font-size: 0.9rem; }
+        .auth-error { color: #e11d48; font-size: 0.82rem; margin-bottom: 8px; display: none; }
+        .auth-submit-btn { width: 100%; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.95rem; margin-top: 6px; }
+        .auth-divider { text-align: center; margin: 12px 0; position: relative; }
+        .auth-divider span { background: #ffffff; padding: 0 8px; position: relative; z-index: 2; color: #94a3b8; font-size: 0.8rem; }
+        .google-btn-wrapper { display: flex; justify-content: center; margin-bottom: 10px; }
+        .modal-footer { text-align: center; font-size: 0.85rem; color: #64748b; margin-top: 8px; }
+        .modal-footer a { color: var(--primary-medium); font-weight: 700; text-decoration: none; margin-right: 4px; }
+
+        .admin-card { max-width: 600px; }
+        .admin-list { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; }
+
+        .history-items-container { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding: 4px; }
+        .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; cursor: pointer; transition: 0.2s; }
+        .history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
+        .history-nav-text { font-size: 0.82rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        .copy-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; padding: 10px 14px; border-radius: 10px; margin-top: 10px; font-size: 0.9rem; }
+        .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.82rem; }
+
+        /* Media Queries للشاشات الصغيرة لتجنب أي تداخل وإخفاء النصوص غير الضرورية */
+        @media (max-width: 480px) {
+            .top-left-actions { top: 14px; left: 14px; gap: 6px; }
+            .donate-top-btn, .auth-top-btn, .history-top-btn { height: 38px; padding: 0 10px; font-size: 0.78rem; border-radius: 10px; }
+            .donate-top-btn span, .auth-top-btn span, .history-top-btn span { display: none; } 
+            .menu-toggle-btn { top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 10px; font-size: 16px; }
+            .chat-header { margin-top: 55px; padding: 10px 12px; }
+            .chat-header h1 { font-size: 1.35rem; }
+            .chat-container { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="quran-bg">
+        <div class="quran-item">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+        <div class="quran-item">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
+        <div class="quran-item">خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ</div>
+        <div class="quran-item">اقْرَأْ وَرَبُّكَ الْأَكْرَمُ</div>
+        <div class="quran-item">الَّذِي عَلَّمَ بِالْقَلَمِ</div>
+        <div class="quran-item">عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ</div>
+        <div class="quran-item">ادْعُ إِلَى سَبِيلِ رَبِّكَ بِالْحِكْمَةِ</div>
+        <div class="quran-item">وَالْمَوْعِظَةِ الْحَسَنَةِ</div>
+        <div class="quran-item">وَجَادِلْهُمْ بِالَّتِي هِيَ أَحْسَنُ</div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeAllSidebars(); closeModal();"></div>
+
+    <!-- زر فتح القائمة اليمني -->
+    <button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <div class="top-left-actions">
+        <button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
+            <i class="fa-solid fa-heart"></i>
+            <span>تبرع</span>
+        </button>
+
+        <button class="auth-top-btn" id="authNavBtn" onclick="openAuthModal('signup')" aria-label="سجل الآن">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>سجل الآن</span>
+        </button>
+
+        <!-- زر السجل العلوي -->
+        <button class="history-top-btn" id="historyNavBtn" onclick="toggleHistorySidebar()" style="display: none;" aria-label="سجل المحادثات">
+            <i class="fa-solid fa-book-open"></i>
+            <span>السجل</span>
+        </button>
+    </div>
+
+    <!-- القائمة الجانبية اليسرى (السجل الكامل) -->
+    <aside class="history-sidebar" id="historySidebar">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-book-bookmark"></i> سجل المحادثات</h3>
+            <button class="close-btn" onclick="closeHistorySidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-section-title">الأقسام المحفوظة في الشات</div>
+            <div class="history-items-container" id="historyItemsContainer"></div>
+            <button class="clear-history-btn" onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 10px; border-radius: 10px; border:none; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer;">
+                <i class="fa-solid fa-trash"></i> مسح جميع الشاتات
+            </button>
+        </div>
+    </aside>
+
+    <!-- القائمة الجانبية اليمنى -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fa-solid fa-book-quran"></i> منصة ناظرني</h3>
+            <button class="close-btn" onclick="closeSidebar()" aria-label="إغلاق القائمة"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <nav class="sidebar-menu">
+  #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 8px 10px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; text-align: center; }
 
         .dev-info-box, .donate-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; text-align: center; margin-top: 12px; }
         .dev-whatsapp-btn { display: inline-flex; align-items: center; gap: 8px; background: #25d366; color: white; text-decoration: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; margin-top: 12px; font-size: 0.9rem; }
