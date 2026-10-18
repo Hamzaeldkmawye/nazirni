@@ -63,17 +63,10 @@ def chat():
 
 except Exception as e:
     app.logger.exception("Gemini API error")
-
-    error_code = getattr(e, "code", None)
-    error_message = getattr(e, "message", str(e))
-
     return jsonify({
-        "reply": (
-            f"نوع الخطأ: {type(e).__name__}\n"
-            f"كود الخطأ: {error_code}\n"
-            f"التفاصيل: {error_message}"
-        )
+        "reply": f"نوع الخطأ: {type(e).__name__} - {str(e)}"
     }), 500
+
 
 if __name__ == "__main__":
     app.run(debug=False)
