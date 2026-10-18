@@ -6,11 +6,12 @@
     <title>منصة ناظرني الحوارية والدينية</title>
     <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- خط أميري وجزيرة من Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Kufi+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
     <style>
         :root {
             --primary-dark: #123e31;
@@ -21,460 +22,133 @@
             --font-ui: 'Noto Kufi Arabic', sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-ui);
-            -webkit-tap-highlight-color: transparent;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-ui); -webkit-tap-highlight-color: transparent; }
 
-        body {
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            position: relative;
-            overflow-x: hidden;
-            color: #1e293b;
-            background: #ffffff;
-        }
+        body { min-height: 100vh; min-height: 100dvh; display: flex; position: relative; overflow-x: hidden; color: #1e293b; background: #ffffff; }
 
         .gradient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0;
             background: linear-gradient(-45deg, #ffffff 0%, #fffde7 25%, #e8f5e9 50%, #f0fdf4 75%, #ffffff 100%);
-            background-size: 400% 400%;
-            animation: geminiMesh 12s ease infinite;
+            background-size: 400% 400%; animation: geminiMesh 12s ease infinite;
         }
+        @keyframes geminiMesh { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        @keyframes geminiMesh {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            z-index: 0;
-            pointer-events: none;
-            animation: floatOrb 18s ease-in-out infinite alternate;
-        }
-
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.6; z-index: 0; pointer-events: none; }
         .orb-1 { top: 10%; right: 15%; width: 350px; height: 350px; background: radial-gradient(circle, rgba(254, 240, 138, 0.7) 0%, rgba(255, 255, 255, 0) 70%); }
-        .orb-2 { bottom: 10%; left: 10%; width: 450px; height: 450px; background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(255, 255, 255, 0) 70%); animation-delay: -5s; }
-
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(40px, -30px) scale(1.1); }
-            100% { transform: translate(-30px, 40px) scale(0.95); }
-        }
+        .orb-2 { bottom: 10%; left: 10%; width: 450px; height: 450px; background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(255, 255, 255, 0) 70%); }
 
         .quran-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-            padding: 40px;
-            align-content: space-around;
-            justify-items: center;
-            overflow: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 40px; align-content: space-around; justify-items: center; overflow: hidden;
         }
-
         .quran-item {
-            font-family: var(--font-quran);
-            font-size: 1.55rem;
-            font-weight: 700;
-            text-align: center;
+            font-family: var(--font-quran); font-size: 1.55rem; font-weight: 700; text-align: center;
             background: linear-gradient(135deg, #996515 0%, #d4af37 50%, #b8860b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            opacity: 0.55;
-            filter: drop-shadow(0 2px 6px rgba(212, 175, 55, 0.35));
-            animation: waterGleam 8s ease-in-out infinite alternate;
-            line-height: 1.8;
-            user-select: none;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.55; user-select: none;
         }
 
-        .quran-item:nth-child(even) { animation-delay: -4s; }
-
-        @keyframes waterGleam {
-            0% { transform: translateY(0) scale(1); opacity: 0.45; }
-            100% { transform: translateY(-6px) scale(1.02); opacity: 0.65; }
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(18, 62, 49, 0.2);
-            backdrop-filter: blur(4px);
-            z-index: 98;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.2); backdrop-filter: blur(4px); z-index: 98; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .overlay.show { opacity: 1; pointer-events: auto; }
 
         .menu-toggle-btn {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            z-index: 97;
-            background: rgba(255, 255, 255, 0.85);
-            color: var(--primary-medium);
-            border: 1px solid rgba(27, 77, 62, 0.2);
-            font-size: 20px;
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(27, 77, 62, 0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; top: 24px; right: 24px; z-index: 97; background: rgba(255, 255, 255, 0.85); color: var(--primary-medium);
+            border: 1px solid rgba(27, 77, 62, 0.2); font-size: 20px; width: 48px; height: 48px; border-radius: 16px; cursor: pointer;
+            box-shadow: 0 8px 24px rgba(27, 77, 62, 0.12); display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);
         }
-        .menu-toggle-btn:hover { transform: scale(1.06) rotate(3deg); background: var(--primary-medium); color: #ffffff; }
 
-        .donate-top-btn {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            z-index: 97;
-            background: linear-gradient(135deg, #e11d48, #be123c);
-            color: #ffffff;
-            border: none;
-            padding: 0 18px;
-            height: 48px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(225, 29, 72, 0.25);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
+        .top-left-actions { position: fixed; top: 24px; left: 24px; z-index: 97; display: flex; gap: 10px; align-items: center; }
+        .donate-top-btn, .auth-top-btn, .history-top-btn {
+            height: 48px; border-radius: 16px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); border: none; padding: 0 18px;
         }
-        .donate-top-btn:hover { transform: scale(1.05); box-shadow: 0 10px 28px rgba(225, 29, 72, 0.35); }
-        .donate-top-btn i { color: #fecdd3; font-size: 1.1rem; }
+        .donate-top-btn { background: linear-gradient(135deg, #e11d48, #be123c); color: #ffffff; box-shadow: 0 8px 24px rgba(225, 29, 72, 0.25); }
+        .auth-top-btn, .history-top-btn { background: rgba(255, 255, 255, 0.9); color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.25); }
 
         .sidebar {
-            position: fixed;
-            top: 0;
-            right: -360px;
-            width: 340px;
-            max-width: 85vw;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
-            z-index: 99;
-            transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
+            position: fixed; top: 0; right: -360px; width: 340px; max-width: 85vw; height: 100%; background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px); box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08); z-index: 99; transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column;
         }
         .sidebar.open { right: 0; }
+        .sidebar-header { padding: 24px 20px; background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium)); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { background: rgba(255, 255, 255, 0.15); border: none; color: white; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        .sidebar-header {
-            padding: 24px 20px;
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-medium));
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .sidebar-header h3 { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 700; }
-
-        .close-btn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .sidebar-menu {
-            display: flex;
-            flex-direction: column;
-            padding: 16px 12px;
-            gap: 6px;
-            overflow-y: auto;
-        }
-
+        .sidebar-menu { display: flex; flex-direction: column; padding: 16px 12px; gap: 6px; overflow-y: auto; }
         .menu-divider { height: 1px; background: rgba(0, 0, 0, 0.08); margin: 8px 10px; }
-        .menu-section-title { font-size: 0.78rem; color: #94a3b8; font-weight: 700; padding: 4px 12px; letter-spacing: 0.5px; }
+        .menu-section-title { font-size: 0.78rem; color: #94a3b8; font-weight: 700; padding: 4px 12px; }
 
         .menu-item {
-            background: transparent;
-            border: none;
-            padding: 13px 16px;
-            border-radius: 14px;
-            text-align: right;
-            font-size: 0.92rem;
-            color: #334155;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            background: transparent; border: none; padding: 13px 16px; border-radius: 14px; text-align: right; font-size: 0.92rem; color: #334155; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;
         }
-        .menu-item i {
-            width: 26px; height: 26px; border-radius: 8px; background: rgba(27, 77, 62, 0.08);
-            color: var(--primary-medium); display: flex; align-items: center; justify-content: center; font-size: 0.88rem;
-        }
-        .menu-item:hover { background: rgba(46, 125, 99, 0.08); color: var(--primary-medium); padding-right: 20px; }
+        .menu-item i { width: 26px; height: 26px; border-radius: 8px; background: rgba(27, 77, 62, 0.08); color: var(--primary-medium); display: flex; align-items: center; justify-content: center; }
+        .menu-item:hover { background: rgba(46, 125, 99, 0.08); color: var(--primary-medium); }
         .menu-item.active { background: linear-gradient(90deg, rgba(27, 77, 62, 0.12), rgba(46, 125, 99, 0.05)); color: var(--primary-dark); font-weight: 700; border-right: 4px solid var(--primary-medium); }
         .menu-item.active i { background: var(--primary-medium); color: white; }
 
-        .chat-container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
-            padding: 16px 20px;
-        }
-
-        .chat-header {
-            text-align: center;
-            margin-top: 10px;
-            margin-bottom: 12px;
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(16px);
-            padding: 16px 24px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-        }
+        .chat-container { position: relative; z-index: 10; width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh; height: 100dvh; padding: 16px 20px; }
+        .chat-header { text-align: center; margin-top: 10px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px); padding: 16px 24px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.8); }
         .chat-header h1 { color: var(--primary-dark); font-size: 2rem; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
         .chat-header h1 i { color: var(--gold-accent); }
         .chat-header p { color: #64748b; font-size: 0.9rem; font-weight: 600; margin-top: 4px; }
 
-        .main-view-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            padding: 12px 8px;
-            scroll-behavior: smooth;
-        }
+        .main-view-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 12px 8px; }
 
         .static-page-view {
-            flex: 1;
-            overflow-y: auto;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            backdrop-filter: blur(16px);
-            border-radius: 24px;
-            padding: 28px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            display: none;
-            line-height: 1.8;
+            flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 24px; padding: 28px; display: none; line-height: 1.8;
         }
         .static-page-view.active { display: block; }
-        .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; }
-        .static-page-view p { color: #334155; margin-bottom: 14px; font-size: 1.02rem; }
+        .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; }
 
-        .trust-detailed-box {
-            background: rgba(27, 77, 62, 0.03);
-            border: 1px solid rgba(27, 77, 62, 0.12);
-            border-radius: 16px;
-            padding: 20px;
-            margin-top: 15px;
-        }
-        .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        
-        .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .book-badge {
-            background: #ffffff;
-            color: var(--primary-medium);
-            border: 1px solid rgba(27, 77, 62, 0.2);
-            padding: 10px 14px;
-            border-radius: 10px;
-            font-size: 0.88rem;
-            font-weight: 700;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
+        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
+        .book-badge { background: #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 700; text-align: center; }
 
-        .dev-info-box {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
-            padding: 24px;
-            text-align: center;
-            margin-top: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        }
-        .dev-whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #25d366;
-            color: white;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 1rem;
-            margin-top: 15px;
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25);
-            transition: transform 0.2s;
-        }
-        .dev-whatsapp-btn:hover { transform: scale(1.03); }
+        .dev-info-box, .donate-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px; text-align: center; margin-top: 15px; }
+        .dev-whatsapp-btn { display: inline-flex; align-items: center; gap: 10px; background: #25d366; color: white; text-decoration: none; padding: 12px 24px; border-radius: 14px; font-weight: 700; margin-top: 15px; }
+        .donate-btn-placeholder { width: 100%; max-width: 380px; background: linear-gradient(135deg, var(--gold-accent), #b8860b); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
 
-        .donate-box {
-            background: #ffffff;
-            border: 1px solid #f1f5f9;
-            border-radius: 18px;
-            padding: 24px;
-            text-align: center;
-            margin-top: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        }
-        .donate-btn-placeholder {
-            width: 100%;
-            max-width: 350px;
-            background: linear-gradient(135deg, var(--gold-accent), #b8860b);
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 15px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
-        }
-
-        .message {
-            max-width: 85%;
-            padding: 16px 20px;
-            border-radius: 22px;
-            line-height: 1.7;
-            font-size: 0.98rem;
-            animation: messagePop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-            word-wrap: break-word;
-        }
-        @keyframes messagePop {
-            from { opacity: 0; transform: translateY(15px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        .message { max-width: 85%; padding: 16px 20px; border-radius: 22px; line-height: 1.7; font-size: 0.98rem; word-wrap: break-word; }
         .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
-        .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; box-shadow: 0 6px 20px rgba(27, 77, 62, 0.25); }
+        .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
 
         .chat-input-area {
-            display: flex;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 10px 8px 16px;
-            border-radius: 35px;
-            border: 1.5px solid rgba(27, 77, 62, 0.25);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-            margin-top: 8px;
-            margin-bottom: 10px;
-            backdrop-filter: blur(16px);
-            align-items: center;
+            display: flex; gap: 12px; background: rgba(255, 255, 255, 0.9); padding: 8px 10px 8px 16px; border-radius: 35px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 10px; align-items: center;
         }
-        .chat-input-area input { flex: 1; border: none; outline: none; padding: 12px 10px; font-size: 1rem; background: transparent; color: #1e293b; }
-        .chat-input-area button {
-            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark));
-            color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 700;
-            display: flex; align-items: center; gap: 8px; transition: all 0.25s ease;
-        }
+        .chat-input-area input { flex: 1; border: none; outline: none; padding: 12px 10px; font-size: 1rem; background: transparent; }
+        .chat-input-area button { background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 700; }
 
-        .typing-indicator { display: flex; gap: 5px; padding: 8px 12px; align-items: center; }
-        .typing-dot { width: 7px; height: 7px; background: var(--primary-medium); border-radius: 50%; animation: bounceDot 1.4s infinite ease-in-out both; }
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        /* Modals */
+        .modal-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.4); backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-container.open { display: flex; }
+        .modal-card { background: #ffffff; width: 100%; max-width: 440px; border-radius: 24px; padding: 28px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .modal-close { position: absolute; top: 20px; left: 20px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: #64748b; }
+        .modal-header { text-align: center; margin-bottom: 20px; }
+        .modal-header h3 { color: var(--primary-dark); font-size: 1.35rem; }
+        .modal-header p { color: #64748b; font-size: 0.85rem; margin-top: 4px; }
 
-        @media (max-width: 1024px) {
-            .chat-container { max-width: 100%; padding: 14px 16px; }
-            .quran-bg { gap: 15px; padding: 25px; }
-            .quran-item { font-size: 1.3rem; }
-        }
+        .form-group { margin-bottom: 14px; text-align: right; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
+        .form-group input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none; font-size: 0.95rem; }
+        .auth-error { color: #e11d48; font-size: 0.85rem; margin-bottom: 10px; display: none; }
+        .auth-submit-btn { width: 100%; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 8px; }
+        .auth-divider { text-align: center; margin: 16px 0; position: relative; }
+        .auth-divider span { background: #ffffff; padding: 0 10px; position: relative; z-index: 2; color: #94a3b8; font-size: 0.85rem; }
+        .google-btn-wrapper { display: flex; justify-content: center; margin-bottom: 14px; }
+        .modal-footer { text-align: center; font-size: 0.88rem; color: #64748b; margin-top: 10px; }
+        .modal-footer a { color: var(--primary-medium); font-weight: 700; text-decoration: none; margin-right: 5px; }
 
-        @media (max-width: 768px) {
-            .menu-toggle-btn { top: 16px; right: 16px; width: 42px; height: 42px; font-size: 18px; border-radius: 12px; }
-            .donate-top-btn { top: 16px; left: 16px; height: 42px; padding: 0 14px; border-radius: 12px; }
-            .donate-top-btn span { display: none; }
-            
-            .chat-container { padding: 8px 10px; }
-            .chat-header { padding: 12px 16px; margin-top: 55px; margin-bottom: 8px; border-radius: 16px; }
-            .chat-header h1 { font-size: 1.5rem; }
-            .chat-header p { font-size: 0.8rem; }
+        .history-card, .admin-card { max-width: 650px; }
+        .history-list, .admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .history-item, .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .clear-history-btn { background: #fee2e2; color: #dc2626; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
 
-            .quran-bg { grid-template-columns: repeat(2, 1fr); padding: 15px; gap: 12px; }
-            .quran-item { font-size: 1.1rem; }
-
-            .message { max-width: 92%; padding: 12px 16px; font-size: 0.92rem; }
-            .chat-input-area { padding: 6px 8px 6px 12px; border-radius: 25px; }
-            .chat-input-area input { font-size: 0.9rem; padding: 8px 6px; }
-            .chat-input-area button { padding: 10px 18px; font-size: 0.88rem; border-radius: 20px; }
-
-            .static-page-view { padding: 18px; border-radius: 18px; }
-            .static-page-view h2 { font-size: 1.25rem; }
-            .books-grid { grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 8px; }
-            .book-badge { padding: 8px 10px; font-size: 0.8rem; }
-            
-            .dev-info-box, .donate-box { padding: 16px; }
-            .dev-whatsapp-btn { padding: 10px 16px; font-size: 0.9rem; width: 100%; justify-content: center; }
-        }
-
-        @media (max-width: 480px) {
-            .quran-bg { grid-template-columns: 1fr; }
-            .quran-item { font-size: 1rem; }
-        }
+        .payment-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .pay-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 14px; cursor: pointer; }
+        .pay-icon { font-size: 1.5rem; }
+        .pay-icon.vcash { color: #e11d48; }
+        .pay-icon.instapay { color: #2563eb; }
+        .pay-icon.visa { color: #d4af37; }
+        .pay-details-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; padding: 16px; margin-top: 10px; text-align: center; }
+        .copy-box { display: flex; justify-content: space-between; align-items: center; background: white; border: 1px dashed #cbd5e1; padding: 8px 12px; border-radius: 10px; margin-top: 8px; }
+        .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -493,67 +167,61 @@
         <div class="quran-item">ادْعُ إِلَى سَبِيلِ رَبِّكَ بِالْحِكْمَةِ</div>
         <div class="quran-item">وَالْمَوْعِظَةِ الْحَسَنَةِ</div>
         <div class="quran-item">وَجَادِلْهُمْ بِالَّتِي هِيَ أَحْسَنُ</div>
-        <div class="quran-item">وَقُلْ رَبِّ زِدْنِي عِلْمًا</div>
-        <div class="quran-item">ن وَالْقَلَمِ وَمَا يَسْطُرُونَ</div>
-        <div class="quran-item">يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنْكُمْ</div>
-        <div class="quran-item">وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ</div>
-        <div class="quran-item">وَمَا أُوتِيتُمْ مِنَ الْعِلْمِ إِلَّا قَلِيلًا</div>
-        <div class="quran-item">قُلْ هَلْ يَسْتَوِي الَّذِينَ يَعْلَمُونَ وَالَّذِينَ لَا يَعْلَمُونَ</div>
     </div>
 
-    <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+    <div class="overlay" id="overlay" onclick="closeSidebar(); closeModal();"></div>
 
     <button class="menu-toggle-btn" id="menuBtn" onclick="openSidebar()" aria-label="فتح القائمة">
         <i class="fa-solid fa-bars"></i>
     </button>
 
-    <button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
-        <i class="fa-solid fa-heart"></i>
-        <span>تبرع</span>
-    </button>
+    <div class="top-left-actions">
+        <button class="donate-top-btn" onclick="openPage('دعم المنصة')" aria-label="تبرع">
+            <i class="fa-solid fa-heart"></i>
+            <span>تبرع</span>
+        </button>
+
+        <button class="auth-top-btn" id="authNavBtn" onclick="openAuthModal('signup')">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>سجل الآن</span>
+        </button>
+
+        <button class="history-top-btn" id="historyNavBtn" onclick="toggleHistoryModal()" style="display: none;" aria-label="سجل المحادثات">
+            <i class="fa-solid fa-book-open"></i>
+            <span>السجل</span>
+        </button>
+    </div>
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h3><i class="fa-solid fa-book-quran"></i> منصة ناظرني</h3>
-            <button class="close-btn" onclick="closeSidebar()" aria-label="إغلاق القائمة">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <button class="close-btn" onclick="closeSidebar()" aria-label="إغلاق القائمة"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <nav class="sidebar-menu">
             <div class="menu-section-title">أقسام الحوار والأسئلة</div>
-            <button class="menu-item active" onclick="openPage('سؤال ديني')">
-                <i class="fa-solid fa-circle-question"></i> سؤال ديني
-            </button>
-            <button class="menu-item" onclick="openPage('مناظرة')">
-                <i class="fa-solid fa-comments"></i> مناظرة
-            </button>
-            <button class="menu-item" onclick="openPage('لو كنت مسيحياً')">
-                <i class="fa-solid fa-cross"></i> لو كنت مسيحياً
-            </button>
-            <button class="menu-item" onclick="openPage('لو كنت يهودياً')">
-                <i class="fa-solid fa-star-of-david"></i> لو كنت يهودياً
-            </button>
-            <button class="menu-item" onclick="openPage('لو كنت ملحداً')">
-                <i class="fa-solid fa-atom"></i> لو كنت ملحداً
-            </button>
-            <button class="menu-item" onclick="openPage('لو كنت شيعياً')">
-                <i class="fa-solid fa-kaaba"></i> لو كنت شيعياً
-            </button>
-            <button class="menu-item" onclick="openPage('ديانة أخرى')">
-                <i class="fa-solid fa-globe"></i> ديانة أخرى
-            </button>
+            <button class="menu-item active" onclick="openPage('سؤال ديني')"><i class="fa-solid fa-circle-question"></i> سؤال ديني</button>
+            <button class="menu-item" onclick="openPage('مناظرة')"><i class="fa-solid fa-comments"></i> مناظرة</button>
+            <button class="menu-item" onclick="openPage('لو كنت مسيحياً')"><i class="fa-solid fa-cross"></i> لو كنت مسيحياً</button>
+            <button class="menu-item" onclick="openPage('لو كنت يهودياً')"><i class="fa-solid fa-star-of-david"></i> لو كنت يهودياً</button>
+            <button class="menu-item" onclick="openPage('لو كنت ملحداً')"><i class="fa-solid fa-atom"></i> لو كنت ملحداً</button>
+            <button class="menu-item" onclick="openPage('لو كنت شيعياً')"><i class="fa-solid fa-kaaba"></i> لو كنت شيعياً</button>
+            <button class="menu-item" onclick="openPage('ديانة أخرى')"><i class="fa-solid fa-globe"></i> ديانة أخرى</button>
 
             <div class="menu-divider"></div>
             <div class="menu-section-title">عن المنصة والثقة</div>
 
-            <button class="menu-item" onclick="openPage('الثقة والمراجع')">
-                <i class="fa-solid fa-shield-halved"></i> الثقة والمراجع العلمية
+            <button class="menu-item" onclick="openPage('الثقة والمراجع')"><i class="fa-solid fa-shield-halved"></i> الثقة والمراجع العلمية</button>
+            <button class="menu-item" onclick="openPage('المطور والابتكار')"><i class="fa-solid fa-code"></i> المطور ومبتكر الفكرة</button>
+            <button class="menu-item" onclick="openPage('دعم المنصة')"><i class="fa-solid fa-hand-holding-dollar"></i> دعم المنصة والتبرع</button>
+            
+            <!-- زر لوحة المدير (يظهر حصرياً لحمزة) -->
+            <button class="menu-item" id="adminMenuBtn" onclick="openAdminModal()" style="display: none; color: #e11d48; font-weight: 700;">
+                <i class="fa-solid fa-user-shield" style="background: rgba(225,29,72,0.1); color: #e11d48;"></i> قاعدة المدير
             </button>
-            <button class="menu-item" onclick="openPage('المطور والابتكار')">
-                <i class="fa-solid fa-code"></i> المطور ومبتكر الفكرة
-            </button>
-            <button class="menu-item" onclick="openPage('دعم المنصة')">
-                <i class="fa-solid fa-hand-holding-dollar"></i> دعم المنصة والتبرع
+            
+            <div class="menu-divider"></div>
+            <button class="menu-item auth-sidebar-btn" id="sidebarAuthBtn" onclick="openAuthModal('signup')">
+                <i class="fa-solid fa-user-plus"></i> سجل الآن / تسجيل الدخول
             </button>
         </nav>
     </aside>
@@ -567,62 +235,30 @@
         <div class="main-view-area">
             <div class="chat-messages" id="chatMessages">
                 <div class="message bot-message">
-                    أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">سؤال ديني</b>. اطرح سؤالك أو استفسارك وسنرد عليك بالاستناد إلى الأدلة والمصادر المعتمدة.
+                    أهلاً بك في منصة <b>"ناظرني"</b> للحوار والدراسات الدينية. أنت الآن في قسم <b style="color: var(--primary-medium);">سؤال ديني</b>.
                 </div>
             </div>
 
             <div class="static-page-view" id="page-trust">
                 <h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
-                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى.</p>
-
-                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم.</p>
-
-                <div class="trust-detailed-box">
-                    <h3><i class="fa-solid fa-books"></i> قائمة الكتب والمصادر المرجعية المعتمدة في النظام:</h3>
-                    <p style="font-size: 0.92rem; color: #64748b; margin-top: 4px;">هذه عينة من المراجع والمصادر الرقمية المعتمدة لتقديم إجابات موثقة بالكامل:</p>
-                    <div class="books-grid">
-                        <span class="book-badge">القرآن الكريم</span>
-                        <span class="book-badge">صحيح البخاري</span>
-                        <span class="book-badge">مجموع فتاوى ابن تيمية</span>
-                        <span class="book-badge">تفسير الطبري</span>
-                        <span class="book-badge">تفسير ابن كثير</span>
-                        <span class="book-badge">المغني لابن قدامة</span>
-                        <span class="book-badge">إظهار الحق</span>
-                        <span class="book-badge">النشر في القراءات العشر</span>
-                        <span class="book-badge">درء تعارض العقل والنقل</span>
-                        <span class="book-badge">المستصفى للغزالي</span>
-                        <span class="book-badge">الموافقات للشاطبي</span>
-                        <span class="book-badge">حياة الصحابة</span>
-                        <span class="book-badge">فقه السنة</span>
-                        <span class="book-badge">الروض الأنف</span>
-                        <span class="book-badge">مقدمة ابن الصلاح</span>
-                        <span class="book-badge">الباعث الحثيث</span>
-                    </div>
-                </div>
+                <p>تستند منصة <b>"ناظرني"</b> إلى منهج علمي رصين وموثوق...</p>
             </div>
 
             <div class="static-page-view" id="page-developer">
                 <h2><i class="fa-solid fa-user-gear" style="color: var(--primary-medium);"></i> المطور ومبتكر الفكرة</h2>
                 <div class="dev-info-box">
-                    <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 5px;">تم تصميم وتطوير وبرمجة منصة</p>
                     <h3 style="color: var(--primary-dark); font-size: 1.8rem; margin-bottom: 10px;">« ناظرني »</h3>
-                    <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium); margin-top: 10px;">👤 حمزة الدكماوي</p>
-                    <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px; max-width: 500px; margin-left: auto; margin-right: auto;">مبتكر ومطور الفكرة، ومهندس البرمجيات المسؤول عن بناء وتصميم هذه المنصة الحوارية والدينية الذكية لخدمة الباحثين عن الحقيقة والعلم الشرعي الموثق.</p>
-                    
-                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn">
-                        <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور عبر واتساب (01014151760)
-                    </a>
+                    <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium);">👤 حمزة الدكماوي</p>
+                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تواصل مع المطور</a>
                 </div>
             </div>
 
             <div class="static-page-view" id="page-donate">
                 <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير منصة ناظرني</h2>
                 <div class="donate-box">
-                    <p style="font-size: 1.05rem; color: #334155; margin-bottom: 10px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي، وتحسين سرعة الاستجابة، وتوسيع قاعدة بيانات المراجع الإسلامية لتظل المنصة مجانية بالكامل ومتاحة للجميع دون إعلانات مزعجة.</p>
-                    <p style="font-size: 0.92rem; color: #64748b; margin-bottom: 20px;">مساهمتك في دعم المشروع تعتبر صدقة جارية تساهم في نشر العلم النافع والرد على الشبهات بالحكمة والموعظة الحسنة.</p>
-                    
-                    <button class="donate-btn-placeholder" onclick="alert('سيتم ربط بوابة الدفع الإلكتروني والفيزا قريباً جداً، شكراً لدعمك الكريم للمشروع!')">
-                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور (فيزا / وسائل الدفع)
+                    <p>مساهمتك في دعم المشروع تعتبر صدقة جارية...</p>
+                    <button class="donate-btn-placeholder" onclick="openDonateModal()">
+                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور
                     </button>
                 </div>
             </div>
@@ -630,135 +266,223 @@
 
         <div class="chat-input-area" id="chatInputArea">
             <input type="text" id="userInput" placeholder="اكتب سؤالك أو استفسارك هنا..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">
-                <i class="fa-solid fa-paper-plane"></i> إرسال
-            </button>
+            <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i> إرسال</button>
         </div>
     </main>
 
+    <!-- نافذة التسجيل مع Autofill مفعل -->
+    <div class="modal-container" id="authModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h3 id="modalTitle">إنشاء حساب جديد</h3>
+                <p id="modalSubTitle">انضم إلى منصة ناظرني وحافظ على سجل محادثاتك</p>
+            </div>
+            
+            <form id="authForm" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group" id="nameGroup">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="authName" name="name" autocomplete="name" placeholder="أدخل اسمك">
+                </div>
+                
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="authEmail" name="email" autocomplete="email" placeholder="example@domain.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="authPassword" name="current-password" autocomplete="current-password" placeholder="8 أحرف أو أرقام على الأقل" required minlength="8">
+                </div>
+
+                <div class="auth-error" id="authError"></div>
+                <button type="submit" class="auth-submit-btn" id="authSubmitBtn">تسجيل الحساب</button>
+            </form>
+
+            <div class="auth-divider"><span>أو</span></div>
+            <div class="google-btn-wrapper">
+                <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
+                <div class="g_id_signin" data-type="standard"></div>
+            </div>
+
+            <div class="modal-footer">
+                <span id="toggleAuthText">لديك حساب بالفعل؟</span>
+                <a href="#" id="toggleAuthLink" onclick="toggleAuthMode(event)">تسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة قاعدة المدير -->
+    <div class="modal-container" id="adminModal">
+        <div class="modal-card admin-card">
+            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-shield" style="color: #e11d48;"></i> قاعدة المدير والتحكم</h3>
+                <p id="adminStatsText">جاري تحميل الإحصائيات...</p>
+            </div>
+            <h4 style="margin-bottom: 8px; color: var(--primary-dark);">المستخدمون المسجلون:</h4>
+            <div class="admin-list" id="adminUsersList" style="margin-bottom: 15px;"></div>
+            <h4 style="margin-bottom: 8px; color: var(--primary-dark);">آخر المحادثات:</h4>
+            <div class="admin-list" id="adminChatsList"></div>
+        </div>
+    </div>
+
+    <!-- نافذة السجل والتبرع -->
+    <div class="modal-container" id="historyModal">
+        <div class="modal-card history-card">
+            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header"><h3><i class="fa-solid fa-book-open"></i> سجل المحادثات</h3></div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+    </div>
+
+    <div class="modal-container" id="donateModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header"><h3><i class="fa-solid fa-heart" style="color: #e11d48;"></i> دعم المنصة</h3></div>
+            <div class="payment-options">
+                <div class="pay-option" onclick="showPayDetails('vodafone')"><i class="fa-solid fa-mobile-screen-button pay-icon vcash"></i><div><strong>فودافون كاش</strong><p>01014151760</p></div></div>
+                <div class="pay-option" onclick="showPayDetails('instapay')"><i class="fa-solid fa-bolt pay-icon instapay"></i><div><strong>إنستا باي</strong><p>hamza@instapay</p></div></div>
+            </div>
+            <div class="pay-details-box" id="payDetailsBox" style="display: none;">
+                <div id="vodafoneDetails" style="display: none;"><div class="copy-box"><span>01014151760</span><button onclick="copyText('01014151760')">نسخ</button></div></div>
+                <div id="instapayDetails" style="display: none;"><div class="copy-box"><span>hamza@instapay</span><button onclick="copyText('hamza@instapay')">نسخ</button></div></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentCategory = 'سؤال ديني';
+        let isLoginMode = false;
+        let currentUser = JSON.parse(localStorage.getItem('nazirni_user')) || null;
 
-        function openSidebar() {
-            document.getElementById('sidebar').classList.add('open');
-            document.getElementById('overlay').classList.add('show');
-            document.getElementById('menuBtn').style.display = 'none';
-        }
+        document.addEventListener('DOMContentLoaded', () => { checkUserAuthStatus(); });
 
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('overlay').classList.remove('show');
-            setTimeout(() => { document.getElementById('menuBtn').style.display = 'flex'; }, 200);
-        }
+        function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('show'); document.getElementById('menuBtn').style.display = 'none'; }
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); setTimeout(() => { document.getElementById('menuBtn').style.display = 'flex'; }, 200); }
 
-        function openPage(categoryName) {
-            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            if(window.event && window.event.currentTarget && window.event.currentTarget.classList) {
-                window.event.currentTarget.classList.add('active');
-            }
-            
-            currentCategory = categoryName;
-            document.getElementById('currentCategoryText').textContent = 'القسم الحالي: ' + categoryName;
+        function openPage(cat) {
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
+            currentCategory = cat;
+            document.getElementById('currentCategoryText').textContent = 'القسم الحالي: ' + cat;
 
             const chatMessages = document.getElementById('chatMessages');
             const chatInputArea = document.getElementById('chatInputArea');
             const pageTrust = document.getElementById('page-trust');
-            const pageDeveloper = document.getElementById('page-developer');
+            const pageDev = document.getElementById('page-developer');
             const pageDonate = document.getElementById('page-donate');
 
-            chatMessages.style.display = 'none';
-            chatInputArea.style.display = 'none';
-            pageTrust.classList.remove('active');
-            pageDeveloper.classList.remove('active');
-            pageDonate.classList.remove('active');
-
-            if (categoryName === 'الثقة والمراجع') {
-                pageTrust.classList.add('active');
-            } else if (categoryName === 'المطور والابتكار') {
-                pageDeveloper.classList.add('active');
-            } else if (categoryName === 'دعم المنصة') {
-                pageDonate.classList.add('active');
-            } else {
-                chatMessages.style.display = 'flex';
-                chatInputArea.style.display = 'flex';
-
-                chatMessages.innerHTML = '';
-
-                const botDiv = document.createElement('div');
-                botDiv.className = 'message bot-message';
-                botDiv.innerHTML = `تم الانتقال إلى قسم <b>${categoryName}</b>.<br>تفضل بطرح سؤالك أو استفسارك وسنرد عليك وفق منهجية هذا القسم.`;
-                
-                chatMessages.appendChild(botDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
+            chatMessages.style.display = (['الثقة والمراجع', 'المطور والابتكار', 'دعم المنصة'].includes(cat)) ? 'none' : 'flex';
+            chatInputArea.style.display = chatMessages.style.display;
+            pageTrust.classList.toggle('active', cat === 'الثقة والمراجع');
+            pageDev.classList.toggle('active', cat === 'المطور والابتكار');
+            pageDonate.classList.toggle('active', cat === 'دعم المنصة');
             closeSidebar();
         }
 
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const messages = document.getElementById('chatMessages');
             const text = input.value.trim();
-
             if (!text) return;
 
-            // إظهار رسالة المستخدم
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-message';
             userDiv.textContent = text;
             messages.appendChild(userDiv);
-
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
-            // إظهار مؤشر الكتابة
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot-message typing-indicator';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-            messages.appendChild(typingDiv);
-            messages.scrollTop = messages.scrollHeight;
-
             try {
-                // إرسال الطلب لـ API الخادم
-                const response = await fetch('/api/chat', {
+                const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, category: currentCategory })
+                    body: JSON.stringify({ message: text, category: currentCategory, email: currentUser ? currentUser.email : 'guest' })
                 });
-
-                const data = await response.json();
-                
-                const indicator = document.getElementById('typingIndicator');
-                if (indicator) indicator.remove();
-
+                const data = await res.json();
                 const botDiv = document.createElement('div');
                 botDiv.className = 'message bot-message';
-                
-                if (data && data.reply) {
-                    botDiv.innerHTML = data.reply.replace(/\n/g, '<br>');
-                } else {
-                    botDiv.textContent = 'حدث خطأ في استلام الرد، يرجى المحاولة مرة أخرى.';
-                }
-
+                botDiv.innerHTML = data.reply.replace(/\n/g, '<br>');
                 messages.appendChild(botDiv);
                 messages.scrollTop = messages.scrollHeight;
-
-            } catch (error) {
-                const indicator = document.getElementById('typingIndicator');
-                if (indicator) indicator.remove();
-
-                const botDiv = document.createElement('div');
-                botDiv.className = 'message bot-message';
-                botDiv.textContent = 'تعذر الاتصال بالخادم، يرجى التأكد من الاتصال وإعادة المحاولة.';
-                messages.appendChild(botDiv);
-                messages.scrollTop = messages.scrollHeight;
+            } catch (err) {
+                console.error(err);
             }
         }
+
+        function openAuthModal(mode = 'signup') { isLoginMode = (mode === 'login'); updateAuthModalUI(); document.getElementById('authModal').classList.add('open'); closeSidebar(); }
+        function openDonateModal() { document.getElementById('donateModal').classList.add('open'); }
+        function toggleHistoryModal() { document.getElementById('historyModal').classList.toggle('open'); }
+        async function openAdminModal() {
+            document.getElementById('adminModal').classList.add('open');
+            closeSidebar();
+            try {
+                const res = await fetch(`/api/admin/data?email=${currentUser.email}`);
+                const data = await res.json();
+                if(data.success) {
+                    document.getElementById('adminStatsText').textContent = `إجمالي المستخدمين: ${data.total_users} | إجمالي الزيارات: ${data.total_visits}`;
+                    document.getElementById('adminUsersList').innerHTML = data.users.map(u => `<div class="admin-row"><span>${u.name} (${u.email})</span><small>${u.date}</small></div>`).join('');
+                    document.getElementById('adminChatsList').innerHTML = data.chats.map(c => `<div class="admin-row"><span><b>${c.email}:</b> ${c.question}</span><small>${c.category}</small></div>`).join('');
+                }
+            } catch(e) { alert('خطأ في جلب بيانات لوحة المدير'); }
+        }
+
+        function closeModal() { document.querySelectorAll('.modal-container').forEach(m => m.classList.remove('open')); }
+        function toggleAuthMode(e) { if(e) e.preventDefault(); isLoginMode = !isLoginMode; updateAuthModalUI(); }
+
+        function updateAuthModalUI() {
+            document.getElementById('modalTitle').textContent = isLoginMode ? 'تسجيل الدخول' : 'إنشاء حساب جديد';
+            document.getElementById('nameGroup').style.display = isLoginMode ? 'none' : 'block';
+            document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'دخول' : 'تسجيل الحساب';
+            document.getElementById('toggleAuthText').textContent = isLoginMode ? 'ليس لديك حساب؟' : 'لديك حساب بالفعل؟';
+            document.getElementById('toggleAuthLink').textContent = isLoginMode ? 'إنشاء واحد' : 'تسجيل الدخول';
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const name = isLoginMode ? '' : document.getElementById('authName').value;
+
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: isLoginMode ? 'login' : 'signup', email, password, name })
+                });
+                const data = await res.json();
+                if(data.success) {
+                    saveUserAndLogin({ name: data.name || email.split('@')[0], email: email });
+                } else {
+                    alert(data.message);
+                }
+            } catch(err) { alert('حدث خطأ في الاتصال بالسيرفر'); }
+        }
+
+        function saveUserAndLogin(user) {
+            currentUser = user;
+            localStorage.setItem('nazirni_user', JSON.stringify(user));
+            checkUserAuthStatus();
+            closeModal();
+        }
+
+        function checkUserAuthStatus() {
+            const isHamza = currentUser && currentUser.email === 'hamza.dokmah391@gmail.com';
+            document.getElementById('authNavBtn').style.display = currentUser ? 'none' : 'flex';
+            document.getElementById('historyNavBtn').style.display = currentUser ? 'flex' : 'none';
+            document.getElementById('sidebarAuthBtn').style.display = currentUser ? 'none' : 'flex';
+            document.getElementById('adminMenuBtn').style.display = isHamza ? 'flex' : 'none';
+        }
+
+        function showPayDetails(type) {
+            document.getElementById('payDetailsBox').style.display = 'block';
+            document.getElementById('vodafoneDetails').style.display = (type === 'vodafone') ? 'block' : 'none';
+            document.getElementById('instapayDetails').style.display = (type === 'instapay') ? 'block' : 'none';
+        }
+        function copyText(text) { navigator.clipboard.writeText(text); alert('تم النسخ: ' + text); }
     </script>
 </body>
 </html>
