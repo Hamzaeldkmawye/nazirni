@@ -96,7 +96,13 @@
             flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 24px; padding: 28px; display: none; line-height: 1.8;
         }
         .static-page-view.active { display: block; }
-        .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; }
+        .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .static-page-view p { color: #334155; margin-bottom: 14px; font-size: 1.02rem; }
+
+        .trust-detailed-box {
+            background: rgba(27, 77, 62, 0.03); border: 1px solid rgba(27, 77, 62, 0.12); border-radius: 16px; padding: 20px; margin-top: 15px;
+        }
+        .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
         .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
         .book-badge { background: #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 700; text-align: center; }
@@ -138,7 +144,6 @@
         .history-card, .admin-card { max-width: 650px; }
         .history-list, .admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .history-item, .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-        .clear-history-btn { background: #fee2e2; color: #dc2626; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
 
         .payment-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .pay-option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 14px; cursor: pointer; }
@@ -214,7 +219,6 @@
             <button class="menu-item" onclick="openPage('المطور والابتكار')"><i class="fa-solid fa-code"></i> المطور ومبتكر الفكرة</button>
             <button class="menu-item" onclick="openPage('دعم المنصة')"><i class="fa-solid fa-hand-holding-dollar"></i> دعم المنصة والتبرع</button>
             
-            <!-- زر لوحة المدير (يظهر حصرياً لحمزة) -->
             <button class="menu-item" id="adminMenuBtn" onclick="openAdminModal()" style="display: none; color: #e11d48; font-weight: 700;">
                 <i class="fa-solid fa-user-shield" style="background: rgba(225,29,72,0.1); color: #e11d48;"></i> قاعدة المدير
             </button>
@@ -239,26 +243,59 @@
                 </div>
             </div>
 
+            <!-- صفحة الثقة والمراجع العلمية كاملة بالمحتوى الأصلي -->
             <div class="static-page-view" id="page-trust">
                 <h2><i class="fa-solid fa-shield-check" style="color: var(--primary-medium);"></i> الثقة والمراجع العلمية المعتمدة</h2>
-                <p>تستند منصة <b>"ناظرني"</b> إلى منهج علمي رصين وموثوق...</p>
+                <p>تستند منصة <b>"ناظرني"</b> في كافة إجاباتها وتحليلاتها وحواراتها العقائدية إلى منهج علمي رصين وموثوق، مبتعدين عن الاجتهادات الشخصية أو الآراء العشوائية. نحن نعتمد كلياً على أصول التشريع الإسلامي المتمثلة في <b>القرآن الكريم والسنة النبوية الصحيحة</b>، مستضيئين بفهم سلف الأمة وأئمة الهدى.</p>
+
+                <p>تم تدعيم النظام وتغذية الذكاء الاصطناعي بمكتبة ضخمة تضم أمهات الكتب الإسلامية والموسوعات الفقهية والتفسيرية والعقائدية لكبار العلماء والمحققين عبر التاريخ الإسلامي، مثل الإمام البخاري، شيخ الإسلام ابن تيمية، الإمام ابن كثير، الإمام الطبري، الإمام الغزالي، الإمام الشاطبي، وغيرهم من الأعلام المعتبرين لضمان أعلى معايير الدقة والموضوعية العلمية للمستخدم.</p>
+
+                <div class="trust-detailed-box">
+                    <h3><i class="fa-solid fa-books"></i> قائمة الكتب والمصادر المرجعية المعتمدة في النظام:</h3>
+                    <p style="font-size: 0.92rem; color: #64748b; margin-top: 4px;">هذه عينة من المراجع والمصادر الرقمية المعتمدة لتقديم إجابات موثقة بالكامل:</p>
+                    <div class="books-grid">
+                        <span class="book-badge">القرآن الكريم</span>
+                        <span class="book-badge">صحيح البخاري</span>
+                        <span class="book-badge">مجموع فتاوى ابن تيمية</span>
+                        <span class="book-badge">تفسير الطبري</span>
+                        <span class="book-badge">تفسير ابن كثير</span>
+                        <span class="book-badge">المغني لابن قدامة</span>
+                        <span class="book-badge">إظهار الحق</span>
+                        <span class="book-badge">النشر في القراءات العشر</span>
+                        <span class="book-badge">درء تعارض العقل والنقل</span>
+                        <span class="book-badge">المستصفى للغزالي</span>
+                        <span class="book-badge">الموافقات للشاطبي</span>
+                        <span class="book-badge">حياة الصحابة</span>
+                        <span class="book-badge">فقه السنة</span>
+                        <span class="book-badge">الروض الأنف</span>
+                        <span class="book-badge">مقدمة ابن الصلاح</span>
+                        <span class="book-badge">الباعث الحثيث</span>
+                    </div>
+                </div>
             </div>
 
             <div class="static-page-view" id="page-developer">
                 <h2><i class="fa-solid fa-user-gear" style="color: var(--primary-medium);"></i> المطور ومبتكر الفكرة</h2>
                 <div class="dev-info-box">
+                    <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 5px;">تم تصميم وتطوير وبرمجة منصة</p>
                     <h3 style="color: var(--primary-dark); font-size: 1.8rem; margin-bottom: 10px;">« ناظرني »</h3>
-                    <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium);">👤 حمزة الدكماوي</p>
-                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn"><i class="fa-brands fa-whatsapp"></i> تواصل مع المطور</a>
+                    <p style="font-size: 1.25rem; font-weight: 700; color: var(--primary-medium); margin-top: 10px;">👤 حمزة الدكماوي</p>
+                    <p style="font-size: 0.95rem; color: #64748b; margin-top: 6px; max-width: 500px; margin-left: auto; margin-right: auto;">مبتكر ومطور الفكرة، ومهندس البرمجيات المسؤول عن بناء وتصميم هذه المنصة الحوارية والدينية الذكية لخدمة الباحثين عن الحقيقة والعلم الشرعي الموثق.</p>
+                    
+                    <a href="https://wa.me/201014151760" target="_blank" class="dev-whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp"></i> تواصل مع المطور عبر واتساب (01014151760)
+                    </a>
                 </div>
             </div>
 
             <div class="static-page-view" id="page-donate">
                 <h2><i class="fa-solid fa-hand-holding-dollar" style="color: #e11d48;"></i> دعم وتطوير منصة ناظرني</h2>
                 <div class="donate-box">
-                    <p>مساهمتك في دعم المشروع تعتبر صدقة جارية...</p>
+                    <p style="font-size: 1.05rem; color: #334155; margin-bottom: 10px;">نسعى دائماً لتطوير خوادم الذكاء الاصطناعي، وتحسين سرعة الاستجابة، وتوسيع قاعدة بيانات المراجع الإسلامية لتظل المنصة مجانية بالكامل ومتاحة للجميع دون إعلانات مزعجة.</p>
+                    <p style="font-size: 0.92rem; color: #64748b; margin-bottom: 20px;">مساهمتك في دعم المشروع تعتبر صدقة جارية تساهم في نشر العلم النافع والرد على الشبهات بالحكمة والموعظة الحسنة.</p>
+                    
                     <button class="donate-btn-placeholder" onclick="openDonateModal()">
-                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور
+                        <i class="fa-solid fa-credit-card"></i> التبرع ودعم المطور (فودافون كاش / إنستا باي / فيزا)
                     </button>
                 </div>
             </div>
@@ -270,7 +307,7 @@
         </div>
     </main>
 
-    <!-- نافذة التسجيل مع Autofill مفعل -->
+    <!-- نافذة التسجيل -->
     <div class="modal-container" id="authModal">
         <div class="modal-card">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -312,7 +349,7 @@
         </div>
     </div>
 
-    <!-- نافذة قاعدة المدير -->
+    <!-- Modals -->
     <div class="modal-container" id="adminModal">
         <div class="modal-card admin-card">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -327,7 +364,6 @@
         </div>
     </div>
 
-    <!-- نافذة السجل والتبرع -->
     <div class="modal-container" id="historyModal">
         <div class="modal-card history-card">
             <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
