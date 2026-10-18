@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, jsonify
 import os
 from google import genai
@@ -61,11 +60,11 @@ def chat():
 
         return jsonify({"reply": reply_text}), 200
 
-except Exception as e:
-    app.logger.exception("Gemini API error")
-    return jsonify({
-        "reply": f"نوع الخطأ: {type(e).__name__} - {str(e)}"
-    }), 500
+    except Exception as e:
+        app.logger.exception("Gemini API error")
+        return jsonify({
+            "reply": f"نوع الخطأ: {type(e).__name__} - {str(e)}"
+        }), 500
 
 
 if __name__ == "__main__":
