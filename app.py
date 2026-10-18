@@ -25,10 +25,13 @@ def chat():
         system_instruction = f"أنت مساعد ذكي ومختص في منصة 'ناظرني' للحوار والدراسات الدينية. القسم الحالي هو: {category}. أجب بدقة وعلم وموضوعية."
         
         # استخدام الموديل القياسي المدعوم
-        model = genai.GenerativeModel(
-            model_name="gemini-pro",
-            system_instruction=system_instruction
-        )
+      model = genai.GenerativeModel(
+    model_name="gemini-pro"
+)
+
+response = model.generate_content(
+    f"{system_instruction}\n\nسؤال المستخدم: {user_message}"
+)
 
         response = model.generate_content(user_message)
         reply_text = response.text if response and response.text else "لم يتم تلقي رد واضح من نموذج الذكاء الاصطناعي."
