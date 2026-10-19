@@ -9,10 +9,25 @@ import os
 import requests
 import sqlite3
 import time
+from supabase import create_client, Client
 
 app = Flask(__name__)
 
-# جمع المفتاح من أي اسم محتمل في متغيرات البيئة في Vercel
+# ----------------------------------------------------
+# 1. إعدادات Supabase لربط قاعدة بيانات الكتب
+# ----------------------------------------------------
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://wppcxzceqdytvrukepwt.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "sb_publishable_rWYN7qbep0gEnNOkGlAmNw_6wj2q8hW")
+
+try:
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+except Exception as e:
+    app.logger.error(f"Supabase Init Error: {e}")
+    supabase = None
+
+# ----------------------------------------------------
+# 2. إعداد مفاتيح Gemini API للنظام التناوبي (من البيئة بأمان تام)
+# ----------------------------------------------------
 API_KEYS = []
 for env_name in ["GEMINI_API_KEY", "GEMINI_KEY_1", "GEMINI_KEY"]:
     val = os.environ.get(env_name)
@@ -33,7 +48,9 @@ def get_next_api_key():
     key_index += 1
     return key
 
-# استخدام مجلد tmp المؤقت في Vercel
+# ----------------------------------------------------
+# 3. إعداد قواعد البيانات المحلية (SQLite) لبيانات المستخدمين والزيارات
+# ----------------------------------------------------
 DB_FILE = os.path.join('/tmp', 'database.db')
 
 def init_db():
@@ -73,7 +90,9 @@ def init_db():
 
 init_db()
 
-
+# ----------------------------------------------------
+# 4. مسارات تطبيق Flask
+# ----------------------------------------------------
 @app.route("/")
 def index():
     try:
@@ -171,6 +190,9 @@ def admin_data():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
+# ----------------------------------------------------
+# 5. دالة الـ Chat المحسّنة (تستعلم من الكتب المرفوعة في Supabase)
+# ----------------------------------------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
@@ -185,11 +207,52 @@ def chat():
         if not API_KEYS:
             return jsonify({"reply": "مفاتيح الذكاء الاصطناعي غير مُعدة على السيرفر."}), 500
 
+        # أ) جلب النصوص ذات الصلة من Supabase
+        context_text = ""
+        current_key = get_next_api_key()
+        
+        if supabase and current_key:
+            try:
+                # 1. تحويل السؤال إلى Vector باستخدام Gemini Embedding API
+                embed_url = f"https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={current_key}"
+                embed_payload = {
+                    "model": "models/text-embedding-004",
+                    "content": {"parts": [{"text": user_message}]}
+                }
+                embed_res = requests.post(embed_url, json=embed_payload, timeout=10)
+                
+                if embed_res.status_code == 200:
+                    query_vector = embed_res.json().get("embedding", {}).get("values", [])
+                    
+                    if query_vector:
+                        # 2. الاستعلام من Supabase عن أكثر 3 فقرات مطابقة
+                        rpc_res = supabase.rpc(
+                            "match_book_chunks",
+                            {
+                                "query_embedding": query_vector,
+                                "match_threshold": 0.25,
+                                "match_count": 3
+                            }
+                        ).execute()
+                        
+                        chunks = rpc_res.data or []
+                        for c in chunks:
+                            context_text += f"\n- الكتاب: {c.get('book_name')} (صفحة {c.get('page_number')})\nالنص: {c.get('content')}\n---"
+            except Exception as search_err:
+                app.logger.error(f"Vector search failed: {search_err}")
+
+        # ب) صياغة تعليمات النظام
         system_instruction = (
-            "أنت مساعد ذكي في منصة ناظرني للحوار والدراسات الدينية. "
+            "أنت مساعد ذكي وموثوق في منصة ناظرني للحوار والدراسات الدينية. "
             f"القسم الحالي هو: {category}. "
-            "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة."
+            "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة. "
         )
+        
+        if context_text:
+            system_instruction += (
+                "\n\nاستعن بالنصوص التالية المستخرجة من المكتبة للإجابة بدقة موثقة مع ذكر المراجع إن أمكن:\n"
+                f"{context_text}"
+            )
 
         payload = {
             "system_instruction": {"parts": [{"text": system_instruction}]},
@@ -199,15 +262,14 @@ def chat():
         reply_text = ""
         success = False
 
-        # الخطوة 1: استنزاف المحاولات على نموذج الفلاش الأساسي أولاً بكل المفاتيح المتاحة
+        # ج) محاولة التوليد عبر Gemini Flash
         total_keys_to_try = min(len(API_KEYS), 3)
-        
         for _ in range(total_keys_to_try):
-            current_key = get_next_api_key()
-            if not current_key:
+            key = get_next_api_key()
+            if not key:
                 break
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={current_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
             try:
                 response = requests.post(url, json=payload, timeout=20)
                 if response.status_code == 200:
@@ -227,17 +289,17 @@ def chat():
                     break
             except Exception:
                 time.sleep(0.3)
-            
+
             if success:
                 break
 
-        # الخطوة 2: الحالات الحرجة جداً (لو فشل الفلاش في كل المحاولات، نلجأ للـ pro كاحتياطي أخیر)
+        # د) المحاولة عبر Gemini Pro في حالة تعذر Flash
         if not success:
-            for _ in range(2): # محاولتين سريعتين كحد أقصى على البرو
-                current_key = get_next_api_key()
-                if not current_key:
+            for _ in range(2):
+                key = get_next_api_key()
+                if not key:
                     break
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={current_key}"
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={key}"
                 try:
                     response = requests.post(url, json=payload, timeout=25)
                     if response.status_code == 200:
@@ -261,6 +323,7 @@ def chat():
         if not success or not reply_text:
             return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
 
+        # هـ) حفظ المحادثة في قاعدة البيانات المحلية
         try:
             conn = sqlite3.connect(DB_FILE)
             cursor = conn.cursor()
