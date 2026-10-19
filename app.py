@@ -114,7 +114,6 @@ def handle_auth():
 @app.route("/api/admin/data", methods=["GET"])
 def admin_data():
     email = request.args.get("email", "").strip().lower()
-    # التحقق من الإيميل الجديد للـ Admin
     if email != "hamzadakma391@gmail.com":
         return jsonify({"success": False, "message": "غير مسموح بالدخول!"}), 403
 
@@ -147,6 +146,36 @@ def admin_data():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
+# مسار جديد لجلب المحادثات الخاصة بالمستخدم وتزامنها بين الأجهزة
+@app.route("/api/chats", methods=["GET"])
+def get_user_chats():
+    email = request.args.get("email", "").strip().lower()
+    category = request.args.get("category", "").strip()
+
+    if not email or email == "guest":
+        return jsonify({"success": False, "chats": []})
+
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        
+        if category:
+            cursor.execute('SELECT question, reply FROM chats WHERE email = ? AND category = ? ORDER BY id ASC', (email, category))
+            rows = cursor.fetchall()
+            chat_list = []
+            for row in rows:
+                chat_list.append({"sender": "user", "text": row[0]})
+                chat_list.append({"sender": "bot", "text": row[1]})
+        else:
+            chat_list = []
+
+        conn.close()
+        return jsonify({"success": True, "chats": chat_list})
+    except Exception as e:
+        app.logger.exception("Get chats error")
+        return jsonify({"success": False, "chats": []})
+
+
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
@@ -167,7 +196,7 @@ def chat():
             "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة."
         )
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
 
         payload = {
             "system_instruction": {"parts": [{"text": system_instruction}]},
