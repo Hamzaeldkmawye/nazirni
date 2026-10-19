@@ -12,7 +12,6 @@ import time
 
 app = Flask(__name__)
 
-# جمع كل المفاتيح التي تبدأ بـ GEMINI_KEY_ أو المفتاح الافتراضي من متغيرات البيئة في Vercel
 # جمع المفتاح من أي اسم محتمل في متغيرات البيئة في Vercel
 API_KEYS = []
 for env_name in ["GEMINI_API_KEY", "GEMINI_KEY_1", "GEMINI_KEY"]:
@@ -20,7 +19,6 @@ for env_name in ["GEMINI_API_KEY", "GEMINI_KEY_1", "GEMINI_KEY"]:
     if val and val.strip():
         API_KEYS.append(val.strip())
 
-# إذا كان هناك مفاتيح إضافية تبدأ بـ GEMINI_KEY_
 for key, value in os.environ.items():
     if key.startswith("GEMINI_KEY_") and value.strip() and value.strip() not in API_KEYS:
         API_KEYS.append(value.strip())
@@ -198,11 +196,10 @@ def chat():
             "contents": [{"parts": [{"text": user_message}]}]
         }
 
-        # استخدام النموذج الأساسي المستقر والرسمي من جوجل
-        models = ["gemini-1.5-flash", "gemini-1.5-pro"]
         reply_text = ""
         success = False
 
+        # الخطوة 1: استنزاف المحاولات على نموذج الفلاش الأساسي أولاً بكل المفاتيح المتاحة
         total_keys_to_try = min(len(API_KEYS), 3)
         
         for _ in range(total_keys_to_try):
@@ -210,9 +207,37 @@ def chat():
             if not current_key:
                 break
 
-            for model in models:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={current_key}"
-                
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={current_key}"
+            try:
+                response = requests.post(url, json=payload, timeout=20)
+                if response.status_code == 200:
+                    res_data = response.json()
+                    candidates = res_data.get("candidates", [])
+                    if candidates:
+                        parts = candidates[0].get("content", {}).get("parts", [])
+                        if parts:
+                            reply_text = parts[0].get("text", "")
+                            if reply_text:
+                                success = True
+                                break
+                elif response.status_code in [429, 503]:
+                    time.sleep(0.3)
+                    continue
+                else:
+                    break
+            except Exception:
+                time.sleep(0.3)
+            
+            if success:
+                break
+
+        # الخطوة 2: الحالات الحرجة جداً (لو فشل الفلاش في كل المحاولات، نلجأ للـ pro كاحتياطي أخیر)
+        if not success:
+            for _ in range(2): # محاولتين سريعتين كحد أقصى على البرو
+                current_key = get_next_api_key()
+                if not current_key:
+                    break
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={current_key}"
                 try:
                     response = requests.post(url, json=payload, timeout=25)
                     if response.status_code == 200:
@@ -228,13 +253,10 @@ def chat():
                     elif response.status_code in [429, 503]:
                         time.sleep(0.5)
                         continue
-                    else:
-                        break
                 except Exception:
                     time.sleep(0.5)
-            
-            if success:
-                break
+                if success:
+                    break
 
         if not success or not reply_text:
             return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
@@ -249,18 +271,6 @@ def chat():
             conn.commit()
             conn.close()
         except Exception as db_err:
-            app.logger.error(f"Failed to save chat: {db_err}")
-
-        return jsonify({"reply": reply_text}), 200
-
-    except Exception as e:
-        app.logger.exception("Gemini API error")
-        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
-
-
-if __name__ == "__main__":
-    app.run(debug=False)
-ept Exception as db_err:
             app.logger.error(f"Failed to save chat: {db_err}")
 
         return jsonify({"reply": reply_text}), 200
