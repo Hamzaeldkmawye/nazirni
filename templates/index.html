@@ -148,11 +148,19 @@
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
+        /* منطقة كتابة السؤال - تصميم أنيق وزر إرسال دائري */
         .chat-input-area {
-            display: flex; gap: 12px; background: rgba(255, 255, 255, 0.9); padding: 8px 10px 8px 16px; border-radius: 35px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 10px; align-items: center; flex-shrink: 0;
+            display: flex; gap: 8px; background: rgba(255, 255, 255, 0.95); padding: 4px 6px 4px 14px; border-radius: 28px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 10px; align-items: center; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
         }
-        .chat-input-area input { flex: 1; border: none; outline: none; padding: 12px 10px; font-size: 1rem; background: transparent; }
-        .chat-input-area button { background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: 700; }
+        .chat-input-area input { flex: 1; border: none; outline: none; padding: 8px 4px; font-size: 0.95rem; background: transparent; color: #1e293b; }
+        .send-round-btn {
+            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: transform 0.2s ease, background 0.2s ease; flex-shrink: 0; box-shadow: 0 3px 10px rgba(18, 62, 49, 0.2);
+        }
+        .send-round-btn:active { transform: scale(0.92); }
+
+        .new-chat-btn {
+            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(27,77,62,0.15);
+        }
 
         .modal-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.4); backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-container.open { display: flex; }
@@ -181,20 +189,18 @@
         .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
         .history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
         .history-nav-text { font-size: 0.88rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .history-nav-date { font-size: 0.72rem; color: #94a3b8; margin-top: 4px; }
 
         .copy-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px 16px; border-radius: 12px; margin-top: 12px; }
         .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight:700; cursor: pointer; }
 
         /* ====================================================
-           تنسيقات شاشة الموبايل المضبوطة تماماً (Gemini Scale)
+           تنسيقات الهواتف المحمولة
            ==================================================== */
         @media (max-width: 768px) {
             .quran-bg {
                 display: none !important;
             }
 
-            /* إخفاء الأزرار العلوية تماماً عند فتح القوائم لمنع تداخلها */
             body.sidebar-open .menu-toggle-btn,
             body.sidebar-open .top-left-actions {
                 opacity: 0 !important;
@@ -205,9 +211,9 @@
             .menu-toggle-btn {
                 top: 12px;
                 right: 12px;
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
+                width: 38px;
+                height: 38px;
+                font-size: 16px;
                 border-radius: 12px;
                 z-index: 97;
             }
@@ -220,9 +226,9 @@
             }
 
             .donate-top-btn, .auth-top-btn, .history-top-btn {
-                height: 40px;
+                height: 38px;
                 padding: 0 10px;
-                font-size: 0.82rem;
+                font-size: 0.8rem;
                 border-radius: 10px;
             }
 
@@ -232,55 +238,51 @@
             }
 
             .chat-container {
-                padding: 60px 10px 10px 10px;
+                padding: 58px 10px 8px 10px;
                 height: 100vh;
                 height: 100dvh;
             }
 
             .chat-header {
-                padding: 10px 14px;
+                padding: 8px 12px;
                 margin-top: 0;
-                margin-bottom: 8px;
+                margin-bottom: 6px;
                 border-radius: 14px;
             }
 
             .chat-header h1 {
-                font-size: 1.3rem;
+                font-size: 1.25rem;
             }
 
             .chat-header p {
-                font-size: 0.78rem;
+                font-size: 0.75rem;
                 margin-top: 2px;
             }
 
             .message {
                 max-width: 90%;
-                padding: 12px 16px;
-                font-size: 0.92rem;
-                border-radius: 18px;
+                padding: 10px 14px;
+                font-size: 0.9rem;
+                border-radius: 16px;
             }
 
-            /* تصغير وتوسيط بوكس الكتابة ليكون مناسباً تماماً للموبايل */
+            /* تصغير مربع الكتابة وإبراز الزر الدائري للأجهزة الذكية */
             .chat-input-area {
-                padding: 4px 6px 4px 12px;
-                border-radius: 26px;
-                margin-top: 6px;
-                margin-bottom: 6px;
-                max-width: 100%;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-                background: #ffffff;
-                border: 1.5px solid rgba(27, 77, 62, 0.25);
+                padding: 3px 4px 3px 12px;
+                border-radius: 24px;
+                margin-top: 4px;
+                margin-bottom: 4px;
             }
 
             .chat-input-area input {
-                padding: 8px 6px;
-                font-size: 0.92rem;
+                padding: 6px 4px;
+                font-size: 0.88rem;
             }
 
-            .chat-input-area button {
-                padding: 8px 16px;
-                font-size: 0.88rem;
-                border-radius: 20px;
+            .send-round-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 0.82rem;
             }
 
             footer {
@@ -336,6 +338,11 @@
             <button class="close-btn" onclick="closeHistorySidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="sidebar-menu">
+            <!-- زر إضافة محادثة جديدة في السجل -->
+            <button class="new-chat-btn" onclick="startNewChat()">
+                <i class="fa-solid fa-plus"></i> محادثة جديدة
+            </button>
+
             <div class="menu-section-title">الأقسام المحفوظة في الشات</div>
             <div class="history-items-container" id="historyItemsContainer"></div>
             <button class="clear-history-btn" onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 10px; border-radius: 10px; border:none; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer;">
@@ -372,12 +379,10 @@
             
             <div class="menu-divider"></div>
             
-            <!-- زر تسجيل الخروج يظهر فقط للمستخدم المسجل دخوله -->
             <button class="menu-item" id="sidebarLogoutBtn" onclick="handleAuthSidebarAction()" style="display: none; color: #e11d48;">
                 <i class="fa-solid fa-right-from-bracket" style="background: rgba(225,29,72,0.1); color: #e11d48;"></i> <span id="sidebarLogoutText">تسجيل الخروج</span>
             </button>
 
-            <!-- زر تسجيل الدخول يظهر إن لم يكن هناك مستخدم مسجل -->
             <button class="menu-item" id="sidebarAuthBtn" onclick="openAuthModal('signup')">
                 <i class="fa-solid fa-user-plus"></i> <span id="sidebarAuthText">سجل الآن / تسجيل الدخول</span>
             </button>
@@ -442,9 +447,12 @@
             </div>
         </div>
 
+        <!-- بوكس كتابة الأسئلة بزر إرسال دائرية مريحة بنفس روح Gemini وألوان الموقع -->
         <div class="chat-input-area" id="chatInputArea">
             <input type="text" id="userInput" placeholder="اكتب سؤالك أو استفسارك هنا..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i> إرسال</button>
+            <button class="send-round-btn" onclick="sendMessage()" aria-label="إرسال">
+                <i class="fa-solid fa-arrow-up"></i>
+            </button>
         </div>
 
         <footer style="text-align: center; padding: 16px; margin-top: 20px; font-size: 0.85rem; color: #64748b; border-top: 1px solid rgba(27, 77, 62, 0.1);">
@@ -641,13 +649,20 @@
             messages.scrollTop = messages.scrollHeight;
         }
 
+        /* بدء محادثة جديدة عبر السجل */
+        function startNewChat() {
+            categoryChats[currentCategory] = [];
+            loadCategoryChat(currentCategory);
+            closeAllSidebars();
+        }
+
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const messages = document.getElementById('chatMessages');
             const text = input.value.trim();
             if (!text) return;
 
-            // إغلاق لوحة المفاتيح (الكيبورد) فور إرسال الرسالة
+            // إغلاق الكيبورد فور الإرسال
             input.blur();
 
             const userDiv = document.createElement('div');
@@ -685,7 +700,7 @@
                 botDiv.innerHTML = replyText.replace(/\n/g, '<br>');
                 messages.appendChild(botDiv);
 
-                // جعل الشاشة تتوجه إلى أول رسالة البوت الجديدة ليقرأ المستخدم بدايتها
+                // الانتقال لأول الرسالة تلقائياً
                 botDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
                 categoryChats[currentCategory].push({ sender: 'bot', text: replyText });
