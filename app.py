@@ -1,5 +1,5 @@
 # ====================================================
-# Project: Nazirni Backend API
+# Project: Nazirni Platform (منصة ناظرني)
 # Developer: Hamza Mohamed Eldkmawye
 # Year: 2026
 # Copyright (c) 2026 Hamza Eldkmawye. All rights reserved.
@@ -12,17 +12,15 @@ import time
 
 app = Flask(__name__)
 
-# جمع كل المفاتيح التي تبدأ بـ GEMINI_KEY_ تلقائياً من متغيرات البيئة في Vercel
+# جمع كل المفاتيح التي تبدأ بـ GEMINI_KEY_ أو المفتاح الافتراضي من متغيرات البيئة في Vercel
 API_KEYS = []
 for key, value in os.environ.items():
     if key.startswith("GEMINI_KEY_") and value.strip():
         API_KEYS.append(value.strip())
 
-# إذا لم يتم العثور على مفاتيح متعددة، نبحث عن المفتاح القديم كخيار احتياطي
 if not API_KEYS and os.environ.get("GEMINI_API_KEY"):
     API_KEYS.append(os.environ.get("GEMINI_API_KEY").strip())
 
-# مؤشر لتوزيع الطلبات بين المفاتيح بشكل دائري (Round-Robin)
 key_index = 0
 
 def get_next_api_key():
@@ -33,7 +31,7 @@ def get_next_api_key():
     key_index += 1
     return key
 
-# استخدام مجلد tmp المؤقت المسموح بالكتابة عليه في Vercel
+# استخدام مجلد tmp المؤقت في Vercel
 DB_FILE = os.path.join('/tmp', 'database.db')
 
 def init_db():
@@ -89,7 +87,6 @@ def index():
     return render_template("index.html")
 
 
-# مسار ملف خريطة الموقع لتجاوز مشكلة 404 وتوجيه جوجل بسلام
 @app.route("/sitemap.xml")
 def sitemap():
     return send_from_directory('.', 'sitemap.xml')
@@ -172,35 +169,6 @@ def admin_data():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-@app.route("/api/chats", methods=["GET"])
-def get_user_chats():
-    email = request.args.get("email", "").strip().lower()
-    category = request.args.get("category", "").strip()
-
-    if not email or email == "guest":
-        return jsonify({"success": False, "chats": []})
-
-    try:
-        conn = sqlite3.connect(DB_FILE)
-        cursor = conn.cursor()
-        
-        if category:
-            cursor.execute('SELECT question, reply FROM chats WHERE email = ? AND category = ? ORDER BY id ASC', (email, category))
-            rows = cursor.fetchall()
-            chat_list = []
-            for row in rows:
-                chat_list.append({"sender": "user", "text": row[0]})
-                chat_list.append({"sender": "bot", "text": row[1]})
-        else:
-            chat_list = []
-
-        conn.close()
-        return jsonify({"success": True, "chats": chat_list})
-    except Exception as e:
-        app.logger.exception("Get chats error")
-        return jsonify({"success": False, "chats": []})
-
-
 @app.route("/api/chat", methods=["POST"])
 def chat():
     try:
@@ -226,12 +194,12 @@ def chat():
             "contents": [{"parts": [{"text": user_message}]}]
         }
 
-        models = ["gemini-3.8-flash", "gemini-2.5-flash"]
+        # استخدام النموذج الأساسي المستقر والرسمي من جوجل
+        models = ["gemini-1.5-flash", "gemini-1.5-pro"]
         reply_text = ""
         success = False
 
-        # تجربة عدة مفاتيح ونماذج تلقائياً في حال واجهنا ضغطاً أو انتهاء حصة
-        total_keys_to_try = min(len(API_KEYS), 3) # محاولة 3 مفاتيح مختلفة كحد أقصى في الطلب الواحد إذا فشل الأول
+        total_keys_to_try = min(len(API_KEYS), 3)
         
         for _ in range(total_keys_to_try):
             current_key = get_next_api_key()
@@ -253,9 +221,9 @@ def chat():
                                 if reply_text:
                                     success = True
                                     break
-                    elif response.status_code in [429, 503]: # خطأ ضغط السيرفر أو انتهاء الحصة
+                    elif response.status_code in [429, 503]:
                         time.sleep(0.5)
-                        continue # الانتقال للمفتاح أو النموذج التالي
+                        continue
                     else:
                         break
                 except Exception:
@@ -277,6 +245,18 @@ def chat():
             conn.commit()
             conn.close()
         except Exception as db_err:
+            app.logger.error(f"Failed to save chat: {db_err}")
+
+        return jsonify({"reply": reply_text}), 200
+
+    except Exception as e:
+        app.logger.exception("Gemini API error")
+        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=False)
+ept Exception as db_err:
             app.logger.error(f"Failed to save chat: {db_err}")
 
         return jsonify({"reply": reply_text}), 200
