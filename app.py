@@ -4,7 +4,7 @@
 # Year: 2026
 # Copyright (c) 2026 Hamza Eldkmawye. All rights reserved.
 # ====================================================
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import requests
 import sqlite3
@@ -67,6 +67,12 @@ def index():
         app.logger.error(f"Visit log error: {e}")
         
     return render_template("index.html")
+
+
+# مسار ملف خريطة الموقع لتجاوز مشكلة 404 وتوجيه جوجل بسلام
+@app.route("/sitemap.xml")
+def sitemap():
+    return send_from_directory('.', 'sitemap.xml')
 
 
 @app.route("/api/auth", methods=["POST"])
@@ -195,7 +201,6 @@ def chat():
             "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة."
         )
 
-        # استرجاع نموذج gemini-3.8-flash الأصلي الخاص بك
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
 
         payload = {
