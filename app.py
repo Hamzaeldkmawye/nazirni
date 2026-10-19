@@ -13,13 +13,17 @@ import time
 app = Flask(__name__)
 
 # جمع كل المفاتيح التي تبدأ بـ GEMINI_KEY_ أو المفتاح الافتراضي من متغيرات البيئة في Vercel
+# جمع المفتاح من أي اسم محتمل في متغيرات البيئة في Vercel
 API_KEYS = []
-for key, value in os.environ.items():
-    if key.startswith("GEMINI_KEY_") and value.strip():
-        API_KEYS.append(value.strip())
+for env_name in ["GEMINI_API_KEY", "GEMINI_KEY_1", "GEMINI_KEY"]:
+    val = os.environ.get(env_name)
+    if val and val.strip():
+        API_KEYS.append(val.strip())
 
-if not API_KEYS and os.environ.get("GEMINI_API_KEY"):
-    API_KEYS.append(os.environ.get("GEMINI_API_KEY").strip())
+# إذا كان هناك مفاتيح إضافية تبدأ بـ GEMINI_KEY_
+for key, value in os.environ.items():
+    if key.startswith("GEMINI_KEY_") and value.strip() and value.strip() not in API_KEYS:
+        API_KEYS.append(value.strip())
 
 key_index = 0
 
