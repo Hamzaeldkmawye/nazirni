@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import requests
 import sqlite3
+import time
 
 app = Flask(__name__)
 
@@ -201,29 +202,46 @@ def chat():
             "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة."
         )
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
-
         payload = {
             "system_instruction": {"parts": [{"text": system_instruction}]},
             "contents": [{"parts": [{"text": user_message}]}]
         }
 
-        response = requests.post(url, json=payload, timeout=30)
-        res_data = response.json()
-
-        if response.status_code != 200:
-            error_msg = res_data.get("error", {}).get("message", "حدث خطأ غير معروف")
-            return jsonify({"reply": f"خطأ من جوجل: {error_msg}"}), response.status_code
-
-        candidates = res_data.get("candidates", [])
+        # قائمة النماذج (النموذج الأساسي المفضل لديك ثم البديل)
+        models = ["gemini-3.8-flash", "gemini-2.5-flash"]
         reply_text = ""
-        if candidates:
-            parts = candidates[0].get("content", {}).get("parts", [])
-            if parts:
-                reply_text = parts[0].get("text", "")
+        success = False
 
-        if not reply_text:
-            reply_text = "لم أتمكن من إنشاء إجابة واضحة. جرّب صياغة سؤالك مرة أخرى."
+        # نظام إعادة المحاولة التلقائية والتبديل بين النماذج عند الضغط
+        for model in models:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={API_KEY}"
+            
+            for attempt in range(2): # محاولتان لكل نموذج
+                try:
+                    response = requests.post(url, json=payload, timeout=25)
+                    if response.status_code == 200:
+                        res_data = response.json()
+                        candidates = res_data.get("candidates", [])
+                        if candidates:
+                            parts = candidates[0].get("content", {}).get("parts", [])
+                            if parts:
+                                reply_text = parts[0].get("text", "")
+                                if reply_text:
+                                    success = True
+                                    break
+                    elif response.status_code in [429, 503]: # خطأ ضغط السيرفر
+                        time.sleep(1)
+                        continue
+                    else:
+                        break
+                except Exception:
+                    time.sleep(1)
+            
+            if success:
+                break
+
+        if not success or not reply_text:
+            return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
 
         try:
             conn = sqlite3.connect(DB_FILE)
@@ -241,7 +259,7 @@ def chat():
 
     except Exception as e:
         app.logger.exception("Gemini API error")
-        return jsonify({"reply": f"خطأ: {str(e)}"}), 500
+        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
 
 
 if __name__ == "__main__":
