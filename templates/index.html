@@ -849,8 +849,8 @@
                 openAuthModal('signup');
             }
         }
-
-        function checkUserAuthStatus() {
+      
+function checkUserAuthStatus() {
             const isHamza = currentUser && currentUser.email === 'hamzadakma391@gmail.com';
             document.getElementById('authNavBtn').style.display = currentUser ? 'none' : 'flex';
             document.getElementById('historyNavBtn').style.display = currentUser ? 'flex' : 'none';
@@ -863,13 +863,14 @@
             if (currentUser) {
                 if (sidebarAuthBtn) sidebarAuthBtn.style.display = 'none';
                 if (sidebarLogoutBtn) sidebarLogoutBtn.style.display = 'flex';
+                // هنا سيظهر اسم المستخدم الفعلي بين القوسين تلقائياً
                 if (sidebarLogoutText) sidebarLogoutText.textContent = 'تسجيل الخروج (' + currentUser.name + ')';
             } else {
                 if (sidebarAuthBtn) sidebarAuthBtn.style.display = 'flex';
                 if (sidebarLogoutBtn) sidebarLogoutBtn.style.display = 'none';
             }
         }
-
+      
         function copyText(text) { navigator.clipboard.writeText(text); alert('تم النسخ: ' + text); }
     </script>
 </body>
