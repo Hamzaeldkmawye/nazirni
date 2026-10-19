@@ -12,7 +12,26 @@ import time
 
 app = Flask(__name__)
 
-API_KEY = os.environ.get("GEMINI_API_KEY")
+# جمع كل المفاتيح التي تبدأ بـ GEMINI_KEY_ تلقائياً من متغيرات البيئة في Vercel
+API_KEYS = []
+for key, value in os.environ.items():
+    if key.startswith("GEMINI_KEY_") and value.strip():
+        API_KEYS.append(value.strip())
+
+# إذا لم يتم العثور على مفاتيح متعددة، نبحث عن المفتاح القديم كخيار احتياطي
+if not API_KEYS and os.environ.get("GEMINI_API_KEY"):
+    API_KEYS.append(os.environ.get("GEMINI_API_KEY").strip())
+
+# مؤشر لتوزيع الطلبات بين المفاتيح بشكل دائري (Round-Robin)
+key_index = 0
+
+def get_next_api_key():
+    global key_index
+    if not API_KEYS:
+        return None
+    key = API_KEYS[key_index % len(API_KEYS)]
+    key_index += 1
+    return key
 
 # استخدام مجلد tmp المؤقت المسموح بالكتابة عليه في Vercel
 DB_FILE = os.path.join('/tmp', 'database.db')
@@ -193,8 +212,8 @@ def chat():
         if not user_message:
             return jsonify({"reply": "من فضلك اكتب سؤالك الأول."}), 400
 
-        if not API_KEY:
-            return jsonify({"reply": "مفتاح الذكاء الاصطناعي غير مُعد على السيرفر."}), 500
+        if not API_KEYS:
+            return jsonify({"reply": "مفاتيح الذكاء الاصطناعي غير مُعدة على السيرفر."}), 500
 
         system_instruction = (
             "أنت مساعد ذكي في منصة ناظرني للحوار والدراسات الدينية. "
@@ -207,16 +226,21 @@ def chat():
             "contents": [{"parts": [{"text": user_message}]}]
         }
 
-        # قائمة النماذج (النموذج الأساسي المفضل لديك ثم البديل)
         models = ["gemini-3.8-flash", "gemini-2.5-flash"]
         reply_text = ""
         success = False
 
-        # نظام إعادة المحاولة التلقائية والتبديل بين النماذج عند الضغط
-        for model in models:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={API_KEY}"
-            
-            for attempt in range(2): # محاولتان لكل نموذج
+        # تجربة عدة مفاتيح ونماذج تلقائياً في حال واجهنا ضغطاً أو انتهاء حصة
+        total_keys_to_try = min(len(API_KEYS), 3) # محاولة 3 مفاتيح مختلفة كحد أقصى في الطلب الواحد إذا فشل الأول
+        
+        for _ in range(total_keys_to_try):
+            current_key = get_next_api_key()
+            if not current_key:
+                break
+
+            for model in models:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={current_key}"
+                
                 try:
                     response = requests.post(url, json=payload, timeout=25)
                     if response.status_code == 200:
@@ -229,13 +253,13 @@ def chat():
                                 if reply_text:
                                     success = True
                                     break
-                    elif response.status_code in [429, 503]: # خطأ ضغط السيرفر
-                        time.sleep(1)
-                        continue
+                    elif response.status_code in [429, 503]: # خطأ ضغط السيرفر أو انتهاء الحصة
+                        time.sleep(0.5)
+                        continue # الانتقال للمفتاح أو النموذج التالي
                     else:
                         break
                 except Exception:
-                    time.sleep(1)
+                    time.sleep(0.5)
             
             if success:
                 break
