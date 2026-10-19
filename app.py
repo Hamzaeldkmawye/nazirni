@@ -26,7 +26,7 @@ except Exception as e:
     supabase = None
 
 # ----------------------------------------------------
-# 2. إعداد مفاتيح Gemini API للنظام التناوبي (من البيئة بأمان تام)
+# 2. إعداد مفاتيح Gemini API للنظام التناوبي
 # ----------------------------------------------------
 API_KEYS = []
 for env_name in ["GEMINI_API_KEY", "GEMINI_KEY_1", "GEMINI_KEY"]:
@@ -191,7 +191,7 @@ def admin_data():
 
 
 # ----------------------------------------------------
-# 5. دالة الـ Chat المحسّنة (تستعلم من الكتب المرفوعة في Supabase)
+# 5. دالة الـ Chat (تستعلم بالبحث النصي من كتب Supabase)
 # ----------------------------------------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -207,39 +207,21 @@ def chat():
         if not API_KEYS:
             return jsonify({"reply": "مفاتيح الذكاء الاصطناعي غير مُعدة على السيرفر."}), 500
 
-        # أ) جلب النصوص ذات الصلة من Supabase
+        # أ) البحث بالكلمات المفتاحية في قاعدة بيانات الكتب بـ Supabase
         context_text = ""
-        current_key = get_next_api_key()
-        
-        if supabase and current_key:
+        if supabase:
             try:
-                # 1. تحويل السؤال إلى Vector باستخدام Gemini Embedding API
-                embed_url = f"https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key={current_key}"
-                embed_payload = {
-                    "model": "models/text-embedding-004",
-                    "content": {"parts": [{"text": user_message}]}
-                }
-                embed_res = requests.post(embed_url, json=embed_payload, timeout=10)
+                # نستخرج أول كلمة أو كلمتين رئيسيتين من سؤال المستخدم للبحث عنهما
+                keywords = user_message.split()[:2]
+                search_term = " ".join(keywords) if keywords else user_message
                 
-                if embed_res.status_code == 200:
-                    query_vector = embed_res.json().get("embedding", {}).get("values", [])
-                    
-                    if query_vector:
-                        # 2. الاستعلام من Supabase عن أكثر 3 فقرات مطابقة
-                        rpc_res = supabase.rpc(
-                            "match_book_chunks",
-                            {
-                                "query_embedding": query_vector,
-                                "match_threshold": 0.25,
-                                "match_count": 3
-                            }
-                        ).execute()
-                        
-                        chunks = rpc_res.data or []
-                        for c in chunks:
-                            context_text += f"\n- الكتاب: {c.get('book_name')} (صفحة {c.get('page_number')})\nالنص: {c.get('content')}\n---"
+                res = supabase.table("book_chunks").select("book_name, page_number, content").ilike("content", f"%{search_term}%").limit(3).execute()
+                chunks = res.data or []
+                
+                for c in chunks:
+                    context_text += f"\n- الكتاب: {c.get('book_name')} (صفحة {c.get('page_number')})\nالنص: {c.get('content')}\n---"
             except Exception as search_err:
-                app.logger.error(f"Vector search failed: {search_err}")
+                app.logger.error(f"Text search failed: {search_err}")
 
         # ب) صياغة تعليمات النظام
         system_instruction = (
@@ -250,7 +232,7 @@ def chat():
         
         if context_text:
             system_instruction += (
-                "\n\nاستعن بالنصوص التالية المستخرجة من المكتبة للإجابة بدقة موثقة مع ذكر المراجع إن أمكن:\n"
+                "\n\nاستعن بالنصوص التالية المستخرجة من المكتبة للإجابة بدقة موثقة:\n"
                 f"{context_text}"
             )
 
