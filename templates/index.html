@@ -148,18 +148,28 @@
         .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
         @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-        /* منطقة كتابة السؤال - تصميم أنيق وزر إرسال دائري */
         .chat-input-area {
-            display: flex; gap: 8px; background: rgba(255, 255, 255, 0.95); padding: 4px 6px 4px 14px; border-radius: 28px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 10px; align-items: center; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            display: flex; gap: 8px; background: rgba(255, 255, 255, 0.95); padding: 4px 6px 4px 14px; border-radius: 30px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 4px; align-items: center; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
         }
         .chat-input-area input { flex: 1; border: none; outline: none; padding: 8px 4px; font-size: 0.95rem; background: transparent; color: #1e293b; }
+        
         .send-round-btn {
-            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: transform 0.2s ease, background 0.2s ease; flex-shrink: 0; box-shadow: 0 3px 10px rgba(18, 62, 49, 0.2);
+            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: transform 0.2s ease, opacity 0.2s ease; flex-shrink: 0; box-shadow: 0 3px 10px rgba(18, 62, 49, 0.25);
         }
         .send-round-btn:active { transform: scale(0.92); }
 
         .new-chat-btn {
             background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(27,77,62,0.15);
+        }
+
+        /* فوتر مصغر جداً وأنيق */
+        .site-footer {
+            text-align: center;
+            padding: 4px 0;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
 
         .modal-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.4); backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -238,25 +248,25 @@
             }
 
             .chat-container {
-                padding: 58px 10px 8px 10px;
+                padding: 56px 8px 6px 8px;
                 height: 100vh;
                 height: 100dvh;
             }
 
             .chat-header {
-                padding: 8px 12px;
+                padding: 6px 10px;
                 margin-top: 0;
-                margin-bottom: 6px;
-                border-radius: 14px;
+                margin-bottom: 4px;
+                border-radius: 12px;
             }
 
             .chat-header h1 {
-                font-size: 1.25rem;
+                font-size: 1.15rem;
             }
 
             .chat-header p {
-                font-size: 0.75rem;
-                margin-top: 2px;
+                font-size: 0.72rem;
+                margin-top: 1px;
             }
 
             .message {
@@ -266,12 +276,11 @@
                 border-radius: 16px;
             }
 
-            /* تصغير مربع الكتابة وإبراز الزر الدائري للأجهزة الذكية */
             .chat-input-area {
                 padding: 3px 4px 3px 12px;
                 border-radius: 24px;
                 margin-top: 4px;
-                margin-bottom: 4px;
+                margin-bottom: 2px;
             }
 
             .chat-input-area input {
@@ -280,13 +289,15 @@
             }
 
             .send-round-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 0.82rem;
+                width: 34px;
+                height: 34px;
+                font-size: 0.78rem;
             }
 
-            footer {
-                display: none;
+            .site-footer {
+                display: block; /* إظهار الفوتر مصغراً جداً على الموبايل أيضاً دون أن يأخذ مساحة */
+                font-size: 0.68rem;
+                padding: 2px 0;
             }
         }
     </style>
@@ -338,7 +349,6 @@
             <button class="close-btn" onclick="closeHistorySidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="sidebar-menu">
-            <!-- زر إضافة محادثة جديدة في السجل -->
             <button class="new-chat-btn" onclick="startNewChat()">
                 <i class="fa-solid fa-plus"></i> محادثة جديدة
             </button>
@@ -447,7 +457,6 @@
             </div>
         </div>
 
-        <!-- بوكس كتابة الأسئلة بزر إرسال دائرية مريحة بنفس روح Gemini وألوان الموقع -->
         <div class="chat-input-area" id="chatInputArea">
             <input type="text" id="userInput" placeholder="اكتب سؤالك أو استفسارك هنا..." onkeypress="handleKeyPress(event)">
             <button class="send-round-btn" onclick="sendMessage()" aria-label="إرسال">
@@ -455,8 +464,9 @@
             </button>
         </div>
 
-        <footer style="text-align: center; padding: 16px; margin-top: 20px; font-size: 0.85rem; color: #64748b; border-top: 1px solid rgba(27, 77, 62, 0.1);">
-            <p>© 2026 جميع الحقوق محفوظة لـ <b>منصة ناظرني</b> - تطوير <b>حمزة الدكماوي</b></p>
+        <!-- الفوتر المصغر والأنيق -->
+        <footer class="site-footer">
+            © 2026 منصة ناظرني - تطوير حمزة الدكماوي
         </footer>
     </main>
 
@@ -649,7 +659,6 @@
             messages.scrollTop = messages.scrollHeight;
         }
 
-        /* بدء محادثة جديدة عبر السجل */
         function startNewChat() {
             categoryChats[currentCategory] = [];
             loadCategoryChat(currentCategory);
@@ -662,7 +671,6 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // إغلاق الكيبورد فور الإرسال
             input.blur();
 
             const userDiv = document.createElement('div');
@@ -700,7 +708,6 @@
                 botDiv.innerHTML = replyText.replace(/\n/g, '<br>');
                 messages.appendChild(botDiv);
 
-                // الانتقال لأول الرسالة تلقائياً
                 botDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
                 categoryChats[currentCategory].push({ sender: 'bot', text: replyText });
