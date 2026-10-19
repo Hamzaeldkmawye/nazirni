@@ -1,10 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- الصفحة الرئيسية لمنصة ناظرني -->
   <url>
-       <loc>https://nazirni.vercel.app/</loc>
-       <lastmod>2026-10-18T19:13:00+00:00</lastmod>
-       <priority>1.0000</priority>
+    <loc>https://nazirni.vercel.app/</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
+
+  <!-- صفحة الثقة والمراجع العلمية -->
+  <url>
+    <loc>https://nazirni.vercel.app/#trust</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- صفحة المطور -->
+  <url>
+    <loc>https://nazirni.vercel.app/#developer</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- صفحة الدعم والتبرع -->
+  <url>
+    <loc>https://nazirni.vercel.app/#donate</loc>
+    <lastmod>2026-10-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
 </urlset>
