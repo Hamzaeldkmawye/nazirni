@@ -246,7 +246,7 @@
         .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
 
         .history-items-container { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding: 4px; }
-        .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
+        .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; display: flex; justify-content: space-between; align-items: center; }
         .history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
         .history-nav-text { font-size: 0.88rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -254,227 +254,22 @@
         .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight:700; cursor: pointer; }
 
         @media (max-width: 768px) {
-            .quran-bg {
-                display: none !important;
-            }
-
+            .quran-bg { display: none !important; }
             body.sidebar-open .menu-toggle-btn,
-            body.sidebar-open .top-left-actions {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                pointer-events: none !important;
-            }
-
-            .menu-toggle-btn {
-                top: 12px;
-                right: 12px;
-                width: 38px;
-                height: 38px;
-                font-size: 16px;
-                border-radius: 12px;
-                z-index: 97;
-            }
-
-            .top-left-actions {
-                top: 12px;
-                left: 12px;
-                gap: 6px;
-                z-index: 97;
-            }
-
-      ear-gradient(90deg, rgba(27, 77, 62, 0.12), rgba(46, 125, 99, 0.05)); color: var(--primary-dark); font-weight: 700; border-right: 4px solid var(--primary-medium); }
-        .menu-item.active i { background: var(--primary-medium); color: white; }
-
-        .chat-container { position: relative; z-index: 10; width: 100%; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; height: 100vh; height: 100dvh; padding: 16px 20px; }
-        .chat-header { text-align: center; margin-top: 10px; margin-bottom: 12px; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px); padding: 16px 24px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.8); flex-shrink: 0; }
-        .chat-header h1 { color: var(--primary-dark); font-size: 2rem; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; }
-        .chat-header h1 i { color: var(--gold-accent); }
-        .chat-header p { color: #64748b; font-size: 0.9rem; font-weight: 600; margin-top: 4px; }
-
-        .main-view-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
-        .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding: 12px 8px; min-height: 0; scroll-behavior: smooth; }
-
-        .static-page-view {
-            flex: 1; overflow-y: auto; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(226, 232, 240, 0.8); backdrop-filter: blur(16px); border-radius: 24px; padding: 28px; display: none; line-height: 1.8;
-        }
-        .static-page-view.active { display: block; }
-        .static-page-view h2 { color: var(--primary-dark); font-size: 1.5rem; margin-bottom: 16px; border-bottom: 2px solid rgba(27, 77, 62, 0.1); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .static-page-view p { color: #334155; margin-bottom: 14px; font-size: 1.02rem; }
-
-        .trust-detailed-box { background: rgba(27, 77, 62, 0.03); border: 1px solid rgba(27, 77, 62, 0.12); border-radius: 16px; padding: 20px; margin-top: 15px; }
-        .trust-detailed-box h3 { color: var(--primary-medium); font-size: 1.15rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-
-        .books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 15px; }
-        .book-badge { background: #ffffff; color: var(--primary-medium); border: 1px solid rgba(27, 77, 62, 0.2); padding: 10px 14px; border-radius: 10px; font-size: 0.88rem; font-weight: 700; text-align: center; }
-
-        .dev-info-box, .donate-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 24px; text-align: center; margin-top: 15px; }
-        .dev-whatsapp-btn { display: inline-flex; align-items: center; gap: 10px; background: #25d366; color: white; text-decoration: none; padding: 12px 24px; border-radius: 14px; font-weight: 700; margin-top: 15px; }
-        .donate-btn-placeholder { width: 100%; max-width: 380px; background: linear-gradient(135deg, var(--gold-accent), #b8860b); color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
-
-        .message { max-width: 85%; padding: 16px 20px; border-radius: 22px; line-height: 1.7; font-size: 0.98rem; word-wrap: break-word; }
-        .bot-message { align-self: flex-start; background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(226, 232, 240, 0.8); color: #1e293b; border-bottom-right-radius: 4px; }
-        .user-message { align-self: flex-end; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: #ffffff; border-bottom-left-radius: 4px; }
-
-        .typing-dots { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; }
-        .typing-dots span {
-            width: 8px; height: 8px; background-color: var(--primary-medium); border-radius: 50%;
-            display: inline-block; animation: bounceDot 1.4s infinite ease-in-out both;
-        }
-        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounceDot { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
-
-        .chat-input-area {
-            display: flex; gap: 8px; background: rgba(255, 255, 255, 0.95); padding: 4px 6px 4px 14px; border-radius: 30px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 4px; align-items: center; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-        }
-        .chat-input-area input { flex: 1; border: none; outline: none; padding: 8px 4px; font-size: 0.95rem; background: transparent; color: #1e293b; }
-        
-        .send-round-btn {
-            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: transform 0.2s ease, opacity 0.2s ease; flex-shrink: 0; box-shadow: 0 3px 10px rgba(18, 62, 49, 0.25);
-        }
-        .send-round-btn:active { transform: scale(0.92); }
-
-        .new-chat-btn {
-            background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(27,77,62,0.15);
-        }
-
-        /* فوتر مصغر جداً وأنيق مع تهيئة للـ SEO */
-        .site-footer {
-            text-align: center;
-            padding: 6px 0;
-            font-size: 0.75rem;
-            color: #64748b;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .modal-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(18, 62, 49, 0.4); backdrop-filter: blur(6px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-container.open { display: flex; }
-        .modal-card { background: #ffffff; width: 100%; max-width: 440px; border-radius: 24px; padding: 28px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
-        .modal-close { position: absolute; top: 20px; left: 20px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: #64748b; }
-        .modal-header { text-align: center; margin-bottom: 20px; }
-        .modal-header h3 { color: var(--primary-dark); font-size: 1.35rem; }
-        .modal-header p { color: #64748b; font-size: 0.85rem; margin-top: 4px; }
-
-        .form-group { margin-bottom: 14px; text-align: right; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 6px; }
-        .form-group input { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none; font-size: 0.95rem; }
-        .auth-error { color: #e11d48; font-size: 0.85rem; margin-bottom: 10px; display: none; }
-        .auth-submit-btn { width: 100%; background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 8px; }
-        .auth-divider { text-align: center; margin: 16px 0; position: relative; }
-        .auth-divider span { background: #ffffff; padding: 0 10px; position: relative; z-index: 2; color: #94a3b8; font-size: 0.85rem; }
-        .google-btn-wrapper { display: flex; justify-content: center; margin-bottom: 14px; }
-        .modal-footer { text-align: center; font-size: 0.88rem; color: #64748b; margin-top: 10px; }
-        .modal-footer a { color: var(--primary-medium); font-weight: 700; text-decoration: none; margin-right: 5px; }
-
-        .admin-card { max-width: 650px; }
-        .admin-list { max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .admin-row { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
-
-        .history-items-container { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; flex: 1; padding: 4px; }
-        .history-nav-item { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; }
-        .history-nav-item:hover { background: #f1f5f9; border-color: var(--primary-medium); }
-        .history-nav-text { font-size: 0.88rem; font-weight: 600; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .copy-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; padding: 12px 16px; border-radius: 12px; margin-top: 12px; }
-        .copy-box button { background: var(--primary-medium); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight:700; cursor: pointer; }
-
-        /* ====================================================
-           تنسيقات الهواتف المحمولة
-           ==================================================== */
-        @media (max-width: 768px) {
-            .quran-bg {
-                display: none !important;
-            }
-
-            body.sidebar-open .menu-toggle-btn,
-            body.sidebar-open .top-left-actions {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                pointer-events: none !important;
-            }
-
-            .menu-toggle-btn {
-                top: 12px;
-                right: 12px;
-                width: 38px;
-                height: 38px;
-                font-size: 16px;
-                border-radius: 12px;
-                z-index: 97;
-            }
-
-            .top-left-actions {
-                top: 12px;
-                left: 12px;
-                gap: 6px;
-                z-index: 97;
-            }
-
-            .donate-top-btn, .auth-top-btn, .history-top-btn {
-                height: 38px;
-                padding: 0 10px;
-                font-size: 0.8rem;
-                border-radius: 10px;
-            }
-
-            .sidebar, .history-sidebar {
-                width: 280px;
-                max-width: 80vw;
-            }
-
-            .chat-container {
-                padding: 56px 8px 6px 8px;
-                height: 100vh;
-                height: 100dvh;
-            }
-
-            .chat-header {
-                padding: 6px 10px;
-                margin-top: 0;
-                margin-bottom: 4px;
-                border-radius: 12px;
-            }
-
-            .chat-header h1 {
-                font-size: 1.15rem;
-            }
-
-            .chat-header p {
-                font-size: 0.72rem;
-                margin-top: 1px;
-            }
-
-            .message {
-                max-width: 90%;
-                padding: 10px 14px;
-                font-size: 0.9rem;
-                border-radius: 16px;
-            }
-
-            .chat-input-area {
-                padding: 3px 4px 3px 12px;
-                border-radius: 24px;
-                margin-top: 4px;
-                margin-bottom: 2px;
-            }
-
-            .chat-input-area input {
-                padding: 6px 4px;
-                font-size: 0.88rem;
-            }
-
-            .send-round-btn {
-                width: 34px;
-                height: 34px;
-                font-size: 0.78rem;
-            }
-
-            .site-footer {
-                display: block;
-                font-size: 0.68rem;
-                padding: 2px 0;
-            }
+            body.sidebar-open .top-left-actions { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+            .menu-toggle-btn { top: 12px; right: 12px; width: 38px; height: 38px; font-size: 16px; border-radius: 12px; z-index: 97; }
+            .top-left-actions { top: 12px; left: 12px; gap: 6px; z-index: 97; }
+            .donate-top-btn, .auth-top-btn, .history-top-btn { height: 38px; padding: 0 10px; font-size: 0.8rem; border-radius: 10px; }
+            .sidebar, .history-sidebar { width: 280px; max-width: 80vw; }
+            .chat-container { padding: 56px 8px 6px 8px; height: 100vh; height: 100dvh; }
+            .chat-header { padding: 6px 10px; margin-top: 0; margin-bottom: 4px; border-radius: 12px; }
+            .chat-header h1 { font-size: 1.15rem; }
+            .chat-header p { font-size: 0.72rem; margin-top: 1px; }
+            .message { max-width: 90%; padding: 10px 14px; font-size: 0.9rem; border-radius: 16px; }
+            .chat-input-area { padding: 3px 4px 3px 12px; border-radius: 24px; margin-top: 4px; margin-bottom: 2px; }
+            .chat-input-area input { padding: 6px 4px; font-size: 0.88rem; }
+            .send-round-btn { width: 34px; height: 34px; font-size: 0.78rem; }
+            .site-footer { display: block; font-size: 0.68rem; padding: 2px 0; }
         }
     </style>
 </head>
@@ -484,7 +279,6 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <!-- خلفية آيات القرآن الكريم -->
     <div class="quran-bg" aria-hidden="true">
         <div class="quran-item">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
         <div class="quran-item">اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ</div>
@@ -526,14 +320,14 @@
             <button class="close-btn" onclick="closeHistorySidebar()" aria-label="إغلاق السجل"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="sidebar-menu">
-            <button class="new-chat-btn" onclick="startNewChat()">
+            <button class="new-chat-btn" onclick="startNewChatSession()">
                 <i class="fa-solid fa-plus"></i> محادثة جديدة
             </button>
 
             <div class="menu-section-title">الأقسام المحفوظة في الشات</div>
             <div class="history-items-container" id="historyItemsContainer"></div>
             <button class="clear-history-btn" onclick="clearHistory()" style="margin-top: 15px; width: 100%; padding: 10px; border-radius: 10px; border:none; background:#fee2e2; color:#dc2626; font-weight:700; cursor:pointer;">
-                <i class="fa-solid fa-trash"></i> مسح جميع الشاتات
+                <i class="fa-solid fa-trash"></i> مسح الشاتات غير المثبتة
             </button>
         </div>
     </aside>
@@ -641,7 +435,6 @@
             </button>
         </section>
 
-        <!-- الفوتر المصغر والأنيق المهيأ لمجال SEO -->
         <footer class="site-footer">
             <p>© 2026 <strong>منصة ناظرني (Nazerny)</strong> - أول ذكاء اصطناعي تفاعلي للحوار والمناظرات الدينية | تطوير <strong>حمزة الدكماوي</strong></p>
         </footer>
@@ -732,17 +525,19 @@
         </div>
     </div>
 
-    <!-- Application Script -->
+    <!-- Application Script with New Chat & Pin Logic -->
     <script>
         let currentCategory = 'أنا مسلم';
         let isLoginMode = false;
         let currentUser = JSON.parse(localStorage.getItem('nazirni_user')) || null;
         
-        let categoryChats = JSON.parse(localStorage.getItem('nazirni_category_chats')) || {};
+        // نظام السجل والمحادثات المطور (يحفظ كقائمة كائنات)
+        let allChats = JSON.parse(localStorage.getItem('nazirni_all_chats')) || [];
+        let currentChatId = null;
 
         document.addEventListener('DOMContentLoaded', () => { 
             checkUserAuthStatus(); 
-            loadCategoryChat(currentCategory);
+            startNewChatSession(); // فتح شات جديد تلقائياً فور الدخول
         });
 
         function openSidebar() {
@@ -808,40 +603,22 @@
             pageDev.classList.toggle('active', cat === 'المطور والابتكار');
             pageDonate.classList.toggle('active', cat === 'دعم المنصة');
 
-            if (isChatSection) {
-                loadCategoryChat(cat);
-            }
-
             closeAllSidebars();
         }
 
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
-        function loadCategoryChat(cat) {
+        // بدء محادثة جديدة فارغة وتعيين معرف فريد
+        function startNewChatSession() {
+            currentChatId = 'chat_' + Date.now();
             const messages = document.getElementById('chatMessages');
-            messages.innerHTML = '';
-
-            const defaultGreeting = `<div class="message bot-message">أهلاً بك في منصة <b>"ناظرني" (Nazerny)</b> للحوار والدراسات الدينية والرد على الاستفسارات. أنت الآن في قسم <b style="color: var(--primary-medium);">${cat}</b>.</div>`;
-
-            if (categoryChats[cat] && categoryChats[cat].length > 0) {
-                categoryChats[cat].forEach(msg => {
-                    const msgDiv = document.createElement('div');
-                    msgDiv.className = `message ${msg.sender}-message`;
-                    msgDiv.innerHTML = msg.text.replace(/\n/g, '<br>');
-                    messages.appendChild(msgDiv);
-                });
-            } else {
-                messages.innerHTML = defaultGreeting;
-                categoryChats[cat] = [{ sender: 'bot', text: `أهلاً بك في منصة "ناظرني" للحوار والدراسات الدينية. أنت الآن في قسم ${cat}.` }];
-                saveChatsToStorage();
-            }
-            messages.scrollTop = messages.scrollHeight;
+            messages.innerHTML = `<div class="message bot-message">أهلاً بك في منصة <b>"ناظرني" (Nazerny)</b> للحوار والدراسات الدينية والرد على الاستفسارات. أنت الآن في قسم <b style="color: var(--primary-medium);">${currentCategory}</b>.</div>`;
+            closeAllSidebars();
         }
 
+        // دالة زر "محادثة جديدة" من السجل
         function startNewChat() {
-            categoryChats[currentCategory] = [];
-            loadCategoryChat(currentCategory);
-            closeAllSidebars();
+            startNewChatSession();
         }
 
         async function sendMessage() {
@@ -857,9 +634,20 @@
             userDiv.textContent = text;
             messages.appendChild(userDiv);
             
-            if (!categoryChats[currentCategory]) categoryChats[currentCategory] = [];
-            categoryChats[currentCategory].push({ sender: 'user', text: text });
+            // البحث عن المحادثة الحالية أو إنشائها في القائمة عند أول رسالة
+            let chatObj = allChats.find(c => c.id === currentChatId);
+            if (!chatObj) {
+                chatObj = {
+                    id: currentChatId,
+                    category: currentCategory,
+                    messages: [],
+                    isPinned: false,
+                    createdAt: Date.now()
+                };
+                allChats.unshift(chatObj);
+            }
 
+            chatObj.messages.push({ sender: 'user', text: text });
             input.value = '';
             messages.scrollTop = messages.scrollHeight;
 
@@ -889,7 +677,10 @@
 
                 botDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-                categoryChats[currentCategory].push({ sender: 'bot', text: replyText });
+                chatObj.messages.push({ sender: 'bot', text: replyText });
+
+                // تطبيق إدارة بحد أقصى 10 محادثات مع الحفاظ على المحادثات المثبتة للأبد
+                manageMaxChatsLimit();
                 saveChatsToStorage();
 
             } catch (err) {
@@ -898,13 +689,64 @@
                 
                 const botDiv = document.createElement('div');
                 botDiv.className = 'message bot-message';
-                botDiv.textContent = 'تعذر الاتصال بالخادم.';
+                botDiv.textContent = 'هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية.';
                 messages.appendChild(botDiv);
             }
         }
 
+        // الحفاظ على آخر 10 شاتات وعدم مسح الشاتات المثبتة
+        function manageMaxChatsLimit() {
+            const pinnedChats = allChats.filter(c => c.isPinned);
+            const unpinnedChats = allChats.filter(c => !c.isPinned);
+            const maxAllowedUnpinned = 10 - pinnedChats.length;
+
+            if (unpinnedChats.length > Math.max(1, maxAllowedUnpinned)) {
+                const toRemoveCount = unpinnedChats.length - Math.max(1, maxAllowedUnpinned);
+                unpinnedChats.splice(unpinnedChats.length - toRemoveCount, toRemoveCount);
+                allChats = [...pinnedChats, ...unpinnedChats];
+            }
+        }
+
+        // تثبيت أو إلغاء تثبيت شات للحفظ الدائم
+        function togglePinChat(chatId, event) {
+            if(event) event.stopPropagation();
+            const chatObj = allChats.find(c => c.id === chatId);
+            if (chatObj) {
+                const currentPinnedCount = allChats.filter(c => c.isPinned).length;
+                if (!chatObj.isPinned && currentPinnedCount >= 2) {
+                    alert('يمكنك تثبيت شاتين فقط للحفظ الدائم للأبد.');
+                    return;
+                }
+                chatObj.isPinned = !chatObj.isPinned;
+                saveChatsToStorage();
+            }
+        }
+
+        // استرجاع محادثة سابقة من السجل
+        function loadChatFromHistory(chatId) {
+            const chatObj = allChats.find(c => c.id === chatId);
+            if (!chatObj) return;
+
+            currentChatId = chatObj.id;
+            currentCategory = chatObj.category;
+            document.getElementById('currentCategoryText').textContent = 'القسم الحالي: ' + currentCategory + ' - منصة ناظرني للحوار';
+
+            const messages = document.getElementById('chatMessages');
+            messages.innerHTML = '';
+
+            chatObj.messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${msg.sender}-message`;
+                msgDiv.innerHTML = msg.text.replace(/\n/g, '<br>');
+                messages.appendChild(msgDiv);
+            });
+
+            messages.scrollTop = messages.scrollHeight;
+            closeAllSidebars();
+        }
+
         function saveChatsToStorage() {
-            localStorage.setItem('nazirni_category_chats', JSON.stringify(categoryChats));
+            localStorage.setItem('nazirni_all_chats', JSON.stringify(allChats));
             renderHistoryList();
         }
 
@@ -913,33 +755,37 @@
             if (!container) return;
             container.innerHTML = '';
 
-            const keys = Object.keys(categoryChats);
-            if (keys.length === 0) {
+            if (allChats.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">لا توجد شاتات محفوظة بعد.</p>';
                 return;
             }
 
-            keys.forEach(cat => {
-                const chatArr = categoryChats[cat];
-                if (chatArr && chatArr.length > 1) {
-                    const lastUserMsg = chatArr.filter(m => m.sender === 'user').pop();
-                    const subText = lastUserMsg ? lastUserMsg.text : 'محادثة سابقة';
+            allChats.forEach(chat => {
+                const lastUserMsg = chat.messages.filter(m => m.sender === 'user').pop();
+                const subText = lastUserMsg ? lastUserMsg.text : 'محادثة سابقة';
+                const pinIconClass = chat.isPinned ? 'fa-solid fa-thumbtack' : 'fa-regular fa-thumbtack';
+                const pinColor = chat.isPinned ? '#d4af37' : '#94a3b8';
 
-                    container.innerHTML += `
-                        <div class="history-nav-item" onclick="openPage('${cat}')">
-                            <div style="font-weight:700; color:var(--primary-dark); font-size:0.9rem;"><i class="fa-solid fa-comments"></i> قسم: ${cat}</div>
-                            <div class="history-nav-text" style="color:#64748b; margin-top:4px;">آخر رسالة: ${subText}</div>
-                        </div>`;
-                }
+                container.innerHTML += `
+                    <div class="history-nav-item" onclick="loadChatFromHistory('${chat.id}')">
+                        <div style="flex:1; overflow:hidden;">
+                            <div style="font-weight:700; color:var(--primary-dark); font-size:0.9rem;">
+                                <i class="fa-solid fa-comments"></i> قسم: ${chat.category}
+                            </div>
+                            <div class="history-nav-text" style="color:#64748b; margin-top:4px;">${subText}</div>
+                        </div>
+                        <button onclick="togglePinChat('${chat.id}', event)" title="${chat.isPinned ? 'إلغاء التثبيت' : 'تثبيت للأبد'}" style="background:none; border:none; cursor:pointer; padding:6px; color:${pinColor}; font-size:1rem;">
+                            <i class="${pinIconClass}"></i>
+                        </button>
+                    </div>`;
             });
         }
 
         function clearHistory() {
-            if (confirm('هل تريد مسح كافة الشاتات المحفوظة بالكامل؟')) {
-                categoryChats = {};
-                localStorage.removeItem('nazirni_category_chats');
-                loadCategoryChat(currentCategory);
-                renderHistoryList();
+            if (confirm('هل تريد مسح الشاتات غير المثبتة بالكامل؟')) {
+                allChats = allChats.filter(c => c.isPinned);
+                saveChatsToStorage();
+                startNewChatSession();
             }
         }
 
@@ -1042,6 +888,7 @@
             if (currentUser) {
                 if (sidebarAuthBtn) sidebarAuthBtn.style.display = 'none';
                 if (sidebarLogoutBtn) sidebarLogoutBtn.style.display = 'flex';
+                // عرض اسم المستخدم الحقيقي بين القوسين بجانب زر الخروج
                 if (sidebarLogoutText) sidebarLogoutText.textContent = 'تسجيل الخروج (' + currentUser.name + ')';
             } else {
                 if (sidebarAuthBtn) sidebarAuthBtn.style.display = 'flex';
