@@ -146,7 +146,6 @@ def admin_data():
         return jsonify({"success": False, "message": str(e)}), 500
 
 
-# مسار جديد لجلب المحادثات الخاصة بالمستخدم وتزامنها بين الأجهزة
 @app.route("/api/chats", methods=["GET"])
 def get_user_chats():
     email = request.args.get("email", "").strip().lower()
@@ -196,7 +195,8 @@ def chat():
             "أجب باللغة العربية بوضوح واحترام وموضوعية وفقاً للمنهج الإسلامي الصحيح والمصادر المعتمدة."
         )
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={API_KEY}"
+        # استرجاع نموذج gemini-3.8-flash الأصلي الخاص بك
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key={API_KEY}"
 
         payload = {
             "system_instruction": {"parts": [{"text": system_instruction}]},
