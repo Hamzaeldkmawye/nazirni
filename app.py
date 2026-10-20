@@ -273,8 +273,9 @@ def chat():
             if success:
                 break
 
-        if not success or not reply_text:
-            return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+                if not success or not reply_text:
+            # ضع هذا السطر مؤقتاً لنرى الخطأ الحقيقي على الشاشة
+            return jsonify({"reply": f"الخطأ التقني الحقيقي: {e if 'e' in locals() else 'Unknown API Error'}"}), 200
 
         # د) حفظ المحادثة في قاعدة البيانات المحلية
         try:
