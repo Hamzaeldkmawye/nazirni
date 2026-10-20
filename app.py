@@ -188,7 +188,8 @@ def chat():
                 break
 
             # تم ضبط الرابط على v1 مع gemini-1.5-flash ودمج التعليمات مباشرة لتجنب أي خطأ 404 نهائياً
-            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={key}"
+            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key={key}"
+
             try:
                 response = requests.post(url, json=payload, timeout=20)
                 if response.status_code == 200:
