@@ -191,7 +191,7 @@ def admin_data():
 
 
 # ----------------------------------------------------
-# 5. دالة الـ Chat (تستعلم بالبحث النصي من كتب Supabase)
+# 5. دالة الـ Chat (تستعلم بالبحث النصي وتستخدم Gemini Flash فقط)
 # ----------------------------------------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -211,7 +211,6 @@ def chat():
         context_text = ""
         if supabase:
             try:
-                # نستخرج أول كلمة أو كلمتين رئيسيتين من سؤال المستخدم للبحث عنهما
                 keywords = user_message.split()[:2]
                 search_term = " ".join(keywords) if keywords else user_message
                 
@@ -244,9 +243,8 @@ def chat():
         reply_text = ""
         success = False
 
-        # ج) محاولة التوليد عبر Gemini Flash
-        total_keys_to_try = min(len(API_KEYS), 3)
-        for _ in range(total_keys_to_try):
+        # ج) الاعتماد على Gemini Flash حصرياً وبمحاولات متعددة للمفاتيح المتاحة
+        for _ in range(len(API_KEYS) + 2):
             key = get_next_api_key()
             if not key:
                 break
@@ -265,8 +263,42 @@ def chat():
                                 success = True
                                 break
                 elif response.status_code in [429, 503]:
-                    time.sleep(0.3)
+                    time.sleep(0.4)
                     continue
+                else:
+                    break
+            except Exception:
+                time.sleep(0.4)
+
+            if success:
+                break
+
+        if not success or not reply_text:
+            return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+
+        # د) حفظ المحادثة في قاعدة البيانات المحلية
+        try:
+            conn = sqlite3.connect(DB_FILE)
+            cursor = conn.cursor()
+            cursor.execute(
+                'INSERT INTO chats (email, category, question, reply) VALUES (?, ?, ?, ?)',
+                (user_email, category, user_message, reply_text)
+            )
+            conn.commit()
+            conn.close()
+        except Exception as db_err:
+            app.logger.error(f"Failed to save chat: {db_err}")
+
+        return jsonify({"reply": reply_text}), 200
+
+    except Exception as e:
+        app.logger.exception("Gemini API error")
+        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=False)
+inue
                 else:
                     break
             except Exception:
