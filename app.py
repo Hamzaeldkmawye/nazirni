@@ -192,7 +192,7 @@ def admin_data():
 
 
 # ----------------------------------------------------
-# 5. دالة الـ Chat (تظهر الخطأ التقني الحقيقي الآن)
+# 5. دالة الـ Chat
 # ----------------------------------------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -206,7 +206,7 @@ def chat():
             return jsonify({"reply": "من فضلك اكتب سؤالك الأول."}), 400
 
         if not API_KEYS:
-            return jsonify({"reply": "خطأ تقني: مفاتيح الذكاء الاصطناعي (API_KEYS) غير مُعدة في Environment Variables."}), 200
+            return jsonify({"reply": "خطأ تقني: مفاتيح الذكاء الاصطناعي غير مُعدة في Environment Variables."}), 200
 
         # أ) البحث بالكلمات المفتاحية في قاعدة بيانات الكتب بـ Supabase
         context_text = ""
@@ -251,8 +251,8 @@ def chat():
             if not key:
                 break
 
-          url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={key}"
-          try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={key}"
+            try:
                 response = requests.post(url, json=payload, timeout=20)
                 if response.status_code == 200:
                     res_data = response.json()
@@ -274,7 +274,6 @@ def chat():
                 break
 
         if not success or not reply_text:
-            # إظهار الخطأ الحقيقي للمطور بدلاً من الرسالة الوهمية
             return jsonify({"reply": f"خطأ تقني حقيقي من السيرفر: {last_api_error}"}), 200
 
         # د) حفظ المحادثة في قاعدة البيانات المحلية
@@ -299,4 +298,4 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=False)
-            
+    
