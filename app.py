@@ -6,10 +6,10 @@
 # ====================================================
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
-import requests
 import sqlite3
 import time
 from supabase import create_client, Client
+import google.generativeai as genai
 
 app = Flask(__name__)
 application = app  # ضروري جداً لتعريف نقطة البداية في Vercel
@@ -192,7 +192,7 @@ def admin_data():
 
 
 # ----------------------------------------------------
-# 5. دالة الـ Chat
+# 5. دالة الـ Chat باستخدام مكتبة Google الرسمية
 # ----------------------------------------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -236,39 +236,30 @@ def chat():
                 f"{context_text}"
             )
 
-        payload = {
-            "system_instruction": {"parts": [{"text": system_instruction}]},
-            "contents": [{"parts": [{"text": user_message}]}]
-        }
-
         reply_text = ""
         success = False
         last_api_error = "Unknown API Error"
 
-        # ج) الاعتماد على Gemini Flash حصرياً وبمحاولات متعددة للمفاتيح المتاحة
+        # ج) الدوران على المفاتيح واستخدام مكتبة الـ SDK الرسمية
         for _ in range(len(API_KEYS) + 2):
             key = get_next_api_key()
             if not key:
                 break
 
-            # تم التعديل هنا إلى v1beta
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={key}"
             try:
-                response = requests.post(url, json=payload, timeout=20)
-                if response.status_code == 200:
-                    res_data = response.json()
-                    candidates = res_data.get("candidates", [])
-                    if candidates:
-                        parts = candidates[0].get("content", {}).get("parts", [])
-                        if parts:
-                            reply_text = parts[0].get("text", "")
-                            if reply_text:
-                                success = True
-                                break
-                else:
-                    last_api_error = f"API Status {response.status_code}: {response.text}"
+                genai.configure(api_key=key)
+                # استخدام النموذج المستقر والمتوافق تماماً
+                model = genai.GenerativeModel(
+                    model_name="gemini-1.5-flash",
+                    system_instruction=system_instruction
+                )
+                response = model.generate_content(user_message)
+                if response and response.text:
+                    reply_text = response.text
+                    success = True
+                    break
             except Exception as api_ex:
-                last_api_error = f"API Exception: {str(api_ex)}"
+                last_api_error = str(api_ex)
                 time.sleep(0.4)
 
             if success:
@@ -294,9 +285,8 @@ def chat():
 
     except Exception as e:
         app.logger.exception("Gemini API error")
-        return jsonify({"reply": f"خطأ برمجى شامل (Exception): {str(e)}"}), 200
+        return jsonify({"reply": f"خطأ برمجي شامل (Exception): {str(e)}"}), 200
 
 
 if __name__ == "__main__":
     app.run(debug=False)
-        
