@@ -175,8 +175,7 @@ def chat():
             system_instruction += f"\n\nاستعن بالنصوص التالية المستخرجة من المكتبة للإجابة بدقة موثقة:\n{context_text}"
 
         payload = {
-            "system_instruction": {"parts": [{"text": system_instruction}]},
-            "contents": [{"parts": [{"text": user_message}]}]
+            "contents": [{"parts": [{"text": f"{system_instruction}\n\nالسؤال: {user_message}"}]}]
         }
 
         reply_text = ""
@@ -188,8 +187,8 @@ def chat():
             if not key:
                 break
 
-            # تم تعديل اسم النموذج هنا إلى gemini-pro لضمان توافقه التام مع الإصدار والاستقرار
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={key}"
+            # تم ضبط الرابط على v1 مع gemini-1.5-flash ودمج التعليمات مباشرة لتجنب أي خطأ 404 نهائياً
+            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={key}"
             try:
                 response = requests.post(url, json=payload, timeout=20)
                 if response.status_code == 200:
@@ -231,3 +230,4 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=False)
+                    
