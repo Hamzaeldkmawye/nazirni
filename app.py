@@ -12,6 +12,7 @@ import time
 from supabase import create_client, Client
 
 app = Flask(__name__)
+application = app  # ضروري جداً لتعريف نقطة البداية في Vercel
 
 # ----------------------------------------------------
 # 1. إعدادات Supabase لربط قاعدة بيانات الكتب
@@ -273,37 +274,6 @@ def chat():
             if success:
                 break
 
-                if not success or not reply_text:
-            # ضع هذا السطر مؤقتاً لنرى الخطأ الحقيقي على الشاشة
-            return jsonify({"reply": f"الخطأ التقني الحقيقي: {e if 'e' in locals() else 'Unknown API Error'}"}), 200
-
-        # د) حفظ المحادثة في قاعدة البيانات المحلية
-        try:
-            conn = sqlite3.connect(DB_FILE)
-            cursor = conn.cursor()
-            cursor.execute(
-                'INSERT INTO chats (email, category, question, reply) VALUES (?, ?, ?, ?)',
-                (user_email, category, user_message, reply_text)
-            )
-            conn.commit()
-            conn.close()
-        except Exception as db_err:
-            app.logger.error(f"Failed to save chat: {db_err}")
-
-        return jsonify({"reply": reply_text}), 200
-
-    except Exception as e:
-        app.logger.exception("Gemini API error")
-        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
-
-
-if __name__ == "__main__":
-    app.run(debug=False)
-           time.sleep(0.4)
-
-            if success:
-                break
-
         if not success or not reply_text:
             return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
 
@@ -329,64 +299,4 @@ if __name__ == "__main__":
 
 if __name__ == "__main__":
     app.run(debug=False)
-inue
-                else:
-                    break
-            except Exception:
-                time.sleep(0.3)
-
-            if success:
-                break
-
-        # د) المحاولة عبر Gemini Pro في حالة تعذر Flash
-        if not success:
-            for _ in range(2):
-                key = get_next_api_key()
-                if not key:
-                    break
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={key}"
-                try:
-                    response = requests.post(url, json=payload, timeout=25)
-                    if response.status_code == 200:
-                        res_data = response.json()
-                        candidates = res_data.get("candidates", [])
-                        if candidates:
-                            parts = candidates[0].get("content", {}).get("parts", [])
-                            if parts:
-                                reply_text = parts[0].get("text", "")
-                                if reply_text:
-                                    success = True
-                                    break
-                    elif response.status_code in [429, 503]:
-                        time.sleep(0.5)
-                        continue
-                except Exception:
-                    time.sleep(0.5)
-                if success:
-                    break
-
-        if not success or not reply_text:
-            return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
-
-        # هـ) حفظ المحادثة في قاعدة البيانات المحلية
-        try:
-            conn = sqlite3.connect(DB_FILE)
-            cursor = conn.cursor()
-            cursor.execute(
-                'INSERT INTO chats (email, category, question, reply) VALUES (?, ?, ?, ?)',
-                (user_email, category, user_message, reply_text)
-            )
-            conn.commit()
-            conn.close()
-        except Exception as db_err:
-            app.logger.error(f"Failed to save chat: {db_err}")
-
-        return jsonify({"reply": reply_text}), 200
-
-    except Exception as e:
-        app.logger.exception("Gemini API error")
-        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
-
-
-if __name__ == "__main__":
-    app.run(debug=False)
+    
