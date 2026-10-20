@@ -251,7 +251,7 @@ def chat():
             if not key:
                 break
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={key}"
+            url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={key}"
             try:
                 response = requests.post(url, json=payload, timeout=20)
                 if response.status_code == 200:
@@ -298,4 +298,4 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=False)
-    
+        
