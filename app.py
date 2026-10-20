@@ -298,6 +298,36 @@ def chat():
 
 if __name__ == "__main__":
     app.run(debug=False)
+           time.sleep(0.4)
+
+            if success:
+                break
+
+        if not success or not reply_text:
+            return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+
+        # د) حفظ المحادثة في قاعدة البيانات المحلية
+        try:
+            conn = sqlite3.connect(DB_FILE)
+            cursor = conn.cursor()
+            cursor.execute(
+                'INSERT INTO chats (email, category, question, reply) VALUES (?, ?, ?, ?)',
+                (user_email, category, user_message, reply_text)
+            )
+            conn.commit()
+            conn.close()
+        except Exception as db_err:
+            app.logger.error(f"Failed to save chat: {db_err}")
+
+        return jsonify({"reply": reply_text}), 200
+
+    except Exception as e:
+        app.logger.exception("Gemini API error")
+        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=False)
 inue
                 else:
                     break
