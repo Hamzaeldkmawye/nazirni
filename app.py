@@ -192,7 +192,7 @@ def admin_data():
 
 
 # ----------------------------------------------------
-# 5. دالة الـ Chat (تستعلم بالبحث النصي وتستخدم Gemini Flash فقط)
+# 5. دالة الـ Chat (تظهر الخطأ التقني الحقيقي الآن)
 # ----------------------------------------------------
 @app.route("/api/chat", methods=["POST"])
 def chat():
@@ -206,7 +206,7 @@ def chat():
             return jsonify({"reply": "من فضلك اكتب سؤالك الأول."}), 400
 
         if not API_KEYS:
-            return jsonify({"reply": "مفاتيح الذكاء الاصطناعي غير مُعدة على السيرفر."}), 500
+            return jsonify({"reply": "خطأ تقني: مفاتيح الذكاء الاصطناعي (API_KEYS) غير مُعدة في Environment Variables."}), 200
 
         # أ) البحث بالكلمات المفتاحية في قاعدة بيانات الكتب بـ Supabase
         context_text = ""
@@ -243,6 +243,7 @@ def chat():
 
         reply_text = ""
         success = False
+        last_api_error = "Unknown API Error"
 
         # ج) الاعتماد على Gemini Flash حصرياً وبمحاولات متعددة للمفاتيح المتاحة
         for _ in range(len(API_KEYS) + 2):
@@ -263,19 +264,18 @@ def chat():
                             if reply_text:
                                 success = True
                                 break
-                elif response.status_code in [429, 503]:
-                    time.sleep(0.4)
-                    continue
                 else:
-                    break
-            except Exception:
+                    last_api_error = f"API Status {response.status_code}: {response.text}"
+            except Exception as api_ex:
+                last_api_error = f"API Exception: {str(api_ex)}"
                 time.sleep(0.4)
 
             if success:
                 break
 
         if not success or not reply_text:
-            return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+            # إظهار الخطأ الحقيقي للمطور بدلاً من الرسالة الوهمية
+            return jsonify({"reply": f"خطأ تقني حقيقي من السيرفر: {last_api_error}"}), 200
 
         # د) حفظ المحادثة في قاعدة البيانات المحلية
         try:
@@ -294,9 +294,9 @@ def chat():
 
     except Exception as e:
         app.logger.exception("Gemini API error")
-        return jsonify({"reply": "هناك ضغط على السيرفرات الآن، يمكنك أن تجرب ثانية."}), 200
+        return jsonify({"reply": f"خطأ برمجى شامل (Exception): {str(e)}"}), 200
 
 
 if __name__ == "__main__":
     app.run(debug=False)
-    
+            
