@@ -199,7 +199,7 @@ def ask_gemini(system_instruction, user_message):
         }],
         "generationConfig": {
             "temperature": 0.5,
-            "maxOutputTokens": 512
+            "maxOutputTokens": 4096
         }
     }
 
