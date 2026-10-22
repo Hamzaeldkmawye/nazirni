@@ -4,7 +4,7 @@
 # Year: 2026
 # ====================================================
 
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, render_template, request, jsonify, send_from_directory, session
 import os
 import time
 import sqlite3
@@ -17,6 +17,10 @@ except ImportError:
     create_client = None
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "local-development-only-change-this")
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = os.environ.get("VERCEL", "").lower() in ("1", "true")
 application = app
 
 # ---------------- CONFIGURATION ----------------
@@ -24,6 +28,7 @@ application = app
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "").strip()
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "").strip()
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "").strip().lower()
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", "92014977268-38c4p071gdnjfi674mddboqttq8antrc.apps.googleusercontent.com").strip()
 
 # اختياري: اسم موديل محدد من قائمة الموديلات المتاحة.
 # اتركه فارغًا للاختيار التلقائي.
@@ -266,8 +271,7 @@ def ask_gemini(system_instruction, user_message):
 
 
 # ---------------- DATABASE ----------------
-
-# تنبيه: /tmp مؤقت على Vercel وليس قاعدة بيانات دائمة.
+# في Vercel نستخدم جداول Supabase الدائمة. SQLite مخصص للتشغيل المحلي فقط.
 DB_FILE = os.path.join("/tmp", "database.db")
 
 
@@ -278,37 +282,27 @@ def get_db():
 
 
 def init_db():
+    if supabase:
+        return
     try:
         with get_db() as conn:
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT,
-                    email TEXT UNIQUE,
-                    password TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS chats (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    email TEXT,
-                    category TEXT,
-                    question TEXT,
-                    reply TEXT,
-                    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
-            conn.execute("""
-                CREATE TABLE IF NOT EXISTS visits (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    ip TEXT,
-                    visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
-
+            conn.execute("""CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT, email TEXT UNIQUE, password TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )""")
+            conn.execute("""CREATE TABLE IF NOT EXISTS chats (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT, conversation_id TEXT, category TEXT, question TEXT, reply TEXT,
+                date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )""")
+            existing_columns = {row[1] for row in conn.execute("PRAGMA table_info(chats)").fetchall()}
+            if "conversation_id" not in existing_columns:
+                conn.execute("ALTER TABLE chats ADD COLUMN conversation_id TEXT")
+            conn.execute("""CREATE TABLE IF NOT EXISTS visits (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ip TEXT, visited_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )""")
     except Exception:
         app.logger.exception("Database initialization failed")
 
@@ -316,16 +310,44 @@ def init_db():
 init_db()
 
 
+def find_user(email):
+    if supabase:
+        result = supabase.table("nazirni_users").select("id,name,email,password,created_at").eq("email", email).limit(1).execute()
+        return (result.data or [None])[0]
+    with get_db() as conn:
+        row = conn.execute("SELECT id,name,email,password,created_at FROM users WHERE email=?", (email,)).fetchone()
+        return dict(row) if row else None
+
+
+def insert_user(name, email, password_hash=None):
+    if supabase:
+        return supabase.table("nazirni_users").insert({"name": name, "email": email, "password": password_hash}).execute()
+    with get_db() as conn:
+        conn.execute("INSERT INTO users (name,email,password) VALUES (?,?,?)", (name,email,password_hash))
+
+
+def save_visit(ip):
+    if supabase:
+        supabase.table("nazirni_visits").insert({"ip": ip}).execute()
+    else:
+        with get_db() as conn:
+            conn.execute("INSERT INTO visits (ip) VALUES (?)", (ip,))
+
+
+def save_chat(email, conversation_id, category, question, reply):
+    if supabase:
+        supabase.table("nazirni_chats").insert({"email": email, "conversation_id": conversation_id, "category": category, "question": question, "reply": reply}).execute()
+    else:
+        with get_db() as conn:
+            conn.execute("INSERT INTO chats (email,conversation_id,category,question,reply) VALUES (?,?,?,?,?)", (email,conversation_id,category,question,reply))
+
+
 # ---------------- HOME ----------------
 
 @app.route("/")
 def index():
     try:
-        with get_db() as conn:
-            conn.execute(
-                "INSERT INTO visits (ip) VALUES (?)",
-                (request.remote_addr or "unknown",)
-            )
+        save_visit(request.remote_addr or "unknown")
     except Exception:
         app.logger.exception("Visit logging failed")
 
@@ -367,170 +389,135 @@ def list_models():
 
 
 # ---------------- AUTH ----------------
-
 @app.route("/api/auth", methods=["POST"])
 def handle_auth():
     data = request.get_json(silent=True) or {}
-
     action = data.get("action", "")
     email = data.get("email", "")
     password = data.get("password", "")
     name = data.get("name", "")
 
+    if action == "google":
+        credential = data.get("credential", "")
+        if not isinstance(credential, str) or not credential:
+            return jsonify({"success": False, "message": "تعذر التحقق من حساب Google."}), 400
+        try:
+            verify = requests.get("https://oauth2.googleapis.com/tokeninfo", params={"id_token": credential}, timeout=10)
+            if verify.status_code != 200:
+                return jsonify({"success": False, "message": "تعذر التحقق من هوية Google."}), 401
+            claims = verify.json()
+            if claims.get("aud") != GOOGLE_CLIENT_ID or claims.get("email_verified") not in (True, "true"):
+                return jsonify({"success": False, "message": "حساب Google غير موثّق أو إعدادات الدخول غير صحيحة."}), 401
+            email = str(claims.get("email", "")).strip().lower()
+            name = str(claims.get("name") or email.split("@")[0])
+            user = find_user(email)
+            if not user:
+                insert_user(name, email, None)
+            session["user_email"] = email
+            session["user_name"] = name
+            return jsonify({"success": True, "name": name, "email": email})
+        except Exception:
+            app.logger.exception("Google login failed")
+            return jsonify({"success": False, "message": "حدث خطأ أثناء تسجيل الدخول باستخدام Google."}), 500
+
     if not all(isinstance(v, str) for v in (email, password, name)):
-        return jsonify({
-            "success": False,
-            "message": "بيانات الدخول غير صحيحة."
-        }), 400
-
-    email = email.strip().lower()
-    name = name.strip()
-
+        return jsonify({"success": False, "message": "بيانات الدخول غير صحيحة."}), 400
+    email, name = email.strip().lower(), name.strip()
     if not email or not password:
-        return jsonify({
-            "success": False,
-            "message": "البريد الإلكتروني وكلمة المرور مطلوبان."
-        }), 400
-
-    if len(email) > 254 or len(password) > 256:
-        return jsonify({
-            "success": False,
-            "message": "البيانات أطول من المسموح."
-        }), 400
+        return jsonify({"success": False, "message": "البريد الإلكتروني وكلمة المرور مطلوبان."}), 400
+    if len(email) > 254 or len(password) > 256 or len(name) > 120:
+        return jsonify({"success": False, "message": "البيانات أطول من المسموح."}), 400
 
     try:
-        with get_db() as conn:
-            if action == "signup":
-                name = name or email.split("@")[0]
+        if action == "signup":
+            if find_user(email):
+                return jsonify({"success": False, "message": "البريد الإلكتروني مسجل مسبقًا! سجّل الدخول بدلًا من إنشاء حساب جديد."}), 409
+            name = name or email.split("@")[0]
+            try:
+                insert_user(name, email, generate_password_hash(password))
+            except Exception:
+                # قد يكون حساب آخر سجّل البريد نفسه في نفس اللحظة.
+                if find_user(email):
+                    return jsonify({"success": False, "message": "البريد الإلكتروني مسجل مسبقًا! سجّل الدخول."}), 409
+                raise
+            session["user_email"] = email
+            session["user_name"] = name
+            return jsonify({"success": True, "message": "تم إنشاء الحساب بنجاح", "name": name, "email": email})
 
-                try:
-                    conn.execute(
-                        """
-                        INSERT INTO users (name, email, password)
-                        VALUES (?, ?, ?)
-                        """,
-                        (
-                            name,
-                            email,
-                            generate_password_hash(password)
-                        )
-                    )
-                except sqlite3.IntegrityError:
-                    return jsonify({
-                        "success": False,
-                        "message": "البريد الإلكتروني مسجل مسبقًا!"
-                    }), 400
+        if action == "login":
+            user = find_user(email)
+            if not user:
+                return jsonify({"success": False, "message": "البريد الإلكتروني أو كلمة المرور غير صحيحة!"}), 401
+            stored = user.get("password") or ""
+            valid = bool(stored) and check_password_hash(stored, password)
+            if not valid:
+                return jsonify({"success": False, "message": "البريد الإلكتروني أو كلمة المرور غير صحيحة!"}), 401
+            session["user_email"] = email
+            session["user_name"] = user.get("name") or email.split("@")[0]
+            return jsonify({"success": True, "message": "تم تسجيل الدخول بنجاح", "name": session["user_name"], "email": email})
 
-                return jsonify({
-                    "success": True,
-                    "message": "تم إنشاء الحساب بنجاح",
-                    "name": name
-                })
+        if action == "logout":
+            session.clear()
+            return jsonify({"success": True})
 
-            if action == "login":
-                user = conn.execute(
-                    "SELECT name, password FROM users WHERE email = ?",
-                    (email,)
-                ).fetchone()
-
-                if not user:
-                    return jsonify({
-                        "success": False,
-                        "message": "البريد الإلكتروني أو كلمة المرور غير صحيحة!"
-                    }), 401
-
-                stored = user["password"] or ""
-
-                if stored.startswith(("scrypt:", "pbkdf2:")):
-                    valid = check_password_hash(stored, password)
-                else:
-                    # ترحيل مؤقت للحسابات القديمة.
-                    valid = stored == password
-
-                    if valid:
-                        conn.execute(
-                            "UPDATE users SET password = ? WHERE email = ?",
-                            (generate_password_hash(password), email)
-                        )
-
-                if not valid:
-                    return jsonify({
-                        "success": False,
-                        "message": "البريد الإلكتروني أو كلمة المرور غير صحيحة!"
-                    }), 401
-
-                return jsonify({
-                    "success": True,
-                    "message": "تم تسجيل الدخول بنجاح",
-                    "name": user["name"]
-                })
-
-        return jsonify({
-            "success": False,
-            "message": "إجراء غير معروف"
-        }), 400
-
+        return jsonify({"success": False, "message": "إجراء غير معروف"}), 400
     except Exception:
         app.logger.exception("Authentication failed")
-        return jsonify({
-            "success": False,
-            "message": "حدث خطأ داخلي في تسجيل الدخول."
-        }), 500
+        return jsonify({"success": False, "message": "حدث خطأ داخلي في تسجيل الدخول."}), 500
+
+
+# ---------------- SAVED CHAT HISTORY ----------------
+@app.route("/api/history", methods=["GET"])
+def saved_history():
+    email = (session.get("user_email") or "").strip().lower()
+    if not email:
+        return jsonify({"success": False, "message": "سجّل الدخول لعرض محادثاتك المحفوظة."}), 401
+    try:
+        if supabase:
+            rows = supabase.table("nazirni_chats").select("conversation_id,category,question,reply,created_at").eq("email", email).order("created_at", desc=False).limit(1000).execute().data or []
+            for row in rows:
+                row["date"] = row.pop("created_at", "")
+        else:
+            with get_db() as conn:
+                rows = [dict(r) for r in conn.execute("SELECT conversation_id,category,question,reply,date FROM chats WHERE email=? ORDER BY id ASC LIMIT 1000", (email,)).fetchall()]
+        grouped = {}
+        for row in rows:
+            cid = row.get("conversation_id") or ("legacy_" + str(row.get("date", "")))
+            item = grouped.setdefault(cid, {"id": cid, "category": row.get("category") or "سؤال ديني", "messages": [], "isPinned": False, "createdAt": row.get("date", "")})
+            item["messages"].append({"sender": "user", "text": row.get("question") or ""})
+            item["messages"].append({"sender": "bot", "text": row.get("reply") or ""})
+        conversations = sorted(grouped.values(), key=lambda item: str(item.get("createdAt", "")), reverse=True)
+        return jsonify({"success": True, "chats": conversations})
+    except Exception:
+        app.logger.exception("Saved history retrieval failed")
+        return jsonify({"success": False, "message": "تعذر تحميل سجل المحادثات."}), 500
 
 
 # ---------------- ADMIN ----------------
-
 @app.route("/api/admin/data", methods=["GET"])
 def admin_data():
-    # هذا تحقق أولي فقط، وليس بديلًا عن جلسة دخول وصلاحيات موثوقة.
-    email = request.args.get("email", "").strip().lower()
-
+    # الاعتماد على جلسة أنشأها السيرفر، وليس البريد المرسل من المتصفح.
+    email = (session.get("user_email") or "").strip().lower()
     if not ADMIN_EMAIL or email != ADMIN_EMAIL:
-        return jsonify({
-            "success": False,
-            "message": "غير مسموح بالدخول!"
-        }), 403
-
+        return jsonify({"success": False, "message": "غير مسموح بالدخول!"}), 403
     try:
-        with get_db() as conn:
-            total_users = conn.execute(
-                "SELECT COUNT(*) FROM users"
-            ).fetchone()[0]
-
-            total_visits = conn.execute(
-                "SELECT COUNT(*) FROM visits"
-            ).fetchone()[0]
-
-            users = [
-                dict(row)
-                for row in conn.execute("""
-                    SELECT name, email, created_at AS date
-                    FROM users ORDER BY id DESC
-                """).fetchall()
-            ]
-
-            chats = [
-                dict(row)
-                for row in conn.execute("""
-                    SELECT email, category, question, date
-                    FROM chats ORDER BY id DESC LIMIT 25
-                """).fetchall()
-            ]
-
-        return jsonify({
-            "success": True,
-            "total_users": total_users,
-            "total_visits": total_visits,
-            "users": users,
-            "chats": chats
-        })
-
+        if supabase:
+            users = (supabase.table("nazirni_users").select("name,email,created_at").order("id", desc=True).execute().data or [])
+            visits = (supabase.table("nazirni_visits").select("id").execute().data or [])
+            chats = (supabase.table("nazirni_chats").select("email,category,question,created_at").order("id", desc=True).limit(25).execute().data or [])
+            for user in users:
+                user["date"] = user.pop("created_at", "")
+            for chat in chats:
+                chat["date"] = chat.pop("created_at", "")
+        else:
+            with get_db() as conn:
+                users = [dict(row) for row in conn.execute("SELECT name,email,created_at AS date FROM users ORDER BY id DESC").fetchall()]
+                visits = conn.execute("SELECT id FROM visits").fetchall()
+                chats = [dict(row) for row in conn.execute("SELECT email,category,question,date FROM chats ORDER BY id DESC LIMIT 25").fetchall()]
+        return jsonify({"success": True, "total_users": len(users), "total_visits": len(visits), "users": users, "chats": chats})
     except Exception:
         app.logger.exception("Admin data retrieval failed")
-        return jsonify({
-            "success": False,
-            "message": "تعذر تحميل بيانات الإدارة."
-        }), 500
+        return jsonify({"success": False, "message": "تعذر تحميل بيانات الإدارة. تأكد من إنشاء جداول ناظرني في Supabase."}), 500
 
 
 # ---------------- AI CHAT ----------------
@@ -542,6 +529,10 @@ def chat():
     user_message = data.get("message", "")
     category = data.get("category", "سؤال ديني")
     user_email = data.get("email", "guest@nazirni.com")
+    conversation_id = data.get("chat_id", "")
+    if not isinstance(conversation_id, str):
+        conversation_id = ""
+    conversation_id = conversation_id[:100]
 
     if not isinstance(user_message, str):
         return jsonify({"reply": "صيغة السؤال غير صحيحة."}), 400
@@ -591,13 +582,23 @@ def chat():
         except Exception:
             app.logger.exception("Supabase book search failed")
 
+    category_guidance = {
+        "أنا مسلم": "خاطب المستخدم من منظور إسلامي، واشرح الأدلة من القرآن والسنة الصحيحة وأقوال العلماء المعتبرة. دافع عن التصور الإسلامي بالحجة والرد الواضح على الاعتراضات دون سب أو تهديد.",
+        "مناظرة": "قدّم مناظرة منظمة: حدّد الدعوى، ثم الأدلة والحجج والردود، وميّز بين المعلومة المؤكدة والمسألة المختلف فيها. التزم الأدب ولا تختلق اقتباسات.",
+        "أنا مسيحي": "خاطب المستخدم باحترام، واشرح المنظور الإسلامي عن المسألة بوضوح، ويمكنك عرض فهم المسيحيين لمعتقداتهم بدقة بوصفه شرحًا لا تبنّيًا له، ثم قارن بالأدلة دون تحريف.",
+        "أنا يهودي": "خاطب المستخدم باحترام، واشرح المنظور الإسلامي مع عرض المعتقدات اليهودية بدقة عند الحاجة، وميّز بين النص والتفسير والخلاف التاريخي.",
+        "أنا ملحد": "ناقش الأسئلة الفلسفية والعلمية بهدوء، وقدّم الحجج الإسلامية عند صلتها بالسؤال، ولا تنسب للمخالف نوايا أو أقوالًا لم يقلها.",
+        "أنا شيعي": "ناقش المسائل من منظور إسلامي مع بيان مواضع الاتفاق والخلاف بين المدارس الإسلامية بأمانة، وتجنب التعميم والإهانة.",
+        "أنا من ديانة أخرى": "اسأل أو استنتج بحذر ما يحتاجه السؤال، واعرض المنظور الإسلامي بوضوح، واشرح المعتقدات الأخرى بدقة واحترام دون الادعاء بتبنّيها."
+    }
+    selected_guidance = category_guidance.get(category, "أجب وفق طبيعة القسم الحالي مع الدقة والاحترام.")
     system_instruction = (
-        "أنت مساعد منصة ناظرني للحوار والدراسات الدينية. "
-        f"القسم الحالي: {category}. "
-        "أجب باللغة العربية بوضوح واحترام وموضوعية. "
-        "في المسائل الدينية اعتمد على المصادر الموثوقة، "
-        "ولا تختلق آيات أو أحاديث أو مراجع. "
-        "اذكر عدم اليقين عند الحاجة."
+        "أنت مساعد منصة ناظرني المتخصص في الحوار والدراسات الدينية، وتقدّم التقييم الديني الأساسي من منظور إسلامي. "
+        f"القسم الحالي: {category}. توجيه هذا القسم: {selected_guidance} "
+        "أجب باللغة العربية بوضوح. استشهد بالقرآن أو الحديث فقط عندما تكون متأكدًا من النص والمصدر، ولا تختلق آيات أو أحاديث أو أرقام مراجع. "
+        "لا تعرض الروايات المختلف في صحتها كأنها صحيحة باتفاق، واذكر الخلاف أو عدم اليقين عند الحاجة. "
+        "إذا سُئلت عن نصوص ديانات أخرى فاشرحها بدقة في سياقها، ولا تخترع اقتباسات ولا تقدّم المسائل المتنازع عليها كحقائق محسومة. "
+        "ناقش الأفكار بقوة واحترام، دون سب أو تهديد أو تحريض على أشخاص أو جماعات."
     )
 
     if context_text:
@@ -619,14 +620,10 @@ def chat():
         }), 200
 
     try:
-        with get_db() as conn:
-            conn.execute(
-                """
-                INSERT INTO chats (email, category, question, reply)
-                VALUES (?, ?, ?, ?)
-                """,
-                (user_email, category, user_message, reply_text)
-            )
+        # لا نثق في البريد المرسل من الواجهة؛ الجلسة هي مصدر الهوية للحسابات المسجلة.
+        authenticated_email = (session.get("user_email") or "").strip().lower()
+        storage_email = authenticated_email or "guest@nazirni.com"
+        save_chat(storage_email, conversation_id, category, user_message, reply_text)
     except Exception:
         app.logger.exception("Saving chat failed")
 
