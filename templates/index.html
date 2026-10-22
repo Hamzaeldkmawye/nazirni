@@ -202,7 +202,8 @@
         .chat-input-area {
             display: flex; gap: 8px; background: rgba(255, 255, 255, 0.95); padding: 4px 6px 4px 14px; border-radius: 30px; border: 1.5px solid rgba(27, 77, 62, 0.25); margin-top: 8px; margin-bottom: 4px; align-items: center; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
         }
-        .chat-input-area input { flex: 1; border: none; outline: none; padding: 8px 4px; font-size: 0.95rem; background: transparent; color: #1e293b; }
+        .chat-input-area textarea { flex: 1; min-width: 0; resize: none; border: 0; outline: none; background: transparent; color: var(--text-main); font: inherit; line-height: 1.5; max-height: 180px; overflow-y: auto; }
+        .chat-input-area textarea { flex: 1; border: none; outline: none; padding: 8px 4px; font-size: 0.95rem; background: transparent; color: #1e293b; }
         
         .send-round-btn {
             background: linear-gradient(135deg, var(--primary-medium), var(--primary-dark)); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: transform 0.2s ease, opacity 0.2s ease; flex-shrink: 0; box-shadow: 0 3px 10px rgba(18, 62, 49, 0.25);
@@ -267,7 +268,7 @@
             .chat-header p { font-size: 0.72rem; margin-top: 1px; }
             .message { max-width: 90%; padding: 10px 14px; font-size: 0.9rem; border-radius: 16px; }
             .chat-input-area { padding: 3px 4px 3px 12px; border-radius: 24px; margin-top: 4px; margin-bottom: 2px; }
-            .chat-input-area input { padding: 6px 4px; font-size: 0.88rem; }
+            .chat-input-area textarea { padding: 6px 4px; font-size: 0.88rem; }
             .send-round-btn { width: 34px; height: 34px; font-size: 0.78rem; }
             .site-footer { display: block; font-size: 0.68rem; padding: 2px 0; }
         }
@@ -429,7 +430,7 @@
         </section>
 
         <section class="chat-input-area" id="chatInputArea">
-            <input type="text" id="userInput" placeholder="اكتب سؤالك أو استفسارك هنا..." onkeypress="handleKeyPress(event)" aria-label="أدخل سؤالك هنا">
+            <textarea id="userInput" rows="1" placeholder="اكتب سؤالك أو استفسارك هنا..." aria-label="أدخل سؤالك هنا"></textarea>
             <button class="send-round-btn" onclick="sendMessage()" aria-label="إرسال السؤال">
                 <i class="fa-solid fa-arrow-up"></i>
             </button>
@@ -538,6 +539,7 @@
         document.addEventListener('DOMContentLoaded', () => { 
             checkUserAuthStatus(); 
             startNewChatSession(); // فتح شات جديد تلقائياً فور الدخول
+            if (currentUser) loadRemoteHistory();
         });
 
         function openSidebar() {
@@ -586,6 +588,12 @@
         function openPage(cat) {
             document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
             if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
+            const categoryChanged = currentCategory !== cat;
+            if (categoryChanged && !['الثقة والمراجع', 'المطور والابتكار', 'دعم المنصة'].includes(cat)) {
+                // حفظ الشات الحالي قبل الانتقال لقسم مختلف، ثم فتح محادثة جديدة.
+                const oldChat = allChats.find(c => c.id === currentChatId);
+                if (oldChat && oldChat.messages && oldChat.messages.length) saveChatsToStorage();
+            }
             currentCategory = cat;
             document.getElementById('currentCategoryText').textContent = 'القسم الحالي: ' + cat + ' - منصة ناظرني للحوار';
 
@@ -602,11 +610,19 @@
             pageTrust.classList.toggle('active', cat === 'الثقة والمراجع');
             pageDev.classList.toggle('active', cat === 'المطور والابتكار');
             pageDonate.classList.toggle('active', cat === 'دعم المنصة');
+            if (categoryChanged && isChatSection) startNewChatSession();
 
             closeAllSidebars();
         }
 
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        function handleKeyPress(e) { /* Enter يضيف سطرًا جديدًا؛ الإرسال من الزر فقط. */ }
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('userInput');
+            if (input) input.addEventListener('input', () => {
+                input.style.height = 'auto';
+                input.style.height = Math.min(input.scrollHeight, 180) + 'px';
+            });
+        });
 
         // بدء محادثة جديدة فارغة وتعيين معرف فريد
         function startNewChatSession() {
@@ -649,6 +665,7 @@
 
             chatObj.messages.push({ sender: 'user', text: text });
             input.value = '';
+            input.style.height = 'auto';
             messages.scrollTop = messages.scrollHeight;
 
             const typingDiv = document.createElement('div');
@@ -662,7 +679,7 @@
                 const res = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text, category: currentCategory, email: currentUser ? currentUser.email : 'guest' })
+                    body: JSON.stringify({ message: text, category: currentCategory, chat_id: currentChatId, email: currentUser ? currentUser.email : 'guest' })
                 });
                 const data = await res.json();
                 
@@ -806,7 +823,7 @@
             document.getElementById('adminModal').classList.add('open');
             closeAllSidebars();
             try {
-                const res = await fetch(`/api/admin/data?email=${currentUser.email}`);
+                const res = await fetch('/api/admin/data');
                 const data = await res.json();
                 if(data.success) {
                     document.getElementById('adminStatsText').textContent = `إجمالي المستخدمين: ${data.total_users} | إجمالي الزيارات: ${data.total_visits}`;
@@ -848,10 +865,18 @@
             } catch(err) { alert('حدث خطأ في الاتصال بالسيرفر'); }
         }
 
-        function handleGoogleLogin(response) {
-            if (response.credential) {
-                saveUserAndLogin({ name: 'مستخدم جوجل', email: 'google@user.com' });
-            }
+        async function handleGoogleLogin(response) {
+            if (!response || !response.credential) return;
+            try {
+                const res = await fetch('/api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'google', credential: response.credential })
+                });
+                const data = await res.json();
+                if (data.success) saveUserAndLogin({ name: data.name, email: data.email });
+                else alert(data.message || 'تعذر تسجيل الدخول باستخدام Google.');
+            } catch (err) { alert('حدث خطأ في الاتصال بالسيرفر أثناء تسجيل الدخول بـ Google.'); }
         }
 
         function saveUserAndLogin(user) {
@@ -859,11 +884,27 @@
             localStorage.setItem('nazirni_user', JSON.stringify(user));
             checkUserAuthStatus();
             closeModal();
+            loadRemoteHistory();
+        }
+
+        async function loadRemoteHistory() {
+            if (!currentUser) return;
+            try {
+                const res = await fetch('/api/history');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (!data.success || !Array.isArray(data.chats)) return;
+                const localIds = new Set(allChats.map(c => c.id));
+                data.chats.forEach(chat => { if (!localIds.has(chat.id)) allChats.push(chat); });
+                allChats.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+                saveChatsToStorage();
+            } catch (err) { console.warn('تعذر مزامنة سجل المحادثات', err); }
         }
 
         function handleAuthSidebarAction() {
             if (currentUser) {
                 if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                    fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) }).catch(() => {});
                     currentUser = null;
                     localStorage.removeItem('nazirni_user');
                     checkUserAuthStatus();
@@ -896,7 +937,20 @@
             }
         }
       
-        function copyText(text) { navigator.clipboard.writeText(text); alert('تم النسخ: ' + text); }
+        async function copyText(text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const temp = document.createElement('textarea');
+                    temp.value = text; temp.style.position = 'fixed'; temp.style.opacity = '0';
+                    document.body.appendChild(temp); temp.select();
+                    const ok = document.execCommand('copy'); temp.remove();
+                    if (!ok) throw new Error('copy failed');
+                }
+                alert('تم نسخ المعرف: ' + text);
+            } catch (err) { prompt('انسخ المعرف يدويًا:', text); }
+        }
     </script>
 </body>
 </html>
