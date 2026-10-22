@@ -288,12 +288,14 @@
                 padding: 12px;
             }
             .copy-box span {
+                order: 2;
                 display: block;
                 width: 100%;
                 text-align: center;
                 font-size: 0.9rem;
             }
             .copy-box button {
+                order: 1;
                 width: 100%;
                 min-height: 42px;
                 white-space: normal;
@@ -661,12 +663,21 @@
             closeAllSidebars();
         }
 
-        function handleKeyPress(e) { /* Enter يضيف سطرًا جديدًا؛ الإرسال من الزر فقط. */ }
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('userInput');
-            if (input) input.addEventListener('input', () => {
+            if (!input) return;
+
+            input.addEventListener('input', () => {
                 input.style.height = 'auto';
                 input.style.height = Math.min(input.scrollHeight, 180) + 'px';
+            });
+
+            // Enter للإرسال على الكمبيوتر، وShift+Enter لسطر جديد.
+            input.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+                    event.preventDefault();
+                    sendMessage();
+                }
             });
         });
 
@@ -1025,7 +1036,7 @@
             if (copied) {
                 alert('تم نسخ المعرف: ' + text);
             } else {
-                prompt('تعذر النسخ التلقائي. انسخ المعرف من هنا:', text);
+                window.prompt('لو النسخ التلقائي ما اشتغلش، اضغط مطولًا على المعرف وانسخه:', text);
             }
         }
     </script>
